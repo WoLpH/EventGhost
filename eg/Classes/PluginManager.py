@@ -22,6 +22,7 @@ from os.path import exists, isdir, join
 # Local imports
 import eg
 
+
 class PluginManager:
     def __init__(self):
         self.database = {}
@@ -97,6 +98,7 @@ class ActionsMapping(object):
 
         class Action(eg.ActionBase):
             pass
+
         Action.__name__ = name
         action = self.info.actionGroup.AddAction(Action, hidden=True)
         self.actions[name] = action

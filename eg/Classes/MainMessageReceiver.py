@@ -21,9 +21,12 @@ import wx
 # Local imports
 import eg
 from eg.WinApi.Dynamic import (
-    ChangeClipboardChain, SendMessage, SetClipboardViewer, WM_CHANGECBCHAIN,
-    WM_DRAWCLIPBOARD,
-)
+    ChangeClipboardChain,
+    SendMessage,
+    SetClipboardViewer,
+    WM_CHANGECBCHAIN,
+    WM_DRAWCLIPBOARD, )
+
 
 class MainMessageReceiver(eg.MessageReceiver):
     def __init__(self):

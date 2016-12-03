@@ -25,12 +25,13 @@ from xml.sax.saxutils import escape, quoteattr
 import eg
 from TreeLink import TreeLink
 
-HINT_NO_DROP = 0               # item cannot be dropped on it
-HINT_MOVE_INSIDE = 1           # item would be dropped inside
-HINT_MOVE_BEFORE = 2           # item would move before
-HINT_MOVE_AFTER = 4            # item would move after
+HINT_NO_DROP = 0  # item cannot be dropped on it
+HINT_MOVE_INSIDE = 1  # item would be dropped inside
+HINT_MOVE_BEFORE = 2  # item would move before
+HINT_MOVE_AFTER = 4  # item would move after
 HINT_MOVE_BEFORE_OR_AFTER = 6  # item can be inserted before or after
-HINT_MOVE_EVERYWHERE = 7       # item can be inserted before or after or dropped inside
+HINT_MOVE_EVERYWHERE = 7  # item can be inserted before or after or dropped inside
+
 
 class TreeItem(object):
     # name
@@ -73,20 +74,15 @@ class TreeItem(object):
                 mesg = eg.text.General.deleteManyQuestion % str(count)
             else:
                 mesg = eg.text.General.deleteQuestion
-            answer = eg.MessageBox(
-                mesg,
-                eg.APP_NAME,
-                wx.NO_DEFAULT | wx.YES_NO | wx.ICON_EXCLAMATION
-            )
+            answer = eg.MessageBox(mesg, eg.APP_NAME, wx.NO_DEFAULT |
+                                   wx.YES_NO | wx.ICON_EXCLAMATION)
             if answer == wx.ID_NO:
                 return False
         dependants = self.GetDependantsOutside(allItems)
         if len(dependants) > 0:
-            answer = eg.MessageBox(
-                eg.text.General.deleteLinkedItems,
-                eg.APP_NAME,
-                wx.NO_DEFAULT | wx.YES_NO | wx.ICON_EXCLAMATION
-            )
+            answer = eg.MessageBox(eg.text.General.deleteLinkedItems,
+                                   eg.APP_NAME, wx.NO_DEFAULT | wx.YES_NO |
+                                   wx.ICON_EXCLAMATION)
             return answer == wx.ID_YES
         return True
 
@@ -172,6 +168,7 @@ class TreeItem(object):
         def Do():
             self.document.expandedNodes.add(self)
             eg.Notify("NodeChanged", self)
+
         wx.CallAfter(Do)
 
     def GetAllItems(self):
@@ -186,6 +183,7 @@ class TreeItem(object):
             append(item)
             for child in item.childs:
                 RecurseChilds(child)
+
         RecurseChilds(self)
 
         return result
@@ -225,6 +223,7 @@ class TreeItem(object):
                         append(link)
             for child in item.childs:
                 RecurseChilds(child)
+
         RecurseChilds(self)
 
         return result
@@ -303,7 +302,8 @@ class TreeItem(object):
         if isinstance(self, eg.RootItem):
             self.WriteXmlString(stream.write)
         else:
-            stream.write('<EventGhost Version="%s">\r\n' % str(eg.Version.string))
+            stream.write('<EventGhost Version="%s">\r\n' %
+                         str(eg.Version.string))
             self.WriteXmlString(stream.write, "    ")
             stream.write('</EventGhost>')
         xmlString = stream.getvalue()
@@ -407,10 +407,9 @@ class TreeItem(object):
 
     def WriteXmlString(self, streamWriter, indent=""):
         attr, text = self.GetData()
-        attribStrs = "".join(
-            ' %s=%s' % (k, quoteattr(unicode(v)).encode("UTF-8"))
-            for k, v in attr
-        )
+        attribStrs = "".join(' %s=%s' %
+                             (k, quoteattr(unicode(v)).encode("UTF-8"))
+                             for k, v in attr)
         streamWriter("%s<%s%s" % (indent, self.xmlTag, attribStrs))
         if not text and len(self.childs) == 0:
             streamWriter(" />\r\n")

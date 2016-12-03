@@ -25,6 +25,7 @@ from os.path import join
 # Local imports
 import eg
 
+
 class Config(eg.PersistentData):
     position = (50, 50)
     size = (700, 433)
@@ -44,9 +45,8 @@ class LanguageEditor(wx.Frame):
             parent,
             -1,
             "Language Editor",
-            pos = Config.position,
-            size = Config.size
-        )
+            pos=Config.position,
+            size=Config.size)
         self.menuBar = self.CreateMenuBar()
         self.CreateStatusBar()
 
@@ -54,15 +54,15 @@ class LanguageEditor(wx.Frame):
 
         imageList = wx.ImageList(16, 16)
         for pathName in (
-            join(eg.corePluginDir, "EventGhost", "icons", "DisableItem.png"),
-            join(eg.corePluginDir, "EventGhost", "icons", "EnableItem.png"),
-            join(eg.imagesDir, "folder.png"),
-            join(eg.imagesDir, "root.png"),
-            join(eg.imagesDir, "new.png"),
-        ):
+                join(eg.corePluginDir, "EventGhost", "icons",
+                     "DisableItem.png"),
+                join(eg.corePluginDir, "EventGhost", "icons",
+                     "EnableItem.png"),
+                join(eg.imagesDir, "folder.png"),
+                join(eg.imagesDir, "root.png"),
+                join(eg.imagesDir, "new.png"), ):
             imageList.Add(
-                wx.BitmapFromImage(wx.Image(pathName, wx.BITMAP_TYPE_PNG))
-            )
+                wx.BitmapFromImage(wx.Image(pathName, wx.BITMAP_TYPE_PNG)))
 
         self.tree = tree = wx.TreeCtrl(splitter, -1, style=wx.TR_HAS_BUTTONS)
         tree.AssignImageList(imageList)
@@ -79,6 +79,7 @@ class LanguageEditor(wx.Frame):
                         eg.pluginManager.OpenPlugin(plugin, plugin, ()).Close()
                     except eg.Exceptions.PluginLoadError:
                         pass
+
         eg.actionThread.CallWait(LoadPlugins)
 
         rightPanel = wx.Panel(splitter)
@@ -89,9 +90,7 @@ class LanguageEditor(wx.Frame):
         self.langNames = [languageNames[k] for k in self.langKeys]
 
         self.currentValueCtrl = wx.TextCtrl(
-            rightPanel,
-            style = wx.TE_MULTILINE | wx.TE_READONLY
-        )
+            rightPanel, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.enabledColour = self.currentValueCtrl.GetBackgroundColour()
         self.currentValueCtrl.SetBackgroundColour(self.disabledColour)
         self.currentValueCtrl.SetEditable(False)
@@ -99,14 +98,12 @@ class LanguageEditor(wx.Frame):
         self.newValueCtrl = wx.TextCtrl(rightPanel, style=wx.TE_MULTILINE)
 
         staticBoxSizer1 = wx.StaticBoxSizer(
-            wx.StaticBox(rightPanel, label="Original Text"),
-            wx.VERTICAL
-        )
+            wx.StaticBox(
+                rightPanel, label="Original Text"), wx.VERTICAL)
         staticBoxSizer1.Add(self.currentValueCtrl, 1, wx.EXPAND)
         staticBoxSizer2 = wx.StaticBoxSizer(
-            wx.StaticBox(rightPanel, label="Translated Text"),
-            wx.VERTICAL
-        )
+            wx.StaticBox(
+                rightPanel, label="Translated Text"), wx.VERTICAL)
         staticBoxSizer2.Add(self.newValueCtrl, 1, wx.EXPAND)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -118,7 +115,7 @@ class LanguageEditor(wx.Frame):
         splitter.SplitVertically(tree, rightPanel)
         splitter.SetMinimumPaneSize(120)
         splitter.SetSashGravity(0.0)
-        splitter.SetSashPosition(Config.splitPosition)  #width + 20)
+        splitter.SetSashPosition(Config.splitPosition)  # width + 20)
 
         self.isDirty = False
 
@@ -133,12 +130,8 @@ class LanguageEditor(wx.Frame):
 
     def CheckNeedsSave(self):
         if self.isDirty:
-            dlg = wx.MessageDialog(
-                self,
-                "Save Changes?",
-                "Save Changes?",
-                wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
-            )
+            dlg = wx.MessageDialog(self, "Save Changes?", "Save Changes?",
+                                   wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
             result = dlg.ShowModal()
             dlg.Destroy()
             if result == wx.ID_CANCEL:
@@ -174,9 +167,8 @@ class LanguageEditor(wx.Frame):
         AddMenuItem("&Paste\tCtrl+V", self.OnCmdPaste, wx.ID_PASTE)
         AddMenuItem("&Delete", self.OnCmdDelete, wx.ID_DELETE)
         menu.AppendSeparator()
-        AddMenuItem(
-            "Find &Next Untranslated\tF3", self.OnCmdFindNext, wx.ID_FIND
-        )
+        AddMenuItem("Find &Next Untranslated\tF3", self.OnCmdFindNext,
+                    wx.ID_FIND)
 
         # help menu
         menu = wx.Menu()
@@ -198,7 +190,7 @@ class LanguageEditor(wx.Frame):
                 value = getattr(node, key)
                 tree.SetPyData(newId, [newEvalPath, value, None])
                 self.FillTree(newId, value, newEvalPath)
-                #tree.Expand(newId)
+                # tree.Expand(newId)
             elif type(value) in (types.TupleType, types.ListType):
                 newId = tree.AppendItem(treeId, ExpandKeyname(key), 4)
                 for i, item in enumerate(value):
@@ -212,7 +204,7 @@ class LanguageEditor(wx.Frame):
                     tmpId = tree.AppendItem(newId, "[%i]" % i, icon)
                     tree.SetPyData(tmpId, [tmp, item, transValue])
                 tree.SetPyData(newId, [newEvalPath, value, None])
-                #tree.Expand(newId)
+                # tree.Expand(newId)
             else:
                 try:
                     transValue = eval(newEvalPath, self.translationDict)
@@ -226,10 +218,8 @@ class LanguageEditor(wx.Frame):
     def LoadLanguage(self, language):
         Config.language = language
         self.isDirty = False
-        self.SetTitle(
-            "EventGhost Language Editor - %s [%s]" %
-            (eg.Translation.languageNames[language], language)
-        )
+        self.SetTitle("EventGhost Language Editor - %s [%s]" %
+                      (eg.Translation.languageNames[language], language))
         tree = self.tree
         tree.Unbind(wx.EVT_TREE_SEL_CHANGING)
         tree.DeleteChildren(self.rootId)
@@ -241,25 +231,24 @@ class LanguageEditor(wx.Frame):
         self.translationDict["__builtins__"] = {}
 
         for name in (
-            "General",
-            "MainFrame",
-            "Error",
-            "Exceptions",
-            "CheckUpdate",
-            "AddActionDialog",
-            "AddPluginDialog",
-            "AddActionGroupDialog",
-            "EventItem",
-            "OptionsDialog",
-            "FindDialog",
-            "AboutDialog",
-            "WinUsb",
-        ):
+                "General",
+                "MainFrame",
+                "Error",
+                "Exceptions",
+                "CheckUpdate",
+                "AddActionDialog",
+                "AddPluginDialog",
+                "AddActionGroupDialog",
+                "EventItem",
+                "OptionsDialog",
+                "FindDialog",
+                "AboutDialog",
+                "WinUsb", ):
             newId = tree.AppendItem(self.rootId, name, 2)
             value = getattr(eg.text, name)
             tree.SetPyData(newId, [name, value, None])
             self.FillTree(newId, value, name)
-            #tree.Expand(newId)
+            # tree.Expand(newId)
 
         plugins = [
             "EventGhost",
@@ -333,7 +322,7 @@ class LanguageEditor(wx.Frame):
                 if newId.IsOk():
                     treeId = newId
                 else:
-                    while 1:
+                    while True:
                         treeId = tree.GetItemParent(treeId)
                         if not treeId.IsOk():
                             print "unknown"
@@ -354,13 +343,9 @@ class LanguageEditor(wx.Frame):
     def OnCmdOpen(self, dummyEvent):
         if self.CheckNeedsSave():
             return
-        dialog = wx.SingleChoiceDialog(
-            self,
-            'Choose a language to edit',
-            'Choose a language',
-            self.langNames,
-            wx.CHOICEDLG_STYLE
-        )
+        dialog = wx.SingleChoiceDialog(self, 'Choose a language to edit',
+                                       'Choose a language', self.langNames,
+                                       wx.CHOICEDLG_STYLE)
         try:
             x = self.langKeys.index(Config.language)
         except ValueError:
@@ -413,21 +398,15 @@ class LanguageEditor(wx.Frame):
                     append(indentString * indent + MyRepr(transValue) + ",\n")
                 elif transValue is not UnassignedValue and transValue != "":
                     try:
-                        append(
-                            indentString * indent +
-                            key +
-                            ' = %s\n' % MyRepr(transValue)
-                        )
+                        append(indentString * indent + key + ' = %s\n' %
+                               MyRepr(transValue))
                     except:
                         print value, value.__bases__
                 item, cookie = tree.GetNextChild(treeId, cookie)
             return "".join(res)
 
         outFile = codecs.open(
-            join(eg.languagesDir, "%s.py" % Config.language),
-            "wt",
-            "utf_8"
-        )
+            join(eg.languagesDir, "%s.py" % Config.language), "wt", "utf_8")
         outFile.write("# -*- coding: UTF-8 -*-\n")
         outFile.write(Traverse(tree.GetRootItem()))
         outFile.close()
@@ -463,9 +442,8 @@ class LanguageEditor(wx.Frame):
 
         self.currentValueCtrl.SetValue(value)
 
-        newValueCtrl.ChangeValue(
-            transValue if transValue is not UnassignedValue else ""
-        )
+        newValueCtrl.ChangeValue(transValue
+                                 if transValue is not UnassignedValue else "")
 
     def OnTextChange(self, dummyEvent):
         self.isDirty = True
@@ -513,10 +491,8 @@ class LanguageEditor(wx.Frame):
                     print "class has no:", key
                     continue
                 firstItems.append((key, value))
-            elif type(getattr(node, key)) in (
-                types.ClassType,
-                types.InstanceType
-            ):
+            elif type(getattr(node, key)) in (types.ClassType,
+                                              types.InstanceType):
                 value = getattr(node, key)
                 groupItems.append((key, value))
             else:
@@ -555,6 +531,7 @@ class UnassignedValue:
 
 def ExpandKeyname(key):
     return key
+
 
 def MyRepr(value):
     value = value.replace("\n", "\\n")

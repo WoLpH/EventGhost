@@ -21,25 +21,21 @@ import wx
 # Local imports
 import eg
 
+
 class TreeItemBrowseCtrl(wx.TreeCtrl):
-    def __init__(
-        self,
-        parent,
-        filterFunc=None,
-        searchFunc=None,
-        selectItem=None,
-        multiSelect=False
-    ):
+    def __init__(self,
+                 parent,
+                 filterFunc=None,
+                 searchFunc=None,
+                 selectItem=None,
+                 multiSelect=False):
         if searchFunc is None:
             searchFunc = lambda obj, id: None
 
         self.filterFunc = filterFunc
         self.searchFunc = searchFunc
-        style = (
-            wx.TR_HAS_BUTTONS |
-            wx.CLIP_CHILDREN |
-            wx.NO_FULL_REPAINT_ON_RESIZE
-        )
+        style = (wx.TR_HAS_BUTTONS | wx.CLIP_CHILDREN |
+                 wx.NO_FULL_REPAINT_ON_RESIZE)
         if multiSelect:
             style |= wx.TR_MULTIPLE
         wx.TreeCtrl.__init__(self, parent, style=style)
@@ -105,16 +101,11 @@ class TreeItemBrowseCtrl(wx.TreeCtrl):
         for child in obj.childs:
             if not self.filterFunc(child):
                 continue
-            tmp = self.AppendItem(
-                treeId,
-                child.GetLabel(),
-                (
-                    child.icon.index if child.isEnabled
-                    else child.icon.disabledIndex
-                ),
-                -1,
-                wx.TreeItemData(child)
-            )
+            tmp = self.AppendItem(treeId,
+                                  child.GetLabel(),
+                                  (child.icon.index if child.isEnabled else
+                                   child.icon.disabledIndex), -1,
+                                  wx.TreeItemData(child))
             for subChild in child.childs:
                 if self.filterFunc(subChild):
                     self.SetItemHasChildren(tmp, True)

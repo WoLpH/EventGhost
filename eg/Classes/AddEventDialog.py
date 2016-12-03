@@ -23,6 +23,7 @@ import eg
 
 gLastSelected = None
 
+
 class Config(eg.PersistentData):
     position = None
     size = (550, 400)
@@ -44,25 +45,22 @@ class AddEventDialog(eg.TaskletDialog):
         global gLastSelected
         self.resultData = None
         super(AddEventDialog, self).__init__(
-            parent=parent, id=wx.ID_ANY, title=Text.title,
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            parent=parent,
+            id=wx.ID_ANY,
+            title=Text.title,
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         splitterWindow = wx.SplitterWindow(
             self,
             -1,
-            style=(
-                wx.SP_LIVE_UPDATE |
-                wx.CLIP_CHILDREN |
-                wx.NO_FULL_REPAINT_ON_RESIZE
-            )
-        )
+            style=(wx.SP_LIVE_UPDATE | wx.CLIP_CHILDREN |
+                   wx.NO_FULL_REPAINT_ON_RESIZE))
 
         leftPanel = wx.Panel(splitterWindow)
-        self.tree = tree = wx.TreeCtrl(leftPanel, -1,
-                           style=wx.TR_DEFAULT_STYLE |
-                                 wx.TR_HIDE_ROOT |
-                                 wx.TR_FULL_ROW_HIGHLIGHT
-                           )
+        self.tree = tree = wx.TreeCtrl(
+            leftPanel,
+            -1,
+            style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT |
+            wx.TR_FULL_ROW_HIGHLIGHT)
         tree.SetMinSize((100, 100))
         tree.SetImageList(eg.Icons.gImageList)
 
@@ -73,12 +71,12 @@ class AddEventDialog(eg.TaskletDialog):
         tree.Bind(wx.EVT_TREE_BEGIN_DRAG, self.OnStartDrag)
         tree.Bind(wx.EVT_SET_FOCUS, self.OnFocusTree)
 
-        self.userEvent = wx.TextCtrl(leftPanel, wx.ID_ANY,
-                                     style=wx.TE_PROCESS_ENTER)
+        self.userEvent = wx.TextCtrl(
+            leftPanel, wx.ID_ANY, style=wx.TE_PROCESS_ENTER)
         self.userEvent.Bind(wx.EVT_TEXT_ENTER, self.OnTextEnter)
         self.userEvent.Bind(wx.EVT_SET_FOCUS, self.OnFocusUserEvent)
 
-        leftSizer =  wx.BoxSizer(wx.VERTICAL)
+        leftSizer = wx.BoxSizer(wx.VERTICAL)
         leftSizer.Add(tree, 1, wx.EXPAND)
         leftSizer.Add(self.userEvent, 0, wx.EXPAND)
         leftPanel.SetSizer(leftSizer)
@@ -93,9 +91,8 @@ class AddEventDialog(eg.TaskletDialog):
         rightSizer.Add(nameText, 0, wx.EXPAND | wx.LEFT | wx.BOTTOM, 5)
 
         staticBoxSizer = wx.StaticBoxSizer(
-            wx.StaticBox(rightPanel, label=Text.descriptionLabel),
-            wx.VERTICAL
-        )
+            wx.StaticBox(
+                rightPanel, label=Text.descriptionLabel), wx.VERTICAL)
         self.docText = eg.HtmlWindow(rightPanel)
         self.docText.SetBorders(2)
 
@@ -214,9 +211,8 @@ class AddEventDialog(eg.TaskletDialog):
             path = data.path
         self.nameText.SetLabel(data.name)
         self.docText.SetBasePath(path)
-        self.docText.SetPage(
-            data.description if data.description else Text.noDescription
-        )
+        self.docText.SetPage(data.description
+                             if data.description else Text.noDescription)
 
     def OnTextEnter(self, event):
         value = event.GetString()

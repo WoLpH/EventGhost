@@ -35,8 +35,7 @@ from ctypes import (
     sizeof,
     WinDLL,
     WinError,
-    wstring_at,
-)
+    wstring_at, )
 from ctypes.wintypes import DWORD
 from os.path import join, dirname
 
@@ -48,8 +47,7 @@ from eg.WinApi.Dynamic import (
     ERROR_NO_MORE_ITEMS,
     GUID,
     INVALID_HANDLE_VALUE,
-    PBYTE,
-)
+    PBYTE, )
 from eg.WinApi.Dynamic.SetupApi import (
     DIGCF_ALLCLASSES,
     DIGCF_DEVICEINTERFACE,
@@ -71,8 +69,7 @@ from eg.WinApi.Dynamic.SetupApi import (
     SP_DEVINSTALL_PARAMS,
     SP_DRVINFO_DATA,
     SPDIT_COMPATDRIVER,
-    SPDRP_HARDWAREID,
-)
+    SPDRP_HARDWAREID, )
 from eg.WinApi.IsAdmin import IsAdmin
 from eg.WinApi.PipedProcess import ExecAs
 
@@ -85,9 +82,8 @@ DRIVER_PROVIDER = "EventGhost"
 DRIVER_CLASS_GUID = "{FE050E98-31CD-47EA-AC39-CB143EF208B2}"
 PLATFORM = "x64" if IsWin64() else "x86"
 DOWNLOAD_ROOT = "http://www.eventghost.org/downloads/winusb/%s/" % PLATFORM
-INSTALLATION_ROOT = join(
-    eg.folderPath.ProgramData, "eventghost", "drivers", "winusb", PLATFORM
-)
+INSTALLATION_ROOT = join(eg.folderPath.ProgramData, "eventghost", "drivers",
+                         "winusb", PLATFORM)
 
 if PLATFORM == "x64":
     NEEDED_FILES = [
@@ -190,24 +186,19 @@ DISK_NAME="My Install Disk"
 DisplayName="$DISPLAY_NAME"
 """
 
+
 class Text(eg.TranslatableStrings):
     dialogCaption = "EventGhost Plugin: %s"
-    downloadMsg = (
-        "EventGhost needs to download additional files before it "
-        "can install the driver for the %s plugin.\n\n"
-        "Do you want to start the download now?\n"
-    )
+    downloadMsg = ("EventGhost needs to download additional files before it "
+                   "can install the driver for the %s plugin.\n\n"
+                   "Do you want to start the download now?\n")
     installMsg = (
         "You need to install the proper driver for this %s device.\n\n"
-        "Should EventGhost start the driver installation for you now?"
-    )
+        "Should EventGhost start the driver installation for you now?")
     restartMsg = (
         "EventGhost needs to restart, before it can use the new driver.\n\n"
-        "Do you want to restart EventGhost now?"
-    )
-    downloadFailedMsg = (
-        "The download failed!\n\nPlease try again later."
-    )
+        "Do you want to restart EventGhost now?")
+    downloadFailedMsg = ("The download failed!\n\nPlease try again later.")
 
 
 class WinUsb(object):
@@ -219,15 +210,13 @@ class WinUsb(object):
         self.plugin = plugin
         self.devices = []
 
-    def AddDevice(
-        self,
-        name,
-        hardwareId,
-        guid,
-        callback,
-        dataSize=1,
-        suppressRepeat=False
-    ):
+    def AddDevice(self,
+                  name,
+                  hardwareId,
+                  guid,
+                  callback,
+                  dataSize=1,
+                  suppressRepeat=False):
         device = self.Device(callback, dataSize, suppressRepeat)
         device.AddHardwareId(name, hardwareId)
         return device
@@ -248,8 +237,7 @@ class WinUsb(object):
                 Text.downloadFailedMsg,
                 caption=Text.dialogCaption % self.plugin.name,
                 style=wx.OK | wx.ICON_EXCLAMATION | wx.STAY_ON_TOP,
-                parent=eg.document.frame
-            )
+                parent=eg.document.frame)
             return False
         return True
 
@@ -271,21 +259,17 @@ class WinUsb(object):
         outfile.write(template.substitute(DRIVER_VERSION=DRIVER_VERSION))
         outfile.write("[Remotes.NTx86]\n")
         for i, hardwareId in enumerate(hardwareIds):
-            outfile.write(
-                "%%Device%i.DeviceDesc%%=Install,%s\n" % (i, hardwareId)
-            )
+            outfile.write("%%Device%i.DeviceDesc%%=Install,%s\n" %
+                          (i, hardwareId))
         outfile.write("\n[Remotes.NTamd64]\n")
         for i, hardwareId in enumerate(hardwareIds):
-            outfile.write(
-                "%%Device%i.DeviceDesc%%=Install,%s\n" % (i, hardwareId)
-            )
+            outfile.write("%%Device%i.DeviceDesc%%=Install,%s\n" %
+                          (i, hardwareId))
         template = string.Template(FOOTER)
         outfile.write(
             template.substitute(
                 DRIVER_PROVIDER=DRIVER_PROVIDER,
-                DISPLAY_NAME=self.plugin.name,
-            )
-        )
+                DISPLAY_NAME=self.plugin.name, ))
         for i, name in enumerate(names):
             outfile.write('Device%i.DeviceDesc="%s"\n' % (i, name))
 
@@ -301,15 +285,10 @@ class WinUsb(object):
     def GetDeviceHardwareId(hDevInfo, deviceInfoData):
         buffersize = DWORD(0)
         dataType = DWORD()
-        if SetupDiGetDeviceRegistryProperty(
-            hDevInfo,
-            byref(deviceInfoData),
-            SPDRP_HARDWAREID,
-            None,
-            None,
-            0,
-            byref(buffersize)
-        ):
+        if SetupDiGetDeviceRegistryProperty(hDevInfo,
+                                            byref(deviceInfoData),
+                                            SPDRP_HARDWAREID, None, None, 0,
+                                            byref(buffersize)):
             raise WinError()
         err = GetLastError()
         if err == ERROR_INSUFFICIENT_BUFFER:
@@ -317,14 +296,10 @@ class WinUsb(object):
         else:
             raise WinError(err)
         if not SetupDiGetDeviceRegistryProperty(
-            hDevInfo,
-            byref(deviceInfoData),
-            SPDRP_HARDWAREID,
-            byref(dataType),
-            cast(hardwareId, PBYTE),
-            buffersize.value,
-            byref(buffersize)
-        ):
+                hDevInfo,
+                byref(deviceInfoData), SPDRP_HARDWAREID,
+                byref(dataType),
+                cast(hardwareId, PBYTE), buffersize.value, byref(buffersize)):
             raise WinError()
         return StripRevision(hardwareId.value.upper())
 
@@ -332,9 +307,8 @@ class WinUsb(object):
     def GetDevicePaths():
         classGuid = GUID()
         CLSIDFromString(DRIVER_CLASS_GUID, byref(classGuid))
-        hDevInfo = SetupDiGetClassDevs(
-            classGuid, None, None, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE
-        )
+        hDevInfo = SetupDiGetClassDevs(classGuid, None, None, DIGCF_PRESENT |
+                                       DIGCF_DEVICEINTERFACE)
         if hDevInfo == INVALID_HANDLE_VALUE:
             raise WinError()
 
@@ -345,40 +319,28 @@ class WinUsb(object):
         memberIndex = 0
         result = {}
         while True:
-            if not SetupDiEnumDeviceInterfaces(
-                hDevInfo,
-                None,
-                classGuid,
-                memberIndex,
-                byref(deviceInterfaceData)
-            ):
+            if not SetupDiEnumDeviceInterfaces(hDevInfo, None, classGuid,
+                                               memberIndex,
+                                               byref(deviceInterfaceData)):
                 err = GetLastError()
                 if err == ERROR_NO_MORE_ITEMS:
                     break
                 else:
                     raise WinError(err)
             requiredSize = DWORD()
-            SetupDiGetDeviceInterfaceDetail(
-                hDevInfo,
-                byref(deviceInterfaceData),
-                None,
-                0,
-                byref(requiredSize),
-                byref(deviceInfoData)
-            )
+            SetupDiGetDeviceInterfaceDetail(hDevInfo,
+                                            byref(deviceInterfaceData), None,
+                                            0,
+                                            byref(requiredSize),
+                                            byref(deviceInfoData))
             buf = create_string_buffer(requiredSize.value)
             pDiDetailData = cast(buf, PSP_DEVICE_INTERFACE_DETAIL_DATA)
             pDiDetailData.contents.cbSize = sizeof(
-                SP_DEVICE_INTERFACE_DETAIL_DATA
-            )
-            SetupDiGetDeviceInterfaceDetail(
-                hDevInfo,
-                byref(deviceInterfaceData),
-                pDiDetailData,
-                requiredSize.value,
-                byref(requiredSize),
-                None
-            )
+                SP_DEVICE_INTERFACE_DETAIL_DATA)
+            SetupDiGetDeviceInterfaceDetail(hDevInfo,
+                                            byref(deviceInterfaceData),
+                                            pDiDetailData, requiredSize.value,
+                                            byref(requiredSize), None)
 
             devicePath = wstring_at(addressof(pDiDetailData.contents) + 4)
             hardwareId = WinUsb.GetDeviceHardwareId(hDevInfo, deviceInfoData)
@@ -408,12 +370,11 @@ class WinUsb(object):
                     return
             self = cls.installQueue.get()
             if wx.YES != eg.CallWait(
-                wx.MessageBox,
-                Text.installMsg % self.plugin.name,
-                caption=Text.dialogCaption % self.plugin.name,
-                style=wx.YES_NO | wx.ICON_QUESTION | wx.STAY_ON_TOP,
-                parent=eg.document.frame
-            ):
+                    wx.MessageBox,
+                    Text.installMsg % self.plugin.name,
+                    caption=Text.dialogCaption % self.plugin.name,
+                    style=wx.YES_NO | wx.ICON_QUESTION | wx.STAY_ON_TOP,
+                    parent=eg.document.frame):
                 continue
             if not self.CheckAddOnFiles():
                 continue
@@ -425,10 +386,9 @@ class WinUsb(object):
                     "subprocess",
                     eg.Utils.IsVista() or not IsAdmin(),
                     "call",
-                    cmdLine.encode('mbcs'),
-                )
-            except WindowsError, exc:
-                #only silence "User abort"
+                    cmdLine.encode('mbcs'), )
+            except WindowsError as exc:
+                # only silence "User abort"
                 if exc.winerror != 1223:
                     raise
             if result == 1:
@@ -443,8 +403,7 @@ class WinUsb(object):
             guid,
             "USB",  # Enumerator
             0,
-            DIGCF_PRESENT | DIGCF_ALLCLASSES
-        )
+            DIGCF_PRESENT | DIGCF_ALLCLASSES)
         if hDevInfo == INVALID_HANDLE_VALUE:
             raise WinError()
         deviceInfoData = SP_DEVINFO_DATA()
@@ -467,53 +426,39 @@ class WinUsb(object):
             if hardwareId.startswith("USB\\ROOT_HUB"):
                 continue
             driverInfoData.DriverVersion = 0
-            SetupDiGetDeviceInstallParams(
-                hDevInfo,
-                byref(deviceInfoData),
-                byref(deviceInstallParams)
-            )
+            SetupDiGetDeviceInstallParams(hDevInfo,
+                                          byref(deviceInfoData),
+                                          byref(deviceInstallParams))
             deviceInstallParams.FlagsEx |= DI_FLAGSEX_INSTALLEDDRIVER
-            SetupDiSetDeviceInstallParams(
-                hDevInfo,
-                byref(deviceInfoData),
-                byref(deviceInstallParams)
-            )
-            SetupDiBuildDriverInfoList(
-                hDevInfo,
-                byref(deviceInfoData),
-                SPDIT_COMPATDRIVER
-            )
-            if not SetupDiEnumDriverInfo(
-                hDevInfo,
-                byref(deviceInfoData),
-                SPDIT_COMPATDRIVER,
-                0,
-                byref(driverInfoData)
-            ):
+            SetupDiSetDeviceInstallParams(hDevInfo,
+                                          byref(deviceInfoData),
+                                          byref(deviceInstallParams))
+            SetupDiBuildDriverInfoList(hDevInfo,
+                                       byref(deviceInfoData),
+                                       SPDIT_COMPATDRIVER)
+            if not SetupDiEnumDriverInfo(hDevInfo,
+                                         byref(deviceInfoData),
+                                         SPDIT_COMPATDRIVER, 0,
+                                         byref(driverInfoData)):
                 err = GetLastError()
                 if err == ERROR_NO_MORE_ITEMS:
                     devices[hardwareId] = DeviceInfo(
-                        name = "<unknown name>",
-                        version = "",
-                        hardwareId = hardwareId,
-                        provider = "<unknown provider",
-                    )
+                        name="<unknown name>",
+                        version="",
+                        hardwareId=hardwareId,
+                        provider="<unknown provider", )
                     continue
                 else:
                     raise WinError(err)
             version = driverInfoData.DriverVersion
             versionStr = "%d.%d.%d.%d" % (
-                (version >> 48) & 0xFFFF,
-                (version >> 32) & 0xFFFF,
-                (version >> 16) & 0xFFFF,
-                version & 0xFFFF
-            )
+                (version >> 48) & 0xFFFF, (version >> 32) & 0xFFFF,
+                (version >> 16) & 0xFFFF, version & 0xFFFF)
             devices[hardwareId] = DeviceInfo(
                 driverInfoData.Description,
                 versionStr,
                 hardwareId,
-                driverInfoData.ProviderName,
-            )
+                driverInfoData.ProviderName, )
         return devices
 
     def ShowDownloadMessage(self):
@@ -521,16 +466,14 @@ class WinUsb(object):
             Text.downloadMsg % self.plugin.name,
             caption=Text.dialogCaption % self.plugin.name,
             style=wx.YES_NO | wx.ICON_QUESTION | wx.STAY_ON_TOP,
-            parent=eg.document.frame
-        )
+            parent=eg.document.frame)
 
     def ShowRestartMessage(self):
         res = wx.MessageBox(
             Text.restartMsg,
             caption=eg.APP_NAME,
             style=wx.YES_NO | wx.ICON_QUESTION | wx.STAY_ON_TOP,
-            parent=eg.document.frame
-        )
+            parent=eg.document.frame)
         if res == wx.YES:
             eg.app.Restart()
 
@@ -543,15 +486,14 @@ class WinUsb(object):
             else:
                 raise self.plugin.Exceptions.DeviceNotFound
             deviceInfo = installedHardware[hardwareId]
-            if (
-                deviceInfo.version != DRIVER_VERSION or
-                deviceInfo.provider != DRIVER_PROVIDER or
-                deviceInfo.name != name
-            ):
+            if (deviceInfo.version != DRIVER_VERSION or
+                    deviceInfo.provider != DRIVER_PROVIDER or
+                    deviceInfo.name != name):
                 self.StartInstall()
                 raise self.plugin.Exceptions.DriverNotFound
         for device in self.devices:
             device.Start()
+
     Open = Start
 
     def StartInstall(self):
@@ -559,13 +501,13 @@ class WinUsb(object):
             self.installQueue.put(self)
             if self.installThread is None:
                 self.__class__.installThread = threading.Thread(
-                    target=self.InstallDriver
-                )
+                    target=self.InstallDriver)
                 self.installThread.start()
 
     def Stop(self):
         for device in self.devices:
             device.Stop()
+
     Close = Stop
 
 
@@ -577,9 +519,8 @@ class DeviceInfo(object):
         self.provider = provider
 
     def __repr__(self):
-        return "DeviceInfo(%r, %r, %r, %r)" % (
-            self.name, self.version, self.hardwareId, self.provider
-        )
+        return "DeviceInfo(%r, %r, %r, %r)" % (self.name, self.version,
+                                               self.hardwareId, self.provider)
 
 
 class UsbDevice(object):
@@ -618,17 +559,12 @@ class UsbDevice(object):
     def Start(self):
         if self.dll is None:
             self.__class__.dll = WinDLL(
-                join(eg.sitePackagesDir, "WinUsbWrapper.dll").encode('mbcs')
-            )
+                join(eg.sitePackagesDir, "WinUsbWrapper.dll").encode('mbcs'))
         msgId = eg.messageReceiver.AddWmUserHandler(self.MsgHandler)
         devicePath = self.FindDevicePath()
-        self.threadId = self.dll.Start(
-            eg.messageReceiver.hwnd,
-            msgId,
-            devicePath,
-            self.dataSize,
-            int(self.suppressRepeat)
-        )
+        self.threadId = self.dll.Start(eg.messageReceiver.hwnd, msgId,
+                                       devicePath, self.dataSize,
+                                       int(self.suppressRepeat))
         if not self.threadId:
             raise self.winUsb.plugin.Exceptions.DriverNotOpen
 
@@ -640,5 +576,4 @@ class UsbDevice(object):
 
 def StripRevision(hardwareId):
     return "&".join(
-        part for part in hardwareId.split("&") if not part.startswith("REV_")
-    )
+        part for part in hardwareId.split("&") if not part.startswith("REV_"))

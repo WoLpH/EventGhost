@@ -21,6 +21,7 @@ import wx
 # Local imports
 from RadioButtonGrid import RadioButtonGrid
 
+
 class CheckBoxGrid(RadioButtonGrid):
     CtrlType = wx.CheckBox
 

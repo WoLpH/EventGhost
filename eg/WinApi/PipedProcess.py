@@ -58,13 +58,11 @@ from Dynamic import (
     WAIT_OBJECT_0,
     WAIT_TIMEOUT,
     WaitForMultipleObjects,
-    WriteFile,
-)
+    WriteFile, )
 from eg.WinApi.Dynamic.Winnetwk import (
     UNIVERSAL_NAME_INFO,
     UNIVERSAL_NAME_INFO_LEVEL,
-    WNetGetUniversalName,
-)
+    WNetGetUniversalName, )
 
 MESSAGE_ARGS = 0
 MESSAGE_STDOUT = 1
@@ -74,19 +72,14 @@ MESSAGE_EXCEPTION = 4
 
 BUFSIZE = 4096
 
+
 def ExecAs(scriptPath, asAdministrator, funcName, *args, **kwargs):
     pipeName = "\\\\.\\pipe\\" + str(GUID.create_new())
     Msg("creating named pipe")
     hPipe = CreateNamedPipe(
-        pipeName,
-        PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
+        pipeName, PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
         PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-        PIPE_UNLIMITED_INSTANCES,
-        BUFSIZE,
-        BUFSIZE,
-        0,
-        None
-    )
+        PIPE_UNLIMITED_INSTANCES, BUFSIZE, BUFSIZE, 0, None)
     if hPipe == INVALID_HANDLE_VALUE:
         raise Exception("Error in creating Named Pipe")
     overlapped = OVERLAPPED()
@@ -98,12 +91,9 @@ def ExecAs(scriptPath, asAdministrator, funcName, *args, **kwargs):
         Msg("starting subprocess")
         hProcess = RunAs(
             abspath(join(localPath, "..", "..", "EventGhost.exe")),
-            asAdministrator,
-            "-execfile",
-            GetUncPathOf(join(localPath, "PipedProcessClient.py")),
-            pipeName,
-            str(eg.debugLevel)
-        )
+            asAdministrator, "-execfile",
+            GetUncPathOf(join(localPath, "PipedProcessClient.py")), pipeName,
+            str(eg.debugLevel))
         Msg("waiting for subprocess to connect")
         pHandles = (HANDLE * 2)(overlapped.hEvent, hProcess)
         ret = WaitForMultipleObjects(2, pHandles, 0, 25000)
@@ -118,11 +108,8 @@ def ExecAs(scriptPath, asAdministrator, funcName, *args, **kwargs):
             raise Exception("Unknown return value")
 
         Msg("sending startup message")
-        WritePipeMessage(
-            hPipe,
-            MESSAGE_ARGS,
-            (GetUncPathOf(scriptPath), funcName, args, kwargs)
-        )
+        WritePipeMessage(hPipe, MESSAGE_ARGS,
+                         (GetUncPathOf(scriptPath), funcName, args, kwargs))
         chBuf = create_string_buffer(BUFSIZE)
         cbRead = DWORD(0)
         while True:
@@ -149,6 +136,7 @@ def ExecAs(scriptPath, asAdministrator, funcName, *args, **kwargs):
         raise Exception("Child process raised an exception\n" + data)
     return result
 
+
 def ExecAsAdministrator(scriptPath, funcName, *args, **kwargs):
     """
     Execute some Python code in a process with elevated privileges.
@@ -166,15 +154,12 @@ def ExecAsAdministrator(scriptPath, funcName, *args, **kwargs):
     """
     return ExecAs(scriptPath, True, funcName, *args, **kwargs)
 
+
 def GetUncPathOf(filePath):
     buf = create_string_buffer(1024)
     dwBufSize = DWORD(1024)
-    err = WNetGetUniversalName(
-        filePath,
-        UNIVERSAL_NAME_INFO_LEVEL,
-        buf,
-        byref(dwBufSize)
-    )
+    err = WNetGetUniversalName(filePath, UNIVERSAL_NAME_INFO_LEVEL, buf,
+                               byref(dwBufSize))
     if err == 0:
         return cast(buf, POINTER(UNIVERSAL_NAME_INFO)).contents.lpUniversalName
     elif err == ERROR_NOT_CONNECTED:
@@ -183,45 +168,43 @@ def GetUncPathOf(filePath):
         print "GetUncPathOf Error:", err, FormatError(err)
     return filePath
 
+
 if eg.debugLevel:
+
     def Msg(msg):
         print msg
 else:
+
     def Msg(dummyMsg):
         pass
+
 
 def RunAs(filePath, asAdministrator, *args):
     sei = SHELLEXECUTEINFO()
     sei.cbSize = sizeof(SHELLEXECUTEINFO)
-    sei.fMask = (
-        SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI | SEE_MASK_NOCLOSEPROCESS
-    )
+    sei.fMask = (SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI |
+                 SEE_MASK_NOCLOSEPROCESS)
     if asAdministrator:
         sei.lpVerb = u"runas"
     else:
         sei.lpVerb = u""
     sei.lpFile = GetUncPathOf(filePath)
     sei.lpParameters = " ".join(
-        ['"%s"' % arg.replace('"', '""') for arg in args]
-    )
+        ['"%s"' % arg.replace('"', '""') for arg in args])
     sei.nShow = SW_SHOWNORMAL
     if not ctypes.windll.shell32.ShellExecuteExW(byref(sei)):
         err = GetLastError()
         raise WindowsError(err, "ShellExecuteEx: %s" % FormatError(err))
     return sei.hProcess
 
+
 def RunAsAdministrator(filePath, *args):
     return RunAs(filePath, True, *args)
+
 
 def WritePipeMessage(hPipe, code, data):
     message = dumps((code, data))
     cbWritten = DWORD(0)
-    fSuccess = WriteFile(
-        hPipe,
-        message,
-        len(message),
-        byref(cbWritten),
-        None
-    )
+    fSuccess = WriteFile(hPipe, message, len(message), byref(cbWritten), None)
     if (not fSuccess) or (len(message) != cbWritten.value):
         raise Exception("WritePipeMessage failed")

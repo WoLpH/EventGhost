@@ -19,10 +19,12 @@
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
+
 class Sony(IrProtocolBase):
     """
     IR decoder for the Sony SIRC protocol.
     """
+
     def Decode(self, data):
         if not (1800 < data[0] < 3000):
             raise DecodeError("wrong header pulse")

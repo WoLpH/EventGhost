@@ -21,6 +21,7 @@ from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
 SHARP_TIME = 0.000320  # 320 micro-seconds
 
+
 class Sharp(IrProtocolBase):
     """
     IR decoder for the Sharp/Denon protocol.

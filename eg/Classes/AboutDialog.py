@@ -27,15 +27,15 @@ from StringIO import StringIO
 
 # Local imports
 import eg
-from eg.WinApi.Dynamic import (
-    MEMORYSTATUSEX, GlobalMemoryStatusEx, byref, sizeof
-)
+from eg.WinApi.Dynamic import (MEMORYSTATUSEX, GlobalMemoryStatusEx, byref,
+                               sizeof)
 
 try:
     import stackless  # NOQA
     is_stackless = True
 except ImportError:
     is_stackless = False
+
 
 class Text(eg.TranslatableStrings):
     Title = "About EventGhost"
@@ -53,7 +53,7 @@ class AboutDialog(eg.TaskletDialog):
     instance = None
 
     @eg.LogItWithReturn
-    def Configure(self, parent):  #IGNORE:W0221
+    def Configure(self, parent):  # IGNORE:W0221
         if AboutDialog.instance:
             AboutDialog.instance.Raise()
             return
@@ -62,8 +62,7 @@ class AboutDialog(eg.TaskletDialog):
             self,
             parent=parent,
             title=Text.Title,
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         notebook = wx.Notebook(self)
         notebook.AddPage(AboutPanel(notebook), Text.tabAbout)
         notebook.AddPage(SpecialThanksPanel(notebook), Text.tabSpecialThanks)
@@ -75,6 +74,7 @@ class AboutDialog(eg.TaskletDialog):
             pageNum = event.GetSelection()
             notebook.ChangeSelection(pageNum)
             notebook.GetPage(pageNum).SetFocus()
+
         notebook.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, OnPageChanged)
 
         okButton = wx.Button(self, wx.ID_OK, eg.text.General.ok)
@@ -85,12 +85,10 @@ class AboutDialog(eg.TaskletDialog):
             ((0, 0), 1, wx.EXPAND),
             (okButton, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND | wx.ALL, 5),
             ((0, 0), 1, wx.EXPAND),
-            (eg.SizeGrip(self), 0, wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT),
-        )
+            (eg.SizeGrip(self), 0, wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT), )
         mainSizer = eg.VBoxSizer(
             (notebook, 1, wx.EXPAND | wx.TOP | wx.LEFT | wx.RIGHT, 5),
-            (buttonSizer, 0, wx.EXPAND),
-        )
+            (buttonSizer, 0, wx.EXPAND), )
         self.SetSizerAndFit(mainSizer)
         self.SetMinSize(self.GetSize())
         while self.Affirmed():
@@ -102,19 +100,13 @@ class HtmlPanel(wx.Panel):
     def __init__(self, parent, html):
         wx.Panel.__init__(self, parent)
         htmlWindow = eg.HtmlWindow(
-            self,
-            style=wx.SUNKEN_BORDER | wx.html.HW_NO_SELECTION
-        )
+            self, style=wx.SUNKEN_BORDER | wx.html.HW_NO_SELECTION)
         htmlWindow.SetForegroundColour(eg.colour.windowText)
         htmlWindow.SetBackgroundColour(eg.colour.windowBackground)
         htmlWindow.SetPage(html)
         htmlWindow.SetMinSize((490, 270))
         htmlWindow.SetScrollbars(1, 1, 1000, 1000)
-        self.SetSizerAndFit(
-            eg.VBoxSizer(
-                (htmlWindow, 1, wx.EXPAND, 5),
-            )
-        )
+        self.SetSizerAndFit(eg.VBoxSizer((htmlWindow, 1, wx.EXPAND, 5), ))
         self.htmlWindow = htmlWindow
 
 
@@ -127,8 +119,7 @@ class AboutPanel(wx.Panel):
             self,
             wx.ID_ANY,
             eg.text.MainFrame.Menu.WebHomepage.replace("&", ""),
-            URL="http://www.eventghost.org/"
-        )
+            URL="http://www.eventghost.org/")
         font = hypelink1.GetFont()
         font.SetPointSize(11)
         font.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -137,15 +128,13 @@ class AboutPanel(wx.Panel):
             self,
             wx.ID_ANY,
             eg.text.MainFrame.Menu.WebForum.replace("&", ""),
-            URL="http://www.eventghost.org/forum/"
-        )
+            URL="http://www.eventghost.org/forum/")
         hypelink2.SetFont(font)
         hypelink3 = eg.HyperLinkCtrl(
             self,
             wx.ID_ANY,
             eg.text.MainFrame.Menu.WebWiki.replace("&", ""),
-            URL="http://www.eventghost.org/mediawiki/"
-        )
+            URL="http://www.eventghost.org/mediawiki/")
         hypelink3.SetFont(font)
 
         animatedWindow = eg.AnimatedWindow(self)
@@ -159,10 +148,8 @@ class AboutPanel(wx.Panel):
                 (hypelink2, 0, wx.EXPAND, 15),
                 ((5, 5), 1),
                 (hypelink3, 0, wx.EXPAND, 15),
-                ((5, 5), 1),
-            ), 0, wx.ALIGN_CENTER | wx.EXPAND | wx.TOP, 15),
-            (animatedWindow, 1, wx.ALIGN_CENTER | wx.ALL | wx.EXPAND, 10),
-        )
+                ((5, 5), 1), ), 0, wx.ALIGN_CENTER | wx.EXPAND | wx.TOP, 15),
+            (animatedWindow, 1, wx.ALIGN_CENTER | wx.ALL | wx.EXPAND, 10), )
         self.SetSizerAndFit(sizer)
 
 
@@ -220,8 +207,7 @@ class SystemInfoPanel(HtmlPanel):
         from eg.WinApi.SystemInformation import GetWindowsVersionString
         buildTime = time.strftime(
             Text.CreationDate,
-            time.gmtime(eg.Version.buildTime)
-        ).decode(eg.systemEncoding)
+            time.gmtime(eg.Version.buildTime)).decode(eg.systemEncoding)
         totalMemory = GetRam()[0]
         pythonVersion = "%d.%d.%d %s %d" % tuple(sys.version_info)
         if is_stackless:
@@ -330,8 +316,7 @@ class ChangelogPanel(HtmlPanel):
 def GetCpuName():
     name = GetRegistryValue(
         r"HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0",
-        "ProcessorNameString"
-    )
+        "ProcessorNameString")
     if name:
         return name
     else:
@@ -342,6 +327,7 @@ def GetCpuName():
             r"HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0",
             "VendorIdentifier")
         return "%s, %s" % (id, vendor)
+
 
 def GetPluginAuthors():
     """
@@ -369,27 +355,29 @@ def GetPluginAuthors():
         authorList.append((author, ",<BR>".join(pluginNames)))
     return authorList
 
+
 def GetRam():
     memoryStatus = MEMORYSTATUSEX()
     memoryStatus.dwLength = sizeof(MEMORYSTATUSEX)
     GlobalMemoryStatusEx(byref(memoryStatus))
     return (
         round(memoryStatus.ullTotalPhys / 1024.0 / 1024 / 1024, 1),
-        round(memoryStatus.ullAvailPhys / 1024.0 / 1024 / 1024, 1),
-    )
+        round(memoryStatus.ullAvailPhys / 1024.0 / 1024 / 1024, 1), )
+
 
 def GetRegistryValue(key, value):
     key, subkey = key.split("\\", 1)
     handle = _winreg.OpenKey(getattr(_winreg, key), subkey)
     try:
         val = _winreg.QueryValueEx(handle, value)[0]
-    except WindowsError, err:
+    except WindowsError as err:
         val = None
         if err[0] == 2:
             eg.PrintError("%s: %s" % (err[1].decode(eg.systemEncoding), value))
         else:
             raise
     return val
+
 
 SPECIAL_THANKS_DATA = (
     ("Plugin Developers:", 2, GetPluginAuthors()),
@@ -404,9 +392,7 @@ SPECIAL_THANKS_DATA = (
             ("noc123", "Polish"),
             ("somainit", "Japanese"),
             ("PedroV9", "Portuguese (Brazilian)"),
-            ("batto", "Vietnamese"),
-        ),
-    ),
+            ("batto", "Vietnamese"), ), ),
     (
         "PayPal Donators:",
         0,
@@ -416,82 +402,63 @@ SPECIAL_THANKS_DATA = (
             "damdy-cash",
             "krambriw",
             "loomy",
-            "specter333",          # 20. Jan 2008
-            "Argofanatic",         # 24. Mar 2008
-            "bskchaos",            #  8. Apr 2008
-            "Warren Hatch",        # 26. Apr 2008
-            "Daniel Henriksson",   #  3. May 2008
-            "skyanchor",           # 13. May 2008
-            "Vlad Skarzhevskyy",   # 13. Jun 2008
-            "David Church",        # 17. Aug 2008
-            "Tyson Ward",          # 30. Sep 2008
-            "Glenn Maples",        # 13. Oct 2008
-            "John Leonard",        # 21. Oct 2008
-            "Silviu Marghescu",    # 26. Nov 2008
-            "tireich",             # 05. Dec 2008
-            "Sergio Herculano",    # 30. Dec 2008
-            "Cassidy Caid",        # 13. Jan 2009
-            "Beat Horn",           # 20. Jan 2009
-            "Davin Roche",         # 11. Feb 2009
-            "Nico Nordendorf",     # 16. Feb 2009
-            "Mariusz Lon",         # 18. Feb 2009
-            "Paul Tonkes",         # 22. Feb 2009
-            "Ina Henderson",       # 05. May 2009
-            "Kosta Krauth",        # 06. May 2009
-            "Leandre da Silva",    # 15. May 2009
+            "specter333",  # 20. Jan 2008
+            "Argofanatic",  # 24. Mar 2008
+            "bskchaos",  # 8. Apr 2008
+            "Warren Hatch",  # 26. Apr 2008
+            "Daniel Henriksson",  # 3. May 2008
+            "skyanchor",  # 13. May 2008
+            "Vlad Skarzhevskyy",  # 13. Jun 2008
+            "David Church",  # 17. Aug 2008
+            "Tyson Ward",  # 30. Sep 2008
+            "Glenn Maples",  # 13. Oct 2008
+            "John Leonard",  # 21. Oct 2008
+            "Silviu Marghescu",  # 26. Nov 2008
+            "tireich",  # 05. Dec 2008
+            "Sergio Herculano",  # 30. Dec 2008
+            "Cassidy Caid",  # 13. Jan 2009
+            "Beat Horn",  # 20. Jan 2009
+            "Davin Roche",  # 11. Feb 2009
+            "Nico Nordendorf",  # 16. Feb 2009
+            "Mariusz Lon",  # 18. Feb 2009
+            "Paul Tonkes",  # 22. Feb 2009
+            "Ina Henderson",  # 05. May 2009
+            "Kosta Krauth",  # 06. May 2009
+            "Leandre da Silva",  # 15. May 2009
             "Franz Pentenrieder",  # 27. May 2009
-            "David Grenker",       # 30. May 2009
-            "Anthony Field",       # 09. Jun 2009
-            "Nikhil Kapur",        # 16. Jun 2009
-            "Tom Browning",        # 02. Jul 2009
-            "Ludwig Strydom",      # 22. Jul 2009
-            "Christoph Heins",     # 26. Aug 2009
-            "Jeffrey Sonnabend",   #  2. Sep 2009
-            "Stephen Evans",       #  6. Sep 2009
-            "Sven Buerger",        #  9. Sep 2009
-            "Erik Josefsson",      # 11. Nov 2009
-            "Harry Hartenstine",   #  7. Dec 2009
-            "Mathew Bentley",      #  8. Jan 2010
-            "Jonas Ernst",         # 17. Jan 2010
-        ),
-    ),
+            "David Grenker",  # 30. May 2009
+            "Anthony Field",  # 09. Jun 2009
+            "Nikhil Kapur",  # 16. Jun 2009
+            "Tom Browning",  # 02. Jul 2009
+            "Ludwig Strydom",  # 22. Jul 2009
+            "Christoph Heins",  # 26. Aug 2009
+            "Jeffrey Sonnabend",  # 2. Sep 2009
+            "Stephen Evans",  # 6. Sep 2009
+            "Sven Buerger",  # 9. Sep 2009
+            "Erik Josefsson",  # 11. Nov 2009
+            "Harry Hartenstine",  # 7. Dec 2009
+            "Mathew Bentley",  # 8. Jan 2010
+            "Jonas Ernst",  # 17. Jan 2010
+        ), ),
     (
         'Other Donators:',
         2,
         (
             ('TomB', 'MCE remote'),
             ('Stoffel', 'remote'),
-            (
-                'Jon Rhees, <a href="http://www.usbuirt.com/">USB-UIRT</a>',
-                'USB-UIRT'
-            ),
-            (
-                (
-                    'Jonah Peskin, <a href="http://www.streamzap.com/">'
-                    'Streamzap, Inc.</a>'
-                ),
-                'Streamzap remote'
-            ),
-        ),
-    ),
+            ('Jon Rhees, <a href="http://www.usbuirt.com/">USB-UIRT</a>',
+             'USB-UIRT'),
+            (('Jonah Peskin, <a href="http://www.streamzap.com/">'
+              'Streamzap, Inc.</a>'), 'Streamzap remote'), ), ),
     (
         'Other Contributions:',
         2,
         (
-            (
-                'Benjamin Webb',
-                (
-                    'for the nice <a href="http://www.eventghost.org/mediawiki/'
-                    'Controlling%20your%20living%20room%20with%20EventGhost">'
-                    'wiki article</a>'
-                )
-            ),
+            ('Benjamin Webb',
+             ('for the nice <a href="http://www.eventghost.org/mediawiki/'
+              'Controlling%20your%20living%20room%20with%20EventGhost">'
+              'wiki article</a>')),
             ('Oliver Wagner', 'for hosting the website'),
             ('Alf & Metallhuhn', 'for creating the EventGhost logo'),
-            (
-                'Mark James',
-                'for his <a href="http://www.famfamfam.com/">icons</a>'
-            ),
-        ),
-    ),
-)
+            ('Mark James',
+             'for his <a href="http://www.famfamfam.com/">icons</a>'), ), ), )

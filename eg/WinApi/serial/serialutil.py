@@ -1,6 +1,6 @@
 #! python
-#Python Serial Port Extension for Win32, Linux, BSD, Jython
-#see __init__.py
+# Python Serial Port Extension for Win32, Linux, BSD, Jython
+# see __init__.py
 #
 #(C) 2001-2003 Chris Liechti <cliechti@gmx.net>
 # this is distributed under a free software license, see license.txt
@@ -15,10 +15,10 @@ PARITY_NAMES = {
     PARITY_ODD: 'Odd',
 }
 
-XON  = chr(17)
+XON = chr(17)
 XOFF = chr(19)
 
-#Python < 2.2.3 compatibility
+# Python < 2.2.3 compatibility
 try:
     True
 except:
@@ -26,15 +26,21 @@ except:
     False = not True
 
 # Exceptions
+
+
 class SerialException(Exception):
     pass
 
+
 portNotOpenError = SerialException('Port not open')
+
 
 class SerialTimeoutException(SerialException):
     pass
 
+
 writeTimeoutError = SerialTimeoutException("Write timeout")
+
 
 class FileLike(object):
     """An abstract file like class.
@@ -49,6 +55,7 @@ class FileLike(object):
     reached) and that readlines would never return and therefore
     refuses to work (it raises an exception in this case)!
     """
+
     def flush(self):
         """
         flush of file like objects
@@ -62,10 +69,10 @@ class FileLike(object):
         """read a line which is terminated with end-of-line (eol) character
         ('\n' by default) or until timeout"""
         line = ''
-        while 1:
+        while True:
             c = self.read(1)
             if c:
-                line += c   #not very efficient but lines are usually not that long
+                line += c  # not very efficient but lines are usually not that long
                 if c == eol:
                     break
                 if size is not None and len(line) >= size:
@@ -78,13 +85,14 @@ class FileLike(object):
         """read a list of lines, until timeout
         sizehint is ignored"""
         if self.timeout is None:
-            raise ValueError("Serial port MUST have enabled timeout for this function!")
+            raise ValueError(
+                "Serial port MUST have enabled timeout for this function!")
         lines = []
-        while 1:
+        while True:
             line = self.readline(eol=eol)
             if line:
                 lines.append(line)
-                if line[-1] != eol:    #was the line received with a timeout?
+                if line[-1] != eol:  # was the line received with a timeout?
                     break
             else:
                 break
@@ -107,56 +115,59 @@ class FileLike(object):
 class SerialBase(FileLike):
     """Serial port base class. Provides __init__ function and properties to
        get/set port settings."""
-    #default values, may be overriden in subclasses that do not support all values
-    BAUDRATES = (50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600,
-                 19200, 38400, 57600, 115200, 230400, 460800, 500000, 576000, 921600,
-                 1000000, 1152000, 1500000, 2000000, 2500000, 3000000, 3500000, 4000000)
+    # default values, may be overriden in subclasses that do not support all
+    # values
+    BAUDRATES = (50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800,
+                 9600, 19200, 38400, 57600, 115200, 230400, 460800, 500000,
+                 576000, 921600, 1000000, 1152000, 1500000, 2000000, 2500000,
+                 3000000, 3500000, 4000000)
     BYTESIZES = (FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS)
-    PARITIES  = (PARITY_NONE, PARITY_EVEN, PARITY_ODD)
-    STOPBITS  = (STOPBITS_ONE, STOPBITS_TWO)
+    PARITIES = (PARITY_NONE, PARITY_EVEN, PARITY_ODD)
+    STOPBITS = (STOPBITS_ONE, STOPBITS_TWO)
 
-    def __init__(self,
-                 port = None,            #number of device, numbering starts at
-                                         #zero. if everything fails, the user
-                                         #can specify a device string, note
-                                         #that this isn't portable anymore
-                                         #port will be opened if one is specified
-                 baudrate=9600,          #baudrate
-                 bytesize=EIGHTBITS,     #number of databits
-                 parity=PARITY_NONE,     #enable parity checking
-                 stopbits=STOPBITS_ONE,  #number of stopbits
-                 timeout=None,           #set a timeout value, None to wait forever
-                 xonxoff=0,              #enable software flow control
-                 rtscts=0,               #enable RTS/CTS flow control
-                 writeTimeout=None,      #set a timeout for writes
-                 dsrdtr=None,            #None: use rtscts setting, dsrdtr override if true or false
-                 ):
+    def __init__(
+            self,
+            port=None,  # number of device, numbering starts at
+            # zero. if everything fails, the user
+            # can specify a device string, note
+            # that this isn't portable anymore
+            # port will be opened if one is specified
+            baudrate=9600,  # baudrate
+            bytesize=EIGHTBITS,  # number of databits
+            parity=PARITY_NONE,  # enable parity checking
+            stopbits=STOPBITS_ONE,  # number of stopbits
+            timeout=None,  # set a timeout value, None to wait forever
+            xonxoff=0,  # enable software flow control
+            rtscts=0,  # enable RTS/CTS flow control
+            writeTimeout=None,  # set a timeout for writes
+            dsrdtr=None,  # None: use rtscts setting, dsrdtr override if true or false
+    ):
         """Initialize comm port object. If a port is given, then the port will be
            opened immediately. Otherwise a Serial port object in closed state
            is returned."""
-        self._isOpen   = False
-        self._port     = None           #correct value is assigned below trough properties
-        self._baudrate = None           #correct value is assigned below trough properties
-        self._bytesize = None           #correct value is assigned below trough properties
-        self._parity   = None           #correct value is assigned below trough properties
-        self._stopbits = None           #correct value is assigned below trough properties
-        self._timeout  = None           #correct value is assigned below trough properties
-        self._writeTimeout  = None           #correct value is assigned below trough properties
-        self._xonxoff  = None           #correct value is assigned below trough properties
-        self._rtscts   = None           #correct value is assigned below trough properties
-        self._dsrdtr   = None           #correct value is assigned below trough properties
+        self._isOpen = False
+        self._port = None  # correct value is assigned below trough properties
+        self._baudrate = None  # correct value is assigned below trough properties
+        self._bytesize = None  # correct value is assigned below trough properties
+        self._parity = None  # correct value is assigned below trough properties
+        self._stopbits = None  # correct value is assigned below trough properties
+        self._timeout = None  # correct value is assigned below trough properties
+        self._writeTimeout = None  # correct value is assigned below trough properties
+        self._xonxoff = None  # correct value is assigned below trough properties
+        self._rtscts = None  # correct value is assigned below trough properties
+        self._dsrdtr = None  # correct value is assigned below trough properties
 
-        #assign values using get/set methods using the properties feature
-        self.port     = port
+        # assign values using get/set methods using the properties feature
+        self.port = port
         self.baudrate = baudrate
         self.bytesize = bytesize
-        self.parity   = parity
+        self.parity = parity
         self.stopbits = stopbits
-        self.timeout  = timeout
+        self.timeout = timeout
         self.writeTimeout = writeTimeout
-        self.xonxoff  = xonxoff
-        self.rtscts   = rtscts
-        self.dsrdtr   = dsrdtr
+        self.xonxoff = xonxoff
+        self.rtscts = rtscts
+        self.dsrdtr = dsrdtr
 
         if port is not None:
             self.open()
@@ -177,8 +188,7 @@ class SerialBase(FileLike):
             self.timeout,
             self.xonxoff,
             self.rtscts,
-            self.dsrdtr,
-        )
+            self.dsrdtr, )
 
     def getBaudrate(self):
         """
@@ -276,10 +286,11 @@ class SerialBase(FileLike):
         Change DsrDtr flow control setting.
         """
         if dsrdtr is None:
-            #if not set, keep backwards compatibility and follow rtscts setting
+            # if not set, keep backwards compatibility and follow rtscts
+            # setting
             self._dsrdtr = self._rtscts
         else:
-            #if defined independently, follow its value
+            # if defined independently, follow its value
             self._dsrdtr = dsrdtr
         if self._isOpen:
             self._reconfigurePort()
@@ -303,7 +314,8 @@ class SerialBase(FileLike):
         if was_open:
             self.close()
         if port is not None:
-            if type(port) in [type(''), type(u'')]:       #strings are taken directly
+            if type(port) in [type(''), type(u'')
+                              ]:  # strings are taken directly
                 self.portstr = port
             else:
                 self.portstr = self.makeDeviceName(port)
@@ -339,7 +351,8 @@ class SerialBase(FileLike):
             if timeout < 0:
                 raise ValueError("Not a valid timeout: %r" % timeout)
             try:
-                timeout + 1     #test if it's a number, will throw a TypeError if not...
+                # test if it's a number, will throw a TypeError if not...
+                timeout + 1
             except TypeError:
                 raise ValueError("Not a valid timeout: %r" % timeout)
 
@@ -355,7 +368,8 @@ class SerialBase(FileLike):
             if timeout < 0:
                 raise ValueError("Not a valid timeout: %r" % timeout)
             try:
-                timeout + 1     #test if it's a number, will throw a TypeError if not...
+                # test if it's a number, will throw a TypeError if not...
+                timeout + 1
             except TypeError:
                 raise ValueError("Not a valid timeout: %r" % timeout)
 
@@ -378,14 +392,16 @@ class SerialBase(FileLike):
     parity = property(getParity, setParity, doc="Parity setting")
     rtscts = property(getRtsCts, setRtsCts, doc="RTS/CTS flow control setting")
     stopbits = property(getStopbits, setStopbits, doc="Stopbits setting")
-    timeout = property(getTimeout, setTimeout, doc="Timeout setting for read()")
-    writeTimeout = property(getWriteTimeout, setWriteTimeout, doc="Timeout setting for write()")
+    timeout = property(
+        getTimeout, setTimeout, doc="Timeout setting for read()")
+    writeTimeout = property(
+        getWriteTimeout, setWriteTimeout, doc="Timeout setting for write()")
     xonxoff = property(getXonXoff, setXonXoff, doc="Xon/Xoff setting")
 
     #  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    #TODO: these are not realy needed as the is the BAUDRATES etc attribute...
-    #maybe i remove them before the final release...
+    # TODO: these are not realy needed as the is the BAUDRATES etc attribute...
+    # maybe i remove them before the final release...
 
     def getSupportedBaudrates(self):
         return [(str(b), b) for b in self.BAUDRATES]

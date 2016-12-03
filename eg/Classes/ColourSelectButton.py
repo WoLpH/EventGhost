@@ -21,23 +21,21 @@ import wx
 # Local imports
 import eg
 
+
 class ColourSelectButton(wx.BitmapButton):
-    def __init__(
-        self,
-        parent,
-        value=(255, 255, 255),
-        pos=wx.DefaultPosition,
-        size=(40, wx.Button.GetDefaultSize()[1]),
-        style=wx.BU_AUTODRAW,
-        validator=wx.DefaultValidator,
-        name="ColourSelectButton",
-        title = "Colour Picker"
-    ):
+    def __init__(self,
+                 parent,
+                 value=(255, 255, 255),
+                 pos=wx.DefaultPosition,
+                 size=(40, wx.Button.GetDefaultSize()[1]),
+                 style=wx.BU_AUTODRAW,
+                 validator=wx.DefaultValidator,
+                 name="ColourSelectButton",
+                 title="Colour Picker"):
         self.value = value
         self.title = title
-        wx.BitmapButton.__init__(
-            self, parent, -1, wx.NullBitmap, pos, size, style, validator, name
-        )
+        wx.BitmapButton.__init__(self, parent, -1, wx.NullBitmap, pos, size,
+                                 style, validator, name)
         self.SetValue(value)
         self.Bind(wx.EVT_BUTTON, self.OnButton)
 
@@ -60,7 +58,7 @@ class ColourSelectButton(wx.BitmapButton):
             colourData.GetCustomColour(i).Get() for i in range(16)
         ]
         dialog.Destroy()
-        evt = eg.ValueChangedEvent(self.GetId(), value = self.value)
+        evt = eg.ValueChangedEvent(self.GetId(), value=self.value)
         wx.PostEvent(self, evt)
 
     def SetValue(self, value):

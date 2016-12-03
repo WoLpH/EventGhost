@@ -19,6 +19,7 @@
 import string
 import wx
 
+
 class DigitOnlyValidator(wx.PyValidator):
     def __init__(self, choices=None):
         wx.PyValidator.__init__(self)

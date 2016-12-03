@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class MacroSelectButton(wx.Window):
     def __init__(self, parent, label, title, mesg, treeLink=None):
         if treeLink is None:
@@ -52,19 +53,13 @@ class MacroSelectButton(wx.Window):
     @eg.AsTasklet
     def OnButton(self, dummyEvent):
         result = eg.TreeItemBrowseDialog.GetModalResult(
-            self.title,
-            self.mesg,
-            self.macro,
-            (eg.MacroItem,),
-            parent=self
-        )
+            self.title, self.mesg, self.macro, (eg.MacroItem, ), parent=self)
         if result:
             macro = result[0]
             self.textBox.SetLabel(macro.name)
             self.macro = macro
             self.ProcessEvent(
-                wx.CommandEvent(wx.EVT_TEXT.evtType[0], self.GetId())
-            )
+                wx.CommandEvent(wx.EVT_TEXT.evtType[0], self.GetId()))
 
     def OnSetFocus(self, dummyEvent):
         self.button.SetFocus()

@@ -15,7 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
-
 """
 .. attribute:: globals
 
@@ -57,11 +56,8 @@ eg.ID_TEST = wx.NewId()
 eg.mainDir = eg.Cli.mainDir
 eg.imagesDir = join(eg.mainDir, "images")
 eg.languagesDir = join(eg.mainDir, "languages")
-eg.sitePackagesDir = join(
-    eg.mainDir,
-    "lib%d%d" % sys.version_info[:2],
-    "site-packages"
-)
+eg.sitePackagesDir = join(eg.mainDir, "lib%d%d" % sys.version_info[:2],
+                          "site-packages")
 eg.revision = 2000  # Deprecated
 eg.startupArguments = eg.Cli.args
 eg.debugLevel = eg.startupArguments.debugLevel
@@ -87,6 +83,7 @@ eg.actionGroup = eg.Bunch()
 eg.actionGroup.items = []
 eg.folderPath = eg.FolderPath()
 
+
 def _CommandEvent():
     """Generate new (CmdEvent, Binder) tuple
         e.g. MooCmdEvent, EVT_MOO = EgCommandEvent()
@@ -107,6 +104,7 @@ def _CommandEvent():
             self.value = value
 
     return _Event, wx.PyEventBinder(evttype, 1)
+
 
 eg.CommandEvent = _CommandEvent
 eg.ValueChangedEvent, eg.EVT_VALUE_CHANGED = eg.CommandEvent()
@@ -136,6 +134,7 @@ from eg.WinApi.Dynamic import GetCurrentProcessId  # NOQA
 eg.processId = GetCurrentProcessId()
 Init.InitPil()
 
+
 class Exception(Exception):
     def __unicode__(self):
         try:
@@ -160,6 +159,7 @@ def Bind(notification, listener):
         notificationHandler = eg.notificationHandlers[notification]
     notificationHandler.listeners.append(listener)
 
+
 def CallWait(func, *args, **kwargs):
     result = [None]
     event = threading.Event()
@@ -174,11 +174,13 @@ def CallWait(func, *args, **kwargs):
     event.wait()
     return result[0]
 
+
 def DummyFunc(*dummyArgs, **dummyKwargs):
     """
     Just a do-nothing-function, that accepts arbitrary arguments.
     """
     pass
+
 
 def Exit():
     """
@@ -189,6 +191,7 @@ def Exit():
     because the SystemExit exception is catched for a PythonScript.)
     """
     sys.exit()
+
 
 def HasActiveHandler(eventstring):
     for eventHandler in eg.eventTable.get(eventstring, []):
@@ -201,6 +204,7 @@ def HasActiveHandler(eventstring):
             return True
     return False
 
+
 def MessageBox(message, caption=eg.APP_NAME, style=wx.OK, parent=None):
     if parent is None:
         style |= wx.STAY_ON_TOP
@@ -209,26 +213,28 @@ def MessageBox(message, caption=eg.APP_NAME, style=wx.OK, parent=None):
     dialog.Destroy()
     return result
 
+
 def Notify(notification, value=None):
     if notification in eg.notificationHandlers:
         for listener in eg.notificationHandlers[notification].listeners:
             listener(value)
 
+
 # pylint: disable-msg=W0613
-def RegisterPlugin(
-    name = None,
-    description = None,
-    kind = "other",
-    author = "[unknown author]",
-    version = "[unknown version]",
-    icon = None,
-    canMultiLoad = False,
-    createMacrosOnAdd = False,
-    url = None,
-    help = None,
-    guid = None,
-    **kwargs
-):
+
+
+def RegisterPlugin(name=None,
+                   description=None,
+                   kind="other",
+                   author="[unknown author]",
+                   version="[unknown version]",
+                   icon=None,
+                   canMultiLoad=False,
+                   createMacrosOnAdd=False,
+                   url=None,
+                   help=None,
+                   guid=None,
+                   **kwargs):
     """
     Registers information about a plugin to EventGhost.
 
@@ -262,7 +268,10 @@ def RegisterPlugin(
        backward compatible.
     """
     pass
+
+
 # pylint: enable-msg=W0613
+
 
 def RestartAsyncore():
     """
@@ -277,6 +286,7 @@ def RestartAsyncore():
     if oldDispatcher is None:
         # create a global asyncore loop thread
         threading.Thread(target=asyncore.loop, name="AsyncoreThread").start()
+
 
 def RunProgram():
     eg.stopExecutionFlag = False
@@ -301,6 +311,7 @@ def RunProgram():
             eg.programCounter = item.parent.GetNextChild(idx)
     eg.indent = 0
 
+
 def StopMacro(ignoreReturn=False):
     """
     Instructs EventGhost to stop executing the current macro after the
@@ -310,8 +321,10 @@ def StopMacro(ignoreReturn=False):
     if ignoreReturn:
         del eg.programReturnStack[:]
 
+
 def Unbind(notification, listener):
     eg.notificationHandlers[notification].listeners.remove(listener)
+
 
 def Wait(secs, raiseException=True):
     while secs > 0.0:
@@ -326,6 +339,7 @@ def Wait(secs, raiseException=True):
             time.sleep(secs)
         secs -= 0.1
     return True
+
 
 # now assign all the functions above to `eg`
 eg.Bind = Bind
@@ -363,8 +377,11 @@ eg.PrintStack = eg.log.PrintStack
 eg.config = eg.Config()
 eg.debugLevel = int(eg.config.logDebug) or eg.debugLevel
 
+
 def TracebackHook(tType, tValue, traceback):
     eg.log.PrintTraceback(excInfo=(tType, tValue, traceback))
+
+
 sys.excepthook = TracebackHook
 
 eg.colour = eg.Colour()
@@ -387,12 +404,9 @@ setattr(eg, "PluginClass", eg.PluginBase)
 setattr(eg, "ActionClass", eg.ActionBase)
 
 eg.taskBarIcon = eg.TaskBarIcon(
-    eg.startupArguments.isMain and
-    eg.config.showTrayIcon and
-    not eg.startupArguments.translate and
-    not eg.startupArguments.install and
-    not eg.startupArguments.pluginFile
-)
+    eg.startupArguments.isMain and eg.config.showTrayIcon and
+    not eg.startupArguments.translate and not eg.startupArguments.install and
+    not eg.startupArguments.pluginFile)
 eg.SetProcessingState = eg.taskBarIcon.SetProcessingState
 
 eg.Init = Init

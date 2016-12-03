@@ -20,6 +20,7 @@
 import eg
 from eg.Utils import SetDefault
 
+
 class TranslatableStringsMeta(type):
     def __new__(mcs, name, bases, dct):
         defaultText = type.__new__(mcs, name, bases, dct)

@@ -19,6 +19,7 @@
 # Local imports
 import eg
 
+
 class AddActionGroup(eg.UndoHandler.NewItem):
     name = "Add all actions of plugin"
 
@@ -32,30 +33,21 @@ class AddActionGroup(eg.UndoHandler.NewItem):
 
         def Traverse(parentItem, actionGroup):
             folderItem = document.FolderItem.Create(
-                parentItem,
-                name=actionGroup.name
-            )
+                parentItem, name=actionGroup.name)
             for item in actionGroup.items:
                 if isinstance(item, eg.ActionGroup):
                     Traverse(folderItem, item)
                 else:
                     macroItem = document.MacroItem.Create(
-                        folderItem,
-                        name=item.name
-                    )
+                        folderItem, name=item.name)
                     document.ActionItem.Create(
                         macroItem,
-                        text = "%s.%s()" % (
-                            item.plugin.info.evalName,
-                            item.__name__
-                        ),
-                    )
+                        text="%s.%s()" % (item.plugin.info.evalName,
+                                          item.__name__), )
             return folderItem
 
         folderItem = eg.actionThread.Func(Traverse)(
-            parentItem,
-            pluginItem.executable.info.actionGroup
-        )
+            parentItem, pluginItem.executable.info.actionGroup)
         self.StoreItem(folderItem)
         folderItem.Select()
         folderItem.Expand()

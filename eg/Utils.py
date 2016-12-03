@@ -35,13 +35,26 @@ from types import ClassType
 import eg
 
 __all__ = [
-    "Bunch", "NotificationHandler", "LogIt", "LogItWithReturn", "TimeIt",
-    "AssertInMainThread", "AssertInActionThread", "ParseString", "SetDefault",
-    "EnsureVisible", "VBoxSizer", "HBoxSizer", "EqualizeWidths", "AsTasklet",
-    "ExecFile", "GetTopLevelWindow",
+    "Bunch",
+    "NotificationHandler",
+    "LogIt",
+    "LogItWithReturn",
+    "TimeIt",
+    "AssertInMainThread",
+    "AssertInActionThread",
+    "ParseString",
+    "SetDefault",
+    "EnsureVisible",
+    "VBoxSizer",
+    "HBoxSizer",
+    "EqualizeWidths",
+    "AsTasklet",
+    "ExecFile",
+    "GetTopLevelWindow",
 ]
 
 USER_CLASSES = (type, ClassType)
+
 
 class Bunch(object):
     """
@@ -66,11 +79,12 @@ class Bunch(object):
         if point.squared > threshold:
             point.isok = True
     """
+
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
 
-class HBoxSizer(wx.BoxSizer):  #IGNORE:R0904
+class HBoxSizer(wx.BoxSizer):  # IGNORE:R0904
     def __init__(self, *items):
         wx.BoxSizer.__init__(self, wx.HORIZONTAL)
         self.AddMany(items)
@@ -89,6 +103,7 @@ class MyHtmlDocWriter(Writer):
 %(body_suffix)s
 """ % self.interpolation_dict()
 
+
 HTML_DOC_WRITER = MyHtmlDocWriter()
 
 
@@ -99,7 +114,7 @@ class NotificationHandler(object):
         self.listeners = []
 
 
-class VBoxSizer(wx.BoxSizer):  #IGNORE:R0904
+class VBoxSizer(wx.BoxSizer):  # IGNORE:R0904
     def __init__(self, *items):
         wx.BoxSizer.__init__(self, wx.VERTICAL)
         self.AddMany(items)
@@ -108,10 +123,7 @@ class VBoxSizer(wx.BoxSizer):  #IGNORE:R0904
 def AppUrl(description, url):
     if url:
         txt = '<p><div align=right><i><font color="#999999" size=-1>%s <a href="%s">%s</a>.</font></i></div></p>' % (
-            eg.text.General.supportSentence,
-            url,
-            eg.text.General.supportLink
-        )
+            eg.text.General.supportSentence, url, eg.text.General.supportLink)
     else:
         return description
     if description.startswith("<md>"):
@@ -122,20 +134,20 @@ def AppUrl(description, url):
         description = DecodeReST(description)
     return description + txt
 
+
 def AssertInActionThread(func):
     if not eg.debugLevel:
         return func
 
     def AssertWrapper(*args, **kwargs):
         if eg.actionThread._ThreadWorker__thread != threading.currentThread():
-            raise AssertionError(
-                "Called outside ActionThread: %s() in %s" %
-                (func.__name__, func.__module__)
-            )
+            raise AssertionError("Called outside ActionThread: %s() in %s" %
+                                 (func.__name__, func.__module__))
         return func(*args, **kwargs)
         return func(*args, **kwargs)
 
     return update_wrapper(AssertWrapper, func)
+
 
 def AssertInMainThread(func):
     if not eg.debugLevel:
@@ -143,23 +155,24 @@ def AssertInMainThread(func):
 
     def AssertWrapper(*args, **kwargs):
         if eg.mainThread != threading.currentThread():
-            raise AssertionError(
-                "Called outside MainThread: %s in %s" %
-                (func.__name__, func.__module__)
-            )
+            raise AssertionError("Called outside MainThread: %s in %s" %
+                                 (func.__name__, func.__module__))
         return func(*args, **kwargs)
 
     return update_wrapper(AssertWrapper, func)
 
+
 def AsTasklet(func):
     def Wrapper(*args, **kwargs):
         eg.Tasklet(func)(*args, **kwargs).run()
+
     return update_wrapper(Wrapper, func)
+
 
 def CollectGarbage():
     import gc
-    #gc.set_debug(gc.DEBUG_SAVEALL)
-    #gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
+    # gc.set_debug(gc.DEBUG_SAVEALL)
+    # gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
     from pprint import pprint
     print "threshold:", gc.get_threshold()
     print "unreachable object count:", gc.collect()
@@ -167,27 +180,29 @@ def CollectGarbage():
     for i, obj in enumerate(garbageList):
         print "Object Num %d:" % i
         pprint(obj)
-        #print "Referrers:"
-        #print(gc.get_referrers(o))
-        #print "Referents:"
-        #print(gc.get_referents(o))
+        # print "Referrers:"
+        # print(gc.get_referrers(o))
+        # print "Referents:"
+        # print(gc.get_referents(o))
     print "Done."
-    #print "unreachable object count:", gc.collect()
+    # print "unreachable object count:", gc.collect()
     #from pprint import pprint
-    #pprint(gc.garbage)
+    # pprint(gc.garbage)
+
 
 def DecodeMarkdown(source):
     return commonmark(source)
 
+
 def DecodeReST(source):
-    #print repr(source)
+    # print repr(source)
     res = ReSTPublishParts(
         source=PrepareDocstring(source),
         writer=HTML_DOC_WRITER,
-        settings_overrides={"stylesheet_path": ""}
-    )
-    #print repr(res)
+        settings_overrides={"stylesheet_path": ""})
+    # print repr(res)
     return res['body']
+
 
 def EnsureVisible(window):
     """
@@ -195,17 +210,22 @@ def EnsureVisible(window):
     Moves and resizes it if necessary.
     """
     from eg.WinApi.Dynamic import (
-        sizeof, byref, GetMonitorInfo, MonitorFromWindow, GetWindowRect,
-        MONITORINFO, RECT, MONITOR_DEFAULTTONEAREST,
+        sizeof,
+        byref,
+        GetMonitorInfo,
+        MonitorFromWindow,
+        GetWindowRect,
+        MONITORINFO,
+        RECT,
+        MONITOR_DEFAULTTONEAREST,
         # MonitorFromRect, MONITOR_DEFAULTTONULL,
     )
 
     hwnd = window.GetHandle()
     windowRect = RECT()
     GetWindowRect(hwnd, byref(windowRect))
-
     #hMonitor = MonitorFromRect(byref(windowRect), MONITOR_DEFAULTTONULL)
-    #if hMonitor:
+    # if hMonitor:
     #    return
 
     parent = window.GetParent()
@@ -250,10 +270,12 @@ def EnsureVisible(window):
     # set the new position and size
     window.SetRect((left, top, right - left, bottom - top))
 
+
 def EqualizeWidths(ctrls):
     maxWidth = max((ctrl.GetBestSize()[0] for ctrl in ctrls))
     for ctrl in ctrls:
         ctrl.SetMinSize((maxWidth, -1))
+
 
 def ExecFile(filename, globals=None, locals=None):
     """
@@ -264,7 +286,8 @@ def ExecFile(filename, globals=None, locals=None):
     flnm = filename.encode(FSE) if isinstance(filename, unicode) else filename
     return execfile(flnm, globals, locals)
 
-def GetBootTimestamp(unix_timestamp = True):
+
+def GetBootTimestamp(unix_timestamp=True):
     """
     Returns the time of the last system boot.
     If unix_timestamp == True, result is a unix temestamp.
@@ -278,6 +301,7 @@ def GetBootTimestamp(unix_timestamp = True):
         st = str(dt.fromtimestamp(now - up))
         return st if "." not in st else st[:st.index(".")]
     return now - up
+
 
 def GetClosestLanguage():
     """
@@ -294,6 +318,7 @@ def GetClosestLanguage():
                 if f.startswith(name[0:3]):
                     return f[0:5]
     return "en_EN"
+
 
 def GetFirstParagraph(text):
     """
@@ -323,6 +348,7 @@ def GetFirstParagraph(text):
             result += " " + line
         return ' '.join(result.split())
 
+
 def GetFuncArgString(func, args, kwargs):
     classname = ""
     argnames = inspect.getargspec(func)[0]
@@ -340,6 +366,7 @@ def GetFuncArgString(func, args, kwargs):
     fname = classname + func.__name__
     return fname, "(" + ", ".join(res) + ")"
 
+
 def GetMyRepresentation(value):
     """
     Give a shorter representation of some wx-objects. Returns normal repr()
@@ -348,10 +375,11 @@ def GetMyRepresentation(value):
     """
     typeString = repr(type(value))
     if typeString.startswith("<class 'wx._core."):
-        return "=<wx.%s>" % typeString[len("<class 'wx._core."): -2]
+        return "=<wx.%s>" % typeString[len("<class 'wx._core."):-2]
     if typeString.startswith("<class 'wx._controls."):
-        return "=<wx.%s>" % typeString[len("<class 'wx._controls."): -2]
+        return "=<wx.%s>" % typeString[len("<class 'wx._controls."):-2]
     return "=" + repr(value)
+
 
 def GetTopLevelWindow(window):
     """
@@ -367,7 +395,8 @@ def GetTopLevelWindow(window):
             return parent
         result = parent
 
-def GetUpTime(seconds = True):
+
+def GetUpTime(seconds=True):
     """
     Returns a runtime of system in seconds.
     If seconds == False, returns the number of days, hours, minutes and seconds.
@@ -376,9 +405,10 @@ def GetUpTime(seconds = True):
     GetTickCount64.restype = c_ulonglong
     ticks = GetTickCount64() / 1000.0
     if not seconds:
-        delta = str(td(seconds = ticks))
+        delta = str(td(seconds=ticks))
         return delta if "." not in delta else delta[:delta.index(".")]
     return ticks
+
 
 def IsVista():
     """
@@ -386,11 +416,13 @@ def IsVista():
     """
     return (sys.getwindowsversion()[0] >= 6)
 
+
 def IsXP():
     """
     Determine if we're running XP or higher.
     """
     return (sys.getwindowsversion()[0:2] >= (5, 1))
+
 
 def LogIt(func):
     """
@@ -406,7 +438,9 @@ def LogIt(func):
         funcName, argString = GetFuncArgString(func, args, kwargs)
         eg.PrintDebugNotice(funcName + argString)
         return func(*args, **kwargs)
+
     return update_wrapper(LogItWrapper, func)
+
 
 def LogItWithReturn(func):
     """
@@ -421,13 +455,15 @@ def LogItWithReturn(func):
         result = func(*args, **kwargs)
         eg.PrintDebugNotice(funcName + " => " + repr(result))
         return result
+
     return update_wrapper(LogItWithReturnWrapper, func)
+
 
 def ParseString(text, filterFunc=None):
     start = 0
     chunks = []
     last = len(text) - 1
-    while 1:
+    while True:
         pos = text.find('{', start)
         if pos < 0:
             break
@@ -453,6 +489,7 @@ def ParseString(text, filterFunc=None):
     chunks.append(text[start:])
     return "".join(chunks)
 
+
 def PrepareDocstring(docstring):
     """
     Convert a docstring into lines of parseable reST.  Return it as a list of
@@ -462,7 +499,7 @@ def PrepareDocstring(docstring):
     """
     lines = docstring.expandtabs().splitlines()
     # Find minimum indentation of any non-blank lines after first line.
-    margin = sys.maxint
+    margin = sys.maxsize
     for line in lines[1:]:
         content = len(line.lstrip())
         if content:
@@ -471,7 +508,7 @@ def PrepareDocstring(docstring):
     # Remove indentation.
     if lines:
         lines[0] = lines[0].lstrip()
-    if margin < sys.maxint:
+    if margin < sys.maxsize:
         for i in range(1, len(lines)):
             lines[i] = lines[i][margin:]
     # Remove any leading blank lines.
@@ -482,6 +519,7 @@ def PrepareDocstring(docstring):
         lines.append('')
     return "\n".join(lines)
 
+
 def Reset():
     eg.stopExecutionFlag = True
     eg.programCounter = None
@@ -490,6 +528,7 @@ def Reset():
     eg.actionThread.ClearPendingEvents()
     eg.PrintError("Execution stopped by user")
 
+
 def SetDefault(targetCls, defaultCls):
     targetDict = targetCls.__dict__
     for defaultKey, defaultValue in defaultCls.__dict__.iteritems():
@@ -497,6 +536,7 @@ def SetDefault(targetCls, defaultCls):
             setattr(targetCls, defaultKey, defaultValue)
         elif type(defaultValue) in USER_CLASSES:
             SetDefault(targetDict[defaultKey], defaultValue)
+
 
 def SplitFirstParagraph(text):
     """
@@ -511,19 +551,15 @@ def SplitFirstParagraph(text):
         text = DecodeMarkdown(text)
         start = text.find("<p>")
         end = text.find("</p>")
-        return (
-            text[start + 3:end].replace("\n", " "),
-            text[end + 4:].replace("\n", " ")
-        )
+        return (text[start + 3:end].replace("\n", " "),
+                text[end + 4:].replace("\n", " "))
     elif text.startswith("<rst>"):
         text = text[5:]
         text = DecodeReST(text)
         start = text.find("<p>")
         end = text.find("</p>")
-        return (
-            text[start + 3:end].replace("\n", " "),
-            text[end + 4:].replace("\n", " ")
-        )
+        return (text[start + 3:end].replace("\n", " "),
+                text[end + 4:].replace("\n", " "))
     else:
         result = ""
         remaining = ""
@@ -534,6 +570,7 @@ def SplitFirstParagraph(text):
                 break
             result += " " + line
         return ' '.join(result.split()), remaining
+
 
 def TimeIt(func):
     """ Decorator to measure the execution time of a function.
@@ -552,13 +589,11 @@ def TimeIt(func):
 
     return update_wrapper(TimeItWrapper, func)
 
+
 def UpdateStartupShortcut(create):
     from eg import Shortcut
 
-    path = os.path.join(
-        eg.folderPath.Startup,
-        eg.APP_NAME + ".lnk"
-    )
+    path = os.path.join(eg.folderPath.Startup, eg.APP_NAME + ".lnk")
 
     if os.path.exists(path):
         os.remove(path)
@@ -571,5 +606,4 @@ def UpdateStartupShortcut(create):
             path=path,
             target=os.path.abspath(sys.executable),
             arguments="-h -e OnInitAfterBoot",
-            startIn=os.path.dirname(os.path.abspath(sys.executable)),
-        )
+            startIn=os.path.dirname(os.path.abspath(sys.executable)), )

@@ -18,22 +18,21 @@
 
 import wx
 
+
 class Slider(wx.Window):
-    def __init__(
-        self,
-        parent,
-        id = -1,
-        value = None,
-        min = None,
-        max = None,
-        pos = wx.DefaultPosition,
-        size = wx.DefaultSize,
-        style = 0,
-        valueLabel = None,
-        minLabel = None,
-        maxLabel = None,
-        levelCallback = None
-    ):
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 value=None,
+                 min=None,
+                 max=None,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=0,
+                 valueLabel=None,
+                 minLabel=None,
+                 maxLabel=None,
+                 levelCallback=None):
         if minLabel is None:
             minLabel = str(min)
         if maxLabel is None:
@@ -43,14 +42,7 @@ class Slider(wx.Window):
         self.valueLabel = valueLabel
         self.levelCallback = levelCallback
         wx.Window.__init__(self, parent, id, pos, size, style)
-        self.slider = wx.Slider(
-            self,
-            -1,
-            value,
-            min,
-            max,
-            style = style
-        )
+        self.slider = wx.Slider(self, -1, value, min, max, style=style)
         st1 = wx.StaticText(self, -1, minLabel)
         self.valueLabelCtrl = wx.StaticText(self, -1, valueLabel)
         st2 = wx.StaticText(self, -1, maxLabel)

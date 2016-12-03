@@ -22,20 +22,22 @@ import wx
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class Configure(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Configure.replace("&", "")
 
     @eg.AssertInMainThread
     @eg.LogItWithReturn
-    def Do(self, item, isFirstConfigure = False):
+    def Do(self, item, isFirstConfigure=False):
         if item.openConfigDialog:
             item.openConfigDialog.Raise()
             return False
         ActionThreadFunc = eg.actionThread.Func
         self.oldArgumentString = ActionThreadFunc(item.GetArgumentString)()
         #oldArgs = newArgs = ActionThreadFunc(item.GetArguments)()
-        newArgs = ActionThreadFunc(item.GetArguments)()  # bugfix: http://www.eventghost.org/forum/viewtopic.php?f=4&t=3676
-        oldArgs = DeepCopy(newArgs)                      # bugfix
+        # bugfix: http://www.eventghost.org/forum/viewtopic.php?f=4&t=3676
+        newArgs = ActionThreadFunc(item.GetArguments)()
+        oldArgs = DeepCopy(newArgs)  # bugfix
         revertOnCancel = False
         dialog = eg.ConfigDialog.Create(item, *oldArgs)
 
@@ -85,9 +87,10 @@ def DeepCopy(lst):
             res.append(DeepCopy(item))
         else:
             res.append(item)
-    if type(lst) is tuple:
+    if isinstance(lst, tuple):
         res = tuple(res)
     return res
+
 
 def DoExecute(item, newArgs):
     oldArgs = item.GetArguments()

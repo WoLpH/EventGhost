@@ -23,6 +23,7 @@ import eg
 
 STANDARD_IDS = (wx.ID_OK, wx.ID_CANCEL, wx.ID_APPLY, wx.ID_HELP)
 
+
 class ButtonRow(object):
     def __init__(self, parent, buttonIds, resizeGrip=False, center=False):
         self.parent = parent
@@ -90,22 +91,15 @@ class ButtonRow(object):
                 sizer.Add(buttonSizer, 0, wx.TOP | wx.BOTTOM, 6)
                 sizer.Add((3, 3), 0)
 
-    def Add(
-        self,
-        ctrl,
-        proportion=0,
-        flags=wx.ALIGN_CENTER_VERTICAL | wx.RIGHT,
-        border=5
-    ):
+    def Add(self,
+            ctrl,
+            proportion=0,
+            flags=wx.ALIGN_CENTER_VERTICAL | wx.RIGHT,
+            border=5):
         if self.numSpecialCtrls == 0:
             self.sizer.Insert(0, (15, 5))
-        self.sizer.Insert(
-            self.numSpecialCtrls + 1,
-            ctrl,
-            proportion,
-            flags,
-            border
-        )
+        self.sizer.Insert(self.numSpecialCtrls + 1, ctrl, proportion, flags,
+                          border)
         self.numSpecialCtrls += 1
 
     def OnApply(self, event):

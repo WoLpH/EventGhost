@@ -21,5 +21,6 @@ import wx
 # Local imports
 import eg
 
+
 class Panel(wx.Panel, eg.ControlProviderMixin):
     pass

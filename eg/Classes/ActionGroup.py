@@ -23,9 +23,15 @@ from types import ClassType
 import eg
 from eg.Utils import SetDefault
 
+
 class ActionGroup(object):
     __slots__ = [
-        "plugin", "name", "description", "icon", "items", "expanded",
+        "plugin",
+        "name",
+        "description",
+        "icon",
+        "items",
+        "expanded",
     ]
 
     def __init__(self, plugin, name=None, description=None, iconFile=None):
@@ -37,27 +43,24 @@ class ActionGroup(object):
             self.icon = plugin.info.icon
         else:
             self.icon = eg.Icons.PathIcon(
-                join(plugin.info.path, iconFile + ".png")
-            )
+                join(plugin.info.path, iconFile + ".png"))
         self.items = []
 
-    def AddAction(
-        self,
-        actionCls,
-        clsName=None,
-        name=None,
-        description=None,
-        value=None,
-        hidden=False
-    ):
+    def AddAction(self,
+                  actionCls,
+                  clsName=None,
+                  name=None,
+                  description=None,
+                  value=None,
+                  hidden=False):
         if not issubclass(actionCls, eg.ActionBase):
             raise Exception("Actions must be subclasses of eg.ActionBase")
         if clsName is not None:
             actionCls = ClassType(
                 clsName,
                 (actionCls, ),
-                dict(name=name, description=description, value=value),
-            )
+                dict(
+                    name=name, description=description, value=value), )
         plugin = self.plugin
         pluginInfo = plugin.info
         actionClsName = actionCls.__name__
@@ -67,9 +70,8 @@ class ActionGroup(object):
                 path = join(pluginInfo.path, actionCls.iconFile + ".png")
                 icon = eg.Icons.PathIcon(path)
             except:
-                eg.PrintError(
-                    "Error while loading icon file %s" % actionCls.iconFile
-                )
+                eg.PrintError("Error while loading icon file %s" %
+                              actionCls.iconFile)
         if icon == eg.Icons.PLUGIN_ICON:
             icon = eg.Icons.ACTION_ICON
         else:
@@ -77,17 +79,14 @@ class ActionGroup(object):
 
         text = self.Translate(plugin, actionCls, actionClsName)
         actionCls = ClassType(
-            actionClsName,
-            (actionCls, ),
+            actionClsName, (actionCls, ),
             dict(
                 name=text.name,
                 description=text.description,
                 plugin=plugin,
                 info=ActionInfo(icon),
                 text=text,
-                Exceptions=eg.Exceptions
-            )
-        )
+                Exceptions=eg.Exceptions))
         pluginInfo.actions[actionClsName] = actionCls
         actionCls.OnAddAction()
         if not hidden:
@@ -110,11 +109,7 @@ class ActionGroup(object):
                     else:
                         iconFile = None
                     newGroup = group.AddGroup(
-                        name,
-                        description,
-                        iconFile,
-                        identifier=clsName
-                    )
+                        name, description, iconFile, identifier=clsName)
                     Recurse(aList, newGroup)
                     continue
                 if length == 4:
@@ -125,10 +120,8 @@ class ActionGroup(object):
                     # this is a new sub-action
                     actionCls, clsName, name, description, value = parts
                 else:
-                    raise Exception(
-                        "Wrong number of fields in the list",
-                        parts
-                    )
+                    raise Exception("Wrong number of fields in the list",
+                                    parts)
                 group.AddAction(actionCls, clsName, name, description, value)
 
         Recurse(theList, self)
@@ -140,11 +133,9 @@ class ActionGroup(object):
         plugin = self.plugin
         if identifier is not None:
             description = name if description is None else description
-            defaultText = ClassType(
-                identifier,
-                (),
-                {"name": name, "description": description}
-            )
+            defaultText = ClassType(identifier, (),
+                                    {"name": name,
+                                     "description": description})
             translatedText = getattr(plugin.text, identifier, None)
             if translatedText is None:
                 translatedText = ClassType(identifier, (), {})
@@ -170,9 +161,8 @@ class ActionGroup(object):
             translatedText.name = actionClsName if name is None else name
         if not hasattr(translatedText, "description"):
             description = actionCls.description
-            translatedText.description = (
-                translatedText.name if description is None else description
-            )
+            translatedText.description = (translatedText.name if
+                                          description is None else description)
         return translatedText
 
 

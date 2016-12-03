@@ -21,10 +21,12 @@ import wx
 # Local imports
 import eg
 
+
 class DisplayChoice(eg.Choice):
     """
     A wx.Choice control, that shows all available displays.
     """
+
     def __init__(self, parent, value, *args, **kwargs):
         numDisplays = wx.Display().GetCount()
         choices = ["Monitor %d" % (i + 1) for i in range(numDisplays)]

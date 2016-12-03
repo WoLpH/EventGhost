@@ -22,6 +22,7 @@ import wx
 # Local imports
 import eg
 
+
 class TaskletDialog(wx.Dialog, eg.ControlProviderMixin):
     __tasklet = None
     __isModal = False
@@ -82,7 +83,7 @@ class TaskletDialog(wx.Dialog, eg.ControlProviderMixin):
 
     @eg.LogItWithReturn
     def DispatchEvent(self, event, eventId):
-        #event.Skip()
+        # event.Skip()
         self.__lastEventId = eventId
         if self.__isModal:
             if eventId == wx.ID_CANCEL:
@@ -127,7 +128,7 @@ class TaskletDialog(wx.Dialog, eg.ControlProviderMixin):
         self.__tasklet = eg.Tasklet(self.Configure)(*args, **kwargs)
         self.__tasklet.run()
         self.__processingChannel.receive()
-        #self.CenterOnParent()
+        # self.CenterOnParent()
         eg.Utils.EnsureVisible(self)
         self.ShowModal()
         self.Destroy()

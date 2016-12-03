@@ -28,8 +28,11 @@ DECODERS_DIR = os.path.dirname(__file__.decode('mbcs'))
 DEBUG = eg.debugLevel
 
 # Exceptions
+
+
 class DecodeError(Exception):  # Raised if code doesn't match expectation.
     pass
+
 
 class IrDecoder(object):
     def __init__(self, plugin, sampleTime):
@@ -54,12 +57,12 @@ class IrDecoder(object):
         if length < 3:
             return
 
-        #print dataLen, repr(data)
+        # print dataLen, repr(data)
         if isinstance(data, str):
             data = [int(ord(x) * self.sampleTime) for x in data[:length]]
         else:
             data = [int(x * self.sampleTime) for x in data[:length]]
-        #data.append(10000)
+        # data.append(10000)
 
         uniCode = None
         if self.lastDecoder == self.universalDecoder:
@@ -68,17 +71,17 @@ class IrDecoder(object):
                 self.timer.Reset(self.universalDecoder.timeout)
                 return uniCode
 
-        #print data
+        # print data
         decoders = self.decoders
         code = None
         for i, decoder in enumerate(decoders):
             try:
                 code = decoder.Decode(data)
-            except (IndexError, DecodeError), exc:
+            except (IndexError, DecodeError) as exc:
                 if DEBUG:
                     print decoder.__class__.__name__ + ": " + str(exc)
                 continue
-            except Exception, exc:
+            except Exception as exc:
                 print decoder
                 raise exc
 
@@ -109,6 +112,8 @@ class IrDecoder(object):
     def OnTimeout(self):
         self.lastDecoder.lastCode = None
         self.event.SetShouldEnd()
+
+
 #        if DEBUG:
 #            print "timeout"
 
@@ -155,9 +160,8 @@ class ManchesterBase(IrProtocolBase):
         if self.bufferLen == 0:
             if self.pos >= len(self.data):
                 raise DecodeError("not enough timings")
-            self.bufferLen = (
-                (self.data[self.pos] + 2 * self.halfBitTime / 3) / self.halfBitTime
-            )
+            self.bufferLen = ((self.data[self.pos] + 2 * self.halfBitTime / 3)
+                              / self.halfBitTime)
             if self.bufferLen == 0:
                 raise DecodeError("duration too short")
             self.pos += 1
@@ -176,6 +180,7 @@ class ManchesterCoding1(ManchesterBase):
     """
     Manchester coding with falling edge for logic one.
     """
+
     def Decode(self, data):
         raise NotImplementedError
 
@@ -193,6 +198,7 @@ class ManchesterCoding2(ManchesterBase):
     """
     Manchester coding with raising edge for logic one.
     """
+
     def Decode(self, data):
         raise NotImplementedError
 
@@ -216,6 +222,7 @@ def GetBitString(value, numdigits=8):
         value >>= 1
     return "".join(reversed(digits))
 
+
 def GetDecoders():
     decoders = []
     for path in glob(os.path.join(DECODERS_DIR, "*.py")):
@@ -226,5 +233,6 @@ def GetDecoders():
         module = __import__(moduleName, globals())
         decoders.append(getattr(module, moduleName))
     return decoders
+
 
 DECODERS = GetDecoders()

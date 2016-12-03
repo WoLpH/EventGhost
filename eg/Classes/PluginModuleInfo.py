@@ -23,6 +23,7 @@ from os.path import exists, join
 # Local imports
 import eg
 
+
 class PluginModuleInfo(object):
     """
     Holds information of a plugin module.
@@ -75,29 +76,27 @@ class PluginModuleInfo(object):
             eg.RegisterPlugin = originalRegisterPlugin
 
     if eg.debugLevel:
+
         def __setattr__(self, name, value):
             if not hasattr(self.__class__, name):
-                raise AttributeError(
-                    "%s has no attribute %s" % (self.__class__.__name__, name)
-                )
+                raise AttributeError("%s has no attribute %s" %
+                                     (self.__class__.__name__, name))
             object.__setattr__(self, name, value)
 
-    def RegisterPlugin(
-        self,
-        name = None,
-        description = None,
-        kind = "other",
-        author = "[unknown author]",
-        version = "[unknown version]",
-        icon = None,
-        canMultiLoad = False,
-        createMacrosOnAdd = False,
-        url = None,
-        help = None,
-        guid = "",
-        hardwareId = "",
-        **kwargs
-    ):
+    def RegisterPlugin(self,
+                       name=None,
+                       description=None,
+                       kind="other",
+                       author="[unknown author]",
+                       version="[unknown version]",
+                       icon=None,
+                       canMultiLoad=False,
+                       createMacrosOnAdd=False,
+                       url=None,
+                       help=None,
+                       guid="",
+                       hardwareId="",
+                       **kwargs):
         if name is None:
             name = self.pluginName
         if description is None:
@@ -109,10 +108,8 @@ class PluginModuleInfo(object):
         self.name = self.englishName = unicode(name)
         self.description = self.englishDescription = unicode(description)
         self.kind = unicode(kind)
-        self.author = (
-            unicode(", ".join(author)) if isinstance(author, tuple)
-            else unicode(author)
-        )
+        self.author = (unicode(", ".join(author))
+                       if isinstance(author, tuple) else unicode(author))
         self.version = unicode(version)
         self.canMultiLoad = canMultiLoad
         self.createMacrosOnAdd = createMacrosOnAdd

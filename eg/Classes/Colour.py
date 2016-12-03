@@ -27,12 +27,13 @@ from eg.WinApi.Dynamic import (
     COLOR_GRADIENTINACTIVECAPTION,
     COLOR_INACTIVECAPTION,
     COLOR_INACTIVECAPTIONTEXT,
-    GetSysColor,
-)
+    GetSysColor, )
+
 
 def GetWinSysColour(nIndex):
     val = GetSysColor(nIndex)
     return val & 0xFF, (val >> 8) & 0xFF, (val >> 16) & 0xFF
+
 
 class Colour:
     """
@@ -79,11 +80,8 @@ class Colour:
         Returns RGB colour tuple from HSV (Hue, Saturation, Value).
         """
         red, green, blue = colorsys.hsv_to_rgb(hue, saturation, value)
-        return (
-            int(round(red * 255.0)),
-            int(round(green * 255.0)),
-            int(round(blue * 255.0))
-        )
+        return (int(round(red * 255.0)), int(round(green * 255.0)),
+                int(round(blue * 255.0)))
 
     @staticmethod
     def RgbToHsv(colour):

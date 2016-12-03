@@ -20,6 +20,7 @@
 import eg
 from NewItem import NewItem
 
+
 class NewEvent(NewItem):
     name = eg.text.MainFrame.Menu.AddEvent.replace("&", "").replace("...", "")
 
@@ -56,10 +57,8 @@ class NewEvent(NewItem):
             return
         item, needsConfigure = result
 
-        if (
-            needsConfigure and
-            not eg.UndoHandler.Configure(document).Do(item, True)
-        ):
+        if (needsConfigure and
+                not eg.UndoHandler.Configure(document).Do(item, True)):
             eg.actionThread.Call(item.Delete)
             return None
         self.StoreItem(item)

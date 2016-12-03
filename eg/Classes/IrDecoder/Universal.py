@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
 
+
 class IrProtocolBase(object):
     lastCode = None
     timeout = 150
@@ -31,6 +32,7 @@ class Universal(IrProtocolBase):
     """
     IR decoder for unknown protocols.
     """
+
     def __init__(self, controller):
         IrProtocolBase.__init__(self, controller)
         self.diffTime = controller.sampleTime * 3
@@ -63,7 +65,7 @@ class Universal(IrProtocolBase):
 #        return "U%X" % code
 
     def Decode(self, data):
-        #print data
+        # print data
         lastPause = 0
         lastPulse = 0
         code = 0

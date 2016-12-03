@@ -21,10 +21,12 @@ from time import clock
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
+
 class Jvc(IrProtocolBase):
     """
     IR decoder for the JVC protocol.
     """
+
     def __init__(self, controller):
         IrProtocolBase.__init__(self, controller)
         self.lastTime = clock()

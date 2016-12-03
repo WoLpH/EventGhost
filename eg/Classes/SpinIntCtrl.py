@@ -21,21 +21,21 @@ import math
 # Local imports
 import eg
 
+
 class SpinIntCtrl(eg.SpinNumCtrl):
     """
     A wx.Control that shows a integer value and spin buttons to let the user
     easily input an integer value.
     """
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        value=0,
-        min=0,
-        max=None,
-        size=(-1, -1),
-        style=0
-    ):
+
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 value=0,
+                 min=0,
+                 max=None,
+                 size=(-1, -1),
+                 style=0):
         allowNegative = bool(min < 0)
         if max is None:
             integerWidth = 5
@@ -51,7 +51,6 @@ class SpinIntCtrl(eg.SpinNumCtrl):
             max=max,
             size=size,
             allowNegative=allowNegative,
-            groupDigits = False,
+            groupDigits=False,
             fractionWidth=0,
-            integerWidth=integerWidth
-        )
+            integerWidth=integerWidth)

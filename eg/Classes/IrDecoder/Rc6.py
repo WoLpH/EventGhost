@@ -75,6 +75,7 @@ MCE_REMOTE = {
     0x800F045E: "Blue",
 }
 
+
 class Rc6(ManchesterCoding1):
     """
     IR decoder for the Philips RC-6 protocol.
@@ -106,18 +107,15 @@ class Rc6(ManchesterCoding1):
             value2 = value & 0xFFFF7FFF
             if value2 in MCE_REMOTE:
                 return "Mce." + MCE_REMOTE[value2]
+
 #            else:
 #                print "0x%0.8X" % value2
 
         return "RC6mode%X_%d_%08X" % (mode, trailerBit, value)
 
     def GetTrailerBit(self):
-        sample = (
-            self.GetSample() * 8 +
-            self.GetSample() * 4 +
-            self.GetSample() * 2 +
-            self.GetSample()
-        )
+        sample = (self.GetSample() * 8 + self.GetSample() * 4 +
+                  self.GetSample() * 2 + self.GetSample())
         if sample == 3:  # binary 0011
             return 0
         elif sample == 12:  # binary 1100

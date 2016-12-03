@@ -26,11 +26,13 @@ from xml.etree import cElementTree as ElementTree
 # Local imports
 import eg
 
+
 class Document(object):
     def __init__(self):
         class ItemMixin:
             document = self
             root = None
+
         self.ItemMixin = ItemMixin
         itemNamespace = {}
         self.XMLTag2ClassDict = {}
@@ -42,8 +44,8 @@ class Document(object):
             return cls
 
         self.TreeLink = eg.TreeLink
-#        self.TreeItem = MakeCls("TreeItem")
-#        self.ContainerItem = MakeCls("ContainerItem")
+        #        self.TreeItem = MakeCls("TreeItem")
+        #        self.ContainerItem = MakeCls("ContainerItem")
         self.EventItem = MakeCls("EventItem")
         self.ActionItem = MakeCls("ActionItem")
         self.PluginItem = MakeCls("PluginItem")
@@ -67,15 +69,12 @@ class Document(object):
         self.expandedNodes = set()
 
     def AfterLoad(self):
-        if (
-            TreeStateData.guid == self.root.guid and
-            TreeStateData.time == self.root.time
-        ):
+        if (TreeStateData.guid == self.root.guid and
+                TreeStateData.time == self.root.time):
             self.SetExpandState(TreeStateData.expanded)
             self.selection = self.FindItemWithPath(TreeStateData.selection)
             self.firstVisibleItem = self.FindItemWithPath(
-                TreeStateData.firstVisibleItem
-            )
+                TreeStateData.firstVisibleItem)
         else:
             self.selection = self.root
             self.firstVisibleItem = self.root
@@ -96,8 +95,7 @@ class Document(object):
             self.frame,
             message="",
             wildcard="EventGhost Tree (*.egtree; *.xml)|*.egtree;*.xml",
-            style=style
-        )
+            style=style)
         try:
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return None
@@ -168,11 +166,9 @@ class Document(object):
             return
         result = eg.AddEventDialog.GetResult(self.frame)
         if result is None:
-           return
-        return eg.UndoHandler.NewEvent(self).Do(
-            self.selection,
-            label=result[0]
-        )
+            return
+        return eg.UndoHandler.NewEvent(self).Do(self.selection,
+                                                label=result[0])
 
     @eg.AssertInMainThread
     def CmdAddFolder(self):
@@ -276,6 +272,7 @@ class Document(object):
                 for child in item.childs:
                     i = Traverse(child, i)
             return i
+
         Traverse(self.root, -1)
 
         return expanded
@@ -311,8 +308,8 @@ class Document(object):
         if filePath is None:
             return self.LoadEmpty()
         self.ResetUndoState()
-#        if self.root:
-#            self.root.Delete()
+        #        if self.root:
+        #            self.root.Delete()
         if not filePath:
             filePath = os.path.join(eg.mainDir, "Example.egtree")
             self.SetFilePath(False)
@@ -334,8 +331,8 @@ class Document(object):
     @eg.LogIt
     def LoadEmpty(self):
         self.ResetUndoState()
-#        if self.root:
-#            self.root.Delete()
+        #        if self.root:
+        #            self.root.Delete()
         self.SetFilePath(None)
         eg.TreeLink.StartLoad()
         node = ElementTree.Element("EventGhost")
@@ -366,8 +363,7 @@ class Document(object):
                 "Do you really want to load the tree file:\n%s" % filePath,
                 eg.APP_NAME,
                 wx.YES_NO | wx.CENTRE | wx.ICON_QUESTION,
-                parent = self.frame,
-            )
+                parent=self.frame, )
             if res == wx.ID_NO:
                 return wx.ID_CANCEL
         if self.CheckFileNeedsSave() == wx.ID_CANCEL:
@@ -445,6 +441,7 @@ class Document(object):
                 for child in item.childs:
                     i = Traverse(child, i)
             return i
+
         Traverse(self.root, -1)
 
     def SetFilePath(self, filePath):
@@ -515,14 +512,12 @@ class SaveChangesDialog(wx.Dialog):
     def __init__(self, parent=None):
         text = eg.text.MainFrame.SaveChanges
         wx.Dialog.__init__(self, parent, title=eg.APP_NAME)
-        bmp = wx.ArtProvider.GetBitmap(
-            wx.ART_WARNING, wx.ART_CMN_DIALOG, (32, 32)
-        )
+        bmp = wx.ArtProvider.GetBitmap(wx.ART_WARNING, wx.ART_CMN_DIALOG,
+                                       (32, 32))
         staticBitmap = wx.StaticBitmap(self, -1, bmp)
 
-        messageCtrl = wx.StaticText(
-            self, -1, eg.text.MainFrame.SaveChanges.mesg
-        )
+        messageCtrl = wx.StaticText(self, -1,
+                                    eg.text.MainFrame.SaveChanges.mesg)
         messageCtrl.Wrap(400)
         saveButton = wx.Button(self, wx.ID_YES, text.saveButton)
         saveButton.Bind(wx.EVT_BUTTON, self.OnButton)
@@ -536,7 +531,8 @@ class SaveChangesDialog(wx.Dialog):
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(staticBitmap, 0, wx.ALL, 12)
-        sizer.Add(messageCtrl, 0, wx.ALIGN_CENTER | wx.LEFT | wx.TOP | wx.RIGHT, 6)
+        sizer.Add(messageCtrl, 0, wx.ALIGN_CENTER | wx.LEFT | wx.TOP |
+                  wx.RIGHT, 6)
         buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
         buttonSizer.Add(saveButton, 0, wx.LEFT | wx.RIGHT, 3)
         buttonSizer.Add(dontSaveButton, 0, wx.LEFT | wx.RIGHT, 3)

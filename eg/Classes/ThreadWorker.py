@@ -25,21 +25,19 @@ from traceback import extract_stack, format_list
 
 # Local imports
 import eg
-from eg.WinApi.Dynamic import (
-    byref, COINIT_APARTMENTTHREADED, CoInitializeEx, CoUninitialize,
-    CreateEvent, DispatchMessage, HANDLE, MSG, MsgWaitForMultipleObjects,
-    PeekMessage, PM_REMOVE, QS_ALLINPUT, SetEvent, WAIT_OBJECT_0, WAIT_TIMEOUT,
-    WM_QUIT
-)
+from eg.WinApi.Dynamic import (byref, COINIT_APARTMENTTHREADED, CoInitializeEx,
+                               CoUninitialize, CreateEvent, DispatchMessage,
+                               HANDLE, MSG, MsgWaitForMultipleObjects,
+                               PeekMessage, PM_REMOVE, QS_ALLINPUT, SetEvent,
+                               WAIT_OBJECT_0, WAIT_TIMEOUT, WM_QUIT)
+
 
 class ThreadWorker(object):
     """
     General purpose message pumping thread, that is used in many places.
     """
     # used for automatic documentation creation
-    __docsort__ = (
-        "Start, Stop, Setup, Finish, Call, Func, CallWait"
-    )
+    __docsort__ = ("Start, Stop, Setup, Finish, Call, Func, CallWait")
 
     def __init__(self, *args, **kwargs):
         self.__alive = True
@@ -51,8 +49,7 @@ class ThreadWorker(object):
         self.__thread = Thread(
             group=None,
             target=self.__MainLoop,
-            name=self.__class__.__name__,
-        )
+            name=self.__class__.__name__, )
 
     def AppendAction(self, action):
         self.__queue.append(action)
@@ -122,6 +119,7 @@ class ThreadWorker(object):
             result = wrappedFunc("Hello World!")
             print result
         """
+
         def Wrapper(*args, **kwargs):
             action = ThreadWorkerAction(func, args, kwargs, False)
             self.__queue.append(action)
@@ -134,6 +132,7 @@ class ThreadWorker(object):
                 excType, excValue, excTraceback = action.exceptionInfo
                 raise excType, excValue, excTraceback
             return action.returnValue
+
         return Wrapper
 
     def HandleAction(self, action):
@@ -181,6 +180,7 @@ class ThreadWorker(object):
         """
         Call this if the thread should stop.
         """
+
         def StopCall():
             self.__alive = False
 
@@ -193,13 +193,9 @@ class ThreadWorker(object):
         endTime = clock() + timeout
         events = (HANDLE * 1)(self.__dummyEvent)
         while True:
-            resultCode = MsgWaitForMultipleObjects(
-                1,
-                events,
-                0,
-                int(timeout * 1000),
-                QS_ALLINPUT
-            )
+            resultCode = MsgWaitForMultipleObjects(1, events, 0,
+                                                   int(timeout * 1000),
+                                                   QS_ALLINPUT)
             if resultCode == WAIT_OBJECT_0:
                 # event signaled - should never happen!
                 raise Exception("Got unknown event in ThreadWorker.Wait()")
@@ -216,13 +212,9 @@ class ThreadWorker(object):
         endTime = clock() + timeout
         events = (HANDLE * 1)(event)
         while self.__alive:
-            resultCode = MsgWaitForMultipleObjects(
-                1,
-                events,
-                0,
-                int(timeout * 1000),
-                QS_ALLINPUT
-            )
+            resultCode = MsgWaitForMultipleObjects(1, events, 0,
+                                                   int(timeout * 1000),
+                                                   QS_ALLINPUT)
             if resultCode == WAIT_OBJECT_0:
                 return True
             elif resultCode == WAIT_TIMEOUT:
@@ -236,15 +228,10 @@ class ThreadWorker(object):
 
     def __DoOneEvent(self):
         try:
-            resultCode = MsgWaitForMultipleObjects(
-                1,
-                self.__events,
-                0,
-                10000,
-                QS_ALLINPUT
-            )
+            resultCode = MsgWaitForMultipleObjects(1, self.__events, 0, 10000,
+                                                   QS_ALLINPUT)
             if resultCode == WAIT_OBJECT_0:
-                while 1:
+                while True:
                     try:
                         action = self.__queue.popleft()
                     except IndexError:

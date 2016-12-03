@@ -20,6 +20,7 @@
 import eg
 from NewItem import NewItem
 
+
 class NewPlugin(NewItem):
     """
     Create a new PluginItem if the user has choosen to do so from the menu
@@ -32,10 +33,7 @@ class NewPlugin(NewItem):
     def Do(self, pluginInfo):
         document = self.document
         pluginItem = eg.actionThread.Func(document.PluginItem.Create)(
-            document.autostartMacro,
-            -1,
-            file=pluginInfo.pluginName
-        )
+            document.autostartMacro, -1, file=pluginInfo.pluginName)
         pluginItem.Select()
         if pluginItem.executable:
             if pluginItem.NeedsStartupConfiguration():

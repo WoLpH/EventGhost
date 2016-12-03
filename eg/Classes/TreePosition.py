@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
 
+
 class TreePosition:
     """
     Object to find the position of an item inside the tree.
@@ -26,6 +27,7 @@ class TreePosition:
     use any direct item reference, but must use an "index path" to find
     the right object.
     """
+
     def __init__(self, item):
         self.root = item.root
         self.path = item.GetPath()

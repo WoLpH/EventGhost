@@ -20,9 +20,8 @@ import wx
 
 # Local imports
 import eg
-from TreeItem import (
-    HINT_MOVE_BEFORE, HINT_MOVE_BEFORE_OR_AFTER, HINT_NO_DROP, TreeItem
-)
+from TreeItem import (HINT_MOVE_BEFORE, HINT_MOVE_BEFORE_OR_AFTER,
+                      HINT_NO_DROP, TreeItem)
 from TreeLink import TreeLink
 
 PATCHES = {
@@ -31,6 +30,7 @@ PATCHES = {
 }
 
 RENAMED_COLOUR = eg.colour.GetRenamedColor()
+
 
 class ActionItem(TreeItem):
     xmlTag = "Action"
@@ -115,19 +115,17 @@ class ActionItem(TreeItem):
         eg.indent += 1
         try:
             if not action.plugin.info.isStarted:
-                self.PrintError(
-                    eg.text.Error.pluginNotActivated % action.plugin.name
-                )
+                self.PrintError(eg.text.Error.pluginNotActivated %
+                                action.plugin.name)
                 return
             try:
                 eg.result = self.compiled()
-            except eg.Exception, exc:
+            except eg.Exception as exc:
                 self.PrintError(unicode(exc))
             except:
                 label = self.GetLabel()
                 eg.PrintTraceback(
-                    eg.text.Error.InAction % label, 1, source=self
-                )
+                    eg.text.Error.InAction % label, 1, source=self)
         finally:
             eg.indent -= 1
 
@@ -151,11 +149,9 @@ class ActionItem(TreeItem):
     def GetData(self):
         attr, text = TreeItem.GetData(self)
         action = self.executable
-        text = "%s.%s(%s)" % (
-            action.plugin.info.evalName,
-            action.__class__.__name__,
-            ", ".join([repr(arg) for arg in self.args])
-        )
+        text = "%s.%s(%s)" % (action.plugin.info.evalName,
+                              action.__class__.__name__,
+                              ", ".join([repr(arg) for arg in self.args]))
         return attr, text
 
     def GetDescription(self):
@@ -179,10 +175,8 @@ class ActionItem(TreeItem):
         return name
 
     def GetTypeName(self):
-        return "%s: %s" % (
-            self.executable.plugin.info.label,
-            self.executable.name
-        )
+        return "%s: %s" % (self.executable.plugin.info.label,
+                           self.executable.name)
 
     def NeedsStartupConfiguration(self):
         """
@@ -190,10 +184,8 @@ class ActionItem(TreeItem):
         """
         # if the Configure method of the executable is overriden, we assume
         # the item wants to be configured after creation
-        return (
-            self.executable.Configure.im_func !=
-            eg.ActionBase.Configure.im_func
-        )
+        return (self.executable.Configure.im_func !=
+                eg.ActionBase.Configure.im_func)
 
     @eg.AssertInActionThread
     def SetArguments(self, args):
@@ -214,8 +206,7 @@ class ActionItem(TreeItem):
                 dict(
                     returnArgs=lambda *x: x,
                     XmlIdLink=lambda id: TreeLink.CreateFromArgument(self, id),
-                )
-            )
+                ))
         except:
             eg.PrintTraceback()
             args = ()
@@ -235,13 +226,10 @@ class ActionItem(TreeItem):
             self.helpDialog.Raise()
             return
         action = self.executable
-        self.helpDialog = eg.HtmlDialog(
-            parent,
-            action.name,
-            action.description,
-            action.info.icon.GetWxIcon(),
-            self.GetBasePath()
-        )
+        self.helpDialog = eg.HtmlDialog(parent, action.name,
+                                        action.description,
+                                        action.info.icon.GetWxIcon(),
+                                        self.GetBasePath())
 
         def OnClose(dummyEvent):
             self.helpDialog.Destroy()

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
 
-#pylint: disable-msg=C0103,C0301,C0302
+# pylint: disable-msg=C0103,C0301,C0302
 
 # This file gets automatically extended by ctypeslib.dynamic_module, so don't
 # edit it yourself.
@@ -34,21 +34,19 @@ if __name__ == "__main__":
         print "ctypeslib is not installed!"
     else:
         try:
-            ctypeslib.dynamic_module.include(
-                "#define UNICODE\n"
-                "#define _WIN32_WINNT 0x500\n"
-                "#define WIN32_LEAN_AND_MEAN\n"
-                "#define NO_STRICT\n"
-                "#include <windows.h>\n"
-                "#include <Mmsystem.h>\n"
-            )
+            ctypeslib.dynamic_module.include("#define UNICODE\n"
+                                             "#define _WIN32_WINNT 0x500\n"
+                                             "#define WIN32_LEAN_AND_MEAN\n"
+                                             "#define NO_STRICT\n"
+                                             "#include <windows.h>\n"
+                                             "#include <Mmsystem.h>\n")
         except WindowsError:
             print "GCC_XML most likely not installed"
 
 #-----------------------------------------------------------------------------#
 # everything after the following line is automatically created
 #-----------------------------------------------------------------------------#
-MIXERCONTROL_CT_CLASS_MASK = 4026531840L  # Variable c_ulong '-268435456ul'
+MIXERCONTROL_CT_CLASS_MASK = 4026531840  # Variable c_ulong '-268435456ul'
 MIXERCONTROL_CT_CLASS_FADER = 1342177280  # Variable c_long '1342177280l'
 MIXERCONTROL_CONTROLTYPE_VOLUME = 1342373889  # Variable c_long '1342373889l'
 MIXERCONTROL_CONTROLTYPE_BASS = 1342373890  # Variable c_long '1342373890l'
@@ -57,7 +55,8 @@ MIXERCONTROL_CONTROLTYPE_EQUALIZER = 1342373892  # Variable c_long '1342373892l'
 MIXERCONTROL_CONTROLTYPE_FADER = 1342373888  # Variable c_long '1342373888l'
 MIXERCONTROL_CT_CLASS_LIST = 1879048192  # Variable c_long '1879048192l'
 MIXERCONTROL_CONTROLTYPE_SINGLESELECT = 1879113728  # Variable c_long '1879113728l'
-MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT = 1895890944  # Variable c_long '1895890944l'
+# Variable c_long '1895890944l'
+MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT = 1895890944
 MIXERCONTROL_CONTROLTYPE_MUX = 1879113729  # Variable c_long '1879113729l'
 MIXERCONTROL_CONTROLTYPE_MIXER = 1895890945  # Variable c_long '1895890945l'
 MIXERCONTROL_CT_CLASS_METER = 268435456  # Variable c_long '268435456l'
@@ -87,29 +86,39 @@ MIXERCONTROL_CONTROLTYPE_MICROTIME = 1610809344  # Variable c_long '1610809344l'
 MIXERCONTROL_CONTROLTYPE_MILLITIME = 1627586560  # Variable c_long '1627586560l'
 MIXERCONTROL_CT_CLASS_CUSTOM = 0  # Variable c_long '0l'
 MIXERCONTROL_CONTROLTYPE_CUSTOM = 0  # Variable c_long '0l'
+
+
 class tMIXERCONTROLDETAILS_UNSIGNED(Structure):
     pass
+
+
 MIXERCONTROLDETAILS_UNSIGNED = tMIXERCONTROLDETAILS_UNSIGNED
 tMIXERCONTROLDETAILS_UNSIGNED._pack_ = 1
-tMIXERCONTROLDETAILS_UNSIGNED._fields_ = [
-    ('dwValue', DWORD),
-]
+tMIXERCONTROLDETAILS_UNSIGNED._fields_ = [('dwValue', DWORD), ]
+
+
 class tMIXERCONTROLDETAILS_SIGNED(Structure):
     pass
+
+
 MIXERCONTROLDETAILS_SIGNED = tMIXERCONTROLDETAILS_SIGNED
 tMIXERCONTROLDETAILS_SIGNED._pack_ = 1
-tMIXERCONTROLDETAILS_SIGNED._fields_ = [
-    ('lValue', LONG),
-]
+tMIXERCONTROLDETAILS_SIGNED._fields_ = [('lValue', LONG), ]
+
+
 class tMIXERCONTROLDETAILS_BOOLEAN(Structure):
     pass
+
+
 MIXERCONTROLDETAILS_BOOLEAN = tMIXERCONTROLDETAILS_BOOLEAN
 tMIXERCONTROLDETAILS_BOOLEAN._pack_ = 1
-tMIXERCONTROLDETAILS_BOOLEAN._fields_ = [
-    ('fValue', LONG),
-]
+tMIXERCONTROLDETAILS_BOOLEAN._fields_ = [('fValue', LONG), ]
+
+
 class tagMIXERCONTROLDETAILS_LISTTEXTW(Structure):
     pass
+
+
 MIXERCONTROLDETAILS_LISTTEXTW = tagMIXERCONTROLDETAILS_LISTTEXTW
 MIXERCONTROLDETAILS_LISTTEXT = MIXERCONTROLDETAILS_LISTTEXTW
 tagMIXERCONTROLDETAILS_LISTTEXTW._pack_ = 1
@@ -118,12 +127,16 @@ tagMIXERCONTROLDETAILS_LISTTEXTW._fields_ = [
     ('dwParam2', DWORD),
     ('szName', WCHAR * 64),
 ]
-MIXERCONTROL_CONTROLF_DISABLED = 2147483648L  # Variable c_ulong '-2147483648ul'
+MIXERCONTROL_CONTROLF_DISABLED = 2147483648  # Variable c_ulong '-2147483648ul'
 MIXERCONTROL_CONTROLF_MULTIPLE = 2  # Variable c_long '2l'
 MIXERCONTROL_CONTROLF_UNIFORM = 1  # Variable c_long '1l'
 MMSYSERR_NOERROR = 0  # Variable c_int '0'
+
+
 class tagMIXERCAPSW(Structure):
     pass
+
+
 MIXERCAPSW = tagMIXERCAPSW
 MIXERCAPS = MIXERCAPSW
 MMVERSION = UINT
@@ -136,12 +149,20 @@ tagMIXERCAPSW._fields_ = [
     ('fdwSupport', DWORD),
     ('cDestinations', DWORD),
 ]
+
+
 class tagMIXERLINEW(Structure):
     pass
+
+
 MIXERLINEW = tagMIXERLINEW
 MIXERLINE = MIXERLINEW
+
+
 class N13tagMIXERLINEW5DOLLAR_112E(Structure):
     pass
+
+
 N13tagMIXERLINEW5DOLLAR_112E._pack_ = 1
 N13tagMIXERLINEW5DOLLAR_112E._fields_ = [
     ('dwType', DWORD),
@@ -167,21 +188,35 @@ tagMIXERLINEW._fields_ = [
     ('szName', WCHAR * 64),
     ('Target', N13tagMIXERLINEW5DOLLAR_112E),
 ]
+
+
 class tagMIXERCONTROLW(Structure):
     pass
+
+
 MIXERCONTROLW = tagMIXERCONTROLW
 MIXERCONTROL = MIXERCONTROLW
+
+
 class N16tagMIXERCONTROLW5DOLLAR_117E(Union):
     pass
+
+
 class N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_118E(Structure):
     pass
+
+
 N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_118E._pack_ = 1
 N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_118E._fields_ = [
     ('lMinimum', LONG),
     ('lMaximum', LONG),
 ]
+
+
 class N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_119E(Structure):
     pass
+
+
 N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_119E._pack_ = 1
 N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_119E._fields_ = [
     ('dwMinimum', DWORD),
@@ -194,8 +229,12 @@ N16tagMIXERCONTROLW5DOLLAR_117E._fields_ = [
     ('_1', N16tagMIXERCONTROLW5DOLLAR_1175DOLLAR_119E),
     ('dwReserved', DWORD * 6),
 ]
+
+
 class N16tagMIXERCONTROLW5DOLLAR_120E(Union):
     pass
+
+
 N16tagMIXERCONTROLW5DOLLAR_120E._pack_ = 1
 N16tagMIXERCONTROLW5DOLLAR_120E._fields_ = [
     ('cSteps', DWORD),
@@ -214,12 +253,20 @@ tagMIXERCONTROLW._fields_ = [
     ('Bounds', N16tagMIXERCONTROLW5DOLLAR_117E),
     ('Metrics', N16tagMIXERCONTROLW5DOLLAR_120E),
 ]
+
+
 class tagMIXERLINECONTROLSW(Structure):
     pass
+
+
 MIXERLINECONTROLSW = tagMIXERLINECONTROLSW
 MIXERLINECONTROLS = MIXERLINECONTROLSW
+
+
 class N21tagMIXERLINECONTROLSW5DOLLAR_122E(Union):
     pass
+
+
 N21tagMIXERLINECONTROLSW5DOLLAR_122E._pack_ = 1
 N21tagMIXERLINECONTROLSW5DOLLAR_122E._fields_ = [
     ('dwControlID', DWORD),
@@ -236,11 +283,19 @@ tagMIXERLINECONTROLSW._fields_ = [
     ('cbmxctrl', DWORD),
     ('pamxctrl', LPMIXERCONTROLW),
 ]
+
+
 class tMIXERCONTROLDETAILS(Structure):
     pass
+
+
 MIXERCONTROLDETAILS = tMIXERCONTROLDETAILS
+
+
 class N20tMIXERCONTROLDETAILS5DOLLAR_123E(Union):
     pass
+
+
 N20tMIXERCONTROLDETAILS5DOLLAR_123E._pack_ = 1
 N20tMIXERCONTROLDETAILS5DOLLAR_123E._fields_ = [
     ('hwndOwner', HWND),

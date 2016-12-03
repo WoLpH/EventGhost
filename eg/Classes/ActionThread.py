@@ -23,6 +23,7 @@ import eg
 
 EVENT_ICON_INDEX = eg.EventItem.icon.index
 
+
 class ActionThread(eg.ThreadWorker):
     corePluginInfos = None
 
@@ -40,7 +41,7 @@ class ActionThread(eg.ThreadWorker):
     def HandleAction(self, action):
         try:
             action()
-        except eg.PluginBase.Exception, exc:
+        except eg.PluginBase.Exception as exc:
             pluginInfo = exc.obj.info
             eg.PrintError(exc.message, source=pluginInfo.treeItem)
             pluginInfo.lastException = exc
@@ -86,12 +87,11 @@ class ActionThread(eg.ThreadWorker):
         eg.document.Load(filename)
         eg.PrintDebugNotice("XML loaded in %f seconds." % (clock() - start))
 
-        missingHardwareIds = (
-            set(eg.WinUsb.ListDevices().iterkeys()) -
-            set(pluginInfo.info.hardwareId for pluginInfo in eg.pluginList)
-        )
+        missingHardwareIds = (set(eg.WinUsb.ListDevices().iterkeys()) - set(
+            pluginInfo.info.hardwareId for pluginInfo in eg.pluginList))
         missingPlugins = [
-            pluginInfo for pluginInfo in eg.pluginManager.database.itervalues()  # NOQA
+            pluginInfo
+            for pluginInfo in eg.pluginManager.database.itervalues()  # NOQA
             if pluginInfo.hardwareId in missingHardwareIds
         ]
         if missingPlugins:

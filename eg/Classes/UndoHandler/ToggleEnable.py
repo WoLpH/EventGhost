@@ -20,6 +20,7 @@
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class ToggleEnable(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Disabled.replace("&", "")
 

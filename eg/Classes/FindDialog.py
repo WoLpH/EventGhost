@@ -23,6 +23,7 @@ from types import StringTypes
 # Local imports
 import eg
 
+
 class Text(eg.TranslatableStrings):
     title = "Find"
     searchLabel = "Fi&nd what:"
@@ -39,12 +40,7 @@ class Text(eg.TranslatableStrings):
 class FindDialog(wx.Dialog):
     def __init__(self, parent, document):
         wx.Dialog.__init__(
-            self,
-            parent,
-            -1,
-            title = Text.title,
-            style = wx.DEFAULT_DIALOG_STYLE
-        )
+            self, parent, -1, title=Text.title, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         self.choices = [""]
         textCtrl = wx.TextCtrl(self)
@@ -54,10 +50,9 @@ class FindDialog(wx.Dialog):
         searchParametersCb.SetValue(1)
         directionRb = wx.RadioBox(
             self,
-            label = Text.direction,
-            choices = [Text.up, Text.down],
-            style = wx.RA_SPECIFY_ROWS
-        )
+            label=Text.direction,
+            choices=[Text.up, Text.down],
+            style=wx.RA_SPECIFY_ROWS)
         directionRb.SetSelection(1)
         searchButton = wx.Button(self, -1, Text.findButton)
         searchButton.SetDefault()
@@ -67,29 +62,23 @@ class FindDialog(wx.Dialog):
         acv = wx.ALIGN_CENTER_VERTICAL
         upperLeftSizer = eg.HBoxSizer(
             (wx.StaticText(self, -1, Text.searchLabel), 0, acv | wx.RIGHT, 5),
-            (textCtrl, 1, wx.EXPAND),
-        )
+            (textCtrl, 1, wx.EXPAND), )
         cbSizer = eg.VBoxSizer(
             (wholeWordsOnlyCb),
             (caseSensitiveCb, 0, wx.TOP, 5),
-            (searchParametersCb, 0, wx.TOP, 5),
-        )
+            (searchParametersCb, 0, wx.TOP, 5), )
         lowerLeftSizer = eg.HBoxSizer(
             (cbSizer, 0, acv | wx.RIGHT, 10),
-            (directionRb),
-        )
+            (directionRb), )
         leftSizer = eg.VBoxSizer(
             (upperLeftSizer, 0, wx.EXPAND | wx.ALL, 5),
-            (lowerLeftSizer, 0, wx.EXPAND | wx.ALL, 5),
-        )
+            (lowerLeftSizer, 0, wx.EXPAND | wx.ALL, 5), )
         btnSizer = eg.VBoxSizer(
             (searchButton, 0, wx.EXPAND),
-            (cancelButton, 0, wx.EXPAND | wx.TOP, 5),
-        )
+            (cancelButton, 0, wx.EXPAND | wx.TOP, 5), )
         sizer = eg.HBoxSizer(
             (leftSizer, 1, wx.EXPAND),
-            (btnSizer, 0, wx.EXPAND | wx.ALL, 5),
-        )
+            (btnSizer, 0, wx.EXPAND | wx.ALL, 5), )
         self.SetSizerAndFit(sizer)
         self.SetMinSize(self.GetSize())
 
@@ -98,6 +87,7 @@ class FindDialog(wx.Dialog):
         def EnableSearchButton(event):
             enable = textCtrl.GetValue() != ""
             searchButton.Enable(enable)
+
         textCtrl.Bind(wx.EVT_TEXT, EnableSearchButton)
 
         self.textCtrl = textCtrl
@@ -131,27 +121,16 @@ class FindDialog(wx.Dialog):
         ActionItem = eg.ActionItem
         keyLen = len(key)
         if self.wholeWordsOnlyCb.GetValue():
-            matchFunc = lambda text, pos: (
-                (
-                    pos == 0 or
-                    not text[pos - 1].isalnum()
-                ) and (
-                    keyLen + pos == len(text) or
-                    not text[pos + keyLen].isalnum()
-                )
-            )
+            matchFunc = lambda text, pos: ((pos == 0 or not text[pos - 1].isalnum()) and (keyLen + pos == len(text) or not text[pos + keyLen].isalnum()))
         else:
             matchFunc = lambda text, res: True
         searchParameters = self.searchParametersCb.GetValue()
         while True:
             item = iterFunc(item)
             if startItem is item:
-                dlg = wx.MessageDialog(
-                    None,
-                    Text.notFoundMesg % originalSearchValue,
-                    eg.APP_NAME,
-                    wx.OK | wx.ICON_INFORMATION
-                )
+                dlg = wx.MessageDialog(None, Text.notFoundMesg %
+                                       originalSearchValue, eg.APP_NAME,
+                                       wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 if self.IsShown():

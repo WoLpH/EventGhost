@@ -19,26 +19,16 @@
 # Local imports
 import Clipboard  # NOQA
 from cFunctions import (  # NOQA
-    GetClassName,
-    GetProcessName,
-    GetTopLevelWindowList as _GetTopLevelWindowList,
-    GetWindowChildsList,
-    GetWindowText,
-)
+    GetClassName, GetProcessName, GetTopLevelWindowList as
+    _GetTopLevelWindowList, GetWindowChildsList, GetWindowText, )
 from Dynamic import (  # NOQA
-    WM_COMMAND,
-    WM_USER,
-)
+    WM_COMMAND, WM_USER, )
 from Utils import (  # NOQA
-    BestWindowFromPoint,
-    HighlightWindow,
-    IsWin64,
-    PyEnumProcesses as EnumProcesses,
-    PyFindWindow as FindWindow,
-    PyGetCursorPos as GetCursorPos,
+    BestWindowFromPoint, HighlightWindow, IsWin64, PyEnumProcesses as
+    EnumProcesses, PyFindWindow as FindWindow, PyGetCursorPos as GetCursorPos,
     PyGetWindowThreadProcessId as GetWindowThreadProcessId,
-    PySendMessageTimeout as SendMessageTimeout,
-)
+    PySendMessageTimeout as SendMessageTimeout, )
+
 
 def GetTopLevelWindowList(includeInvisible):
     """
@@ -52,7 +42,7 @@ def GetTopLevelWindowList(includeInvisible):
     for i, hwnd in enumerate(topWindowsHwnds):
         if hwnd & 0x80000000:
             hwnd2 = hwnd - 0x100000000
-            #print 'hwnd too large: %s -> %s' % (hwnd, hwnd2)
+            # print 'hwnd too large: %s -> %s' % (hwnd, hwnd2)
             topWindowsHwnds[i] = hwnd2
 
     return topWindowsHwnds

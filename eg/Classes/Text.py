@@ -22,26 +22,23 @@ import os
 import eg
 from eg.Utils import SetDefault
 
+
 class Default:
     class General:
         configTree = "Configuration Tree"
         deleteQuestion = "Are you sure you want to delete this item?"
-        deleteManyQuestion = (
-            "This element has %s subelements.\n\n"
-            "Are you sure you want to delete them all?"
-        )
+        deleteManyQuestion = ("This element has %s subelements.\n\n"
+                              "Are you sure you want to delete them all?")
         deletePlugin = (
             "This plugin is used by actions in your configuration. You "
             "cannot remove it before all actions that are using this plugin "
-            "have been removed."
-        )
+            "have been removed.")
         deleteLinkedItems = (
             "At least one item outside your selection refers to an "
             "item inside your selection. If you continue to delete "
             "this selection, the referring item won't work properly "
             "anymore.\n\n"
-            "Are you sure you want to delete the selection?"
-        )
+            "Are you sure you want to delete the selection?")
         ok = "OK"
         cancel = "Cancel"
         apply = "&Apply"
@@ -71,19 +68,14 @@ class Default:
             "X coordinate",
             "Y coordinate",
             "Width",
-            "Height",
-        )
+            "Height", )
 
-        smartSpinMenu = (
-            'Change control to "Spin Num"',
-            'Change control to "Text" with {eg.result}',
-            'Change control to "Text" with {eg.event.payload}',
-            'Change control to (empty) "Text"'
-        )
-        smartSpinTooltip = (
-            "Use the right mouse button\n"
-            "to open the context menu!"
-        )
+        smartSpinMenu = ('Change control to "Spin Num"',
+                         'Change control to "Text" with {eg.result}',
+                         'Change control to "Text" with {eg.event.payload}',
+                         'Change control to (empty) "Text"')
+        smartSpinTooltip = ("Use the right mouse button\n"
+                            "to open the context menu!")
 
     class Error:
         FileNotFound = "File \"%s\" couldn't be found."
@@ -101,8 +93,7 @@ class Default:
         onlyLogAssignedToolTip = (
             "If checked, the log will only show events that would actually\n"
             "execute in the current configuration, so you should uncheck\n"
-            "this when you want to assign new events."
-        )
+            "this when you want to assign new events.")
 
         class TaskBarMenu:
             Show = "&Show EventGhost"
@@ -171,10 +162,8 @@ class Default:
             Reset = "&Reset"
 
         class SaveChanges:
-            mesg = (
-                "Configuration contains unsaved changed.\n\n"
-                "Do you want to save before continuing?"
-            )
+            mesg = ("Configuration contains unsaved changed.\n\n"
+                    "Do you want to save before continuing?")
             saveButton = "&Save"
             dontSaveButton = "Do&n't Save"
 
@@ -186,29 +175,22 @@ class Default:
             caption = "Configuration"
 
         class Messages:
-            cantAddEvent = (
-                "Events can only be added to macros."
-            )
+            cantAddEvent = ("Events can only be added to macros.")
             cantAddAction = (
-                "Actions can only be added to macros and Autostart."
-            )
-            cantDisable = (
-                "The root item and Autostart can't be disabled."
-            )
+                "Actions can only be added to macros and Autostart.")
+            cantDisable = ("The root item and Autostart can't be disabled.")
             cantRename = (
-                "The root item, Autostart, and plugins can't be renamed."
-            )
+                "The root item, Autostart, and plugins can't be renamed.")
             cantExecute = (
-                "The root item, folders, and events can't be executed."
-            )
+                "The root item, folders, and events can't be executed.")
             cantConfigure = (
-                "Only plugins, events, and actions can be configured."
-            )
+                "Only plugins, events, and actions can be configured.")
 
 
 def Text(language):
     class Translation(Default):
         pass
+
     languagePath = os.path.join(eg.languagesDir, "%s.py" % language)
     try:
         eg.ExecFile(languagePath, {}, Translation.__dict__)

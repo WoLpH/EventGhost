@@ -57,13 +57,12 @@ INFO_FIELDS = [
     "icon",
 ]
 
+
 class PluginInstall(object):
     def CreatePluginPackage(self, sourcePath, targetPath, pluginData):
         zipfile = ZipFile(targetPath, "w", ZIP_DEFLATED)
-        sourceCode = "\n".join(
-            "%s = %r" % (fieldName, pluginData[fieldName])
-            for fieldName in INFO_FIELDS
-        )
+        sourceCode = "\n".join("%s = %r" % (fieldName, pluginData[fieldName])
+                               for fieldName in INFO_FIELDS)
         zipfile.writestr("info.py", sourceCode)
         baseName = os.path.basename(sourcePath)
         for dirpath, dirnames, filenames in os.walk(sourcePath):
@@ -72,10 +71,8 @@ class PluginInstall(object):
                     dirnames.remove(dirname)
             for filename in filenames:
                 ext = os.path.splitext(filename)[1]
-                if (
-                    ext.lower() in (".pyc", ".pyo") and
-                    filename[:-1] in filenames
-                ):
+                if (ext.lower() in (".pyc", ".pyo") and
+                        filename[:-1] in filenames):
                     continue
                 src = os.path.join(dirpath, filename)
                 dst = os.path.join(baseName, src[len(sourcePath) + 1:])
@@ -85,7 +82,7 @@ class PluginInstall(object):
     @eg.LogItWithReturn
     def Export(self, pluginInfo):
         pluginData = self.GetPluginData(pluginInfo)
-        #dialog = PluginOverviewDialog(
+        # dialog = PluginOverviewDialog(
         #    eg.document.frame,
         #    "Plugin Information",
         #    pluginData=pluginData,
@@ -93,8 +90,8 @@ class PluginInstall(object):
         #    message="Do you want to save this plugin as a plugin file?"
         #)
         #result = dialog.ShowModal()
-        #dialog.Destroy()
-        #if result == wx.ID_CANCEL:
+        # dialog.Destroy()
+        # if result == wx.ID_CANCEL:
         #    return
         filename = os.path.basename(pluginInfo.path)
         title = eg.text.MainFrame.Menu.Export.replace("&", "").replace(".", "")
@@ -103,8 +100,7 @@ class PluginInstall(object):
             defaultFile=filename,
             message=title,
             wildcard="EventGhost Plugin (*.egplugin)|*.egplugin",
-            style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
-        )
+            style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
         try:
             result = dialog.ShowModal()
             if result == wx.ID_CANCEL:
@@ -150,11 +146,8 @@ class PluginInstall(object):
                 title="Install EventGhost Plugin",
                 pluginData=pluginData,
                 basePath=basePath,
-                message=(
-                    "Do you really want to install this plugin into "
-                    "EventGhost?"
-                )
-            )
+                message=("Do you really want to install this plugin into "
+                         "EventGhost?"))
             result = dialog.ShowModal()
             dialog.Destroy()
             if result == wx.ID_CANCEL:
@@ -167,7 +160,8 @@ class PluginInstall(object):
                     # plugin with same GUID exists in user dir, so delete
                     # the folder first
                     shutil.rmtree(info.path, False)
-            dstDir = os.path.join(eg.localPluginDir, os.path.basename(basePath))
+            dstDir = os.path.join(eg.localPluginDir,
+                                  os.path.basename(basePath))
             if os.path.exists(dstDir):
                 # the wanted name is already used by another plugin
                 # so we create a new folder name by adding an number
@@ -183,28 +177,27 @@ class PluginInstall(object):
         finally:
             shutil.rmtree(tmpDir, True)
             #from eg.WinApi.Dynamic import ExitProcess
-            #ExitProcess(0)
+            # ExitProcess(0)
+
 
 PluginInstall = PluginInstall()
 
 
 class PluginOverviewDialog(Dialog):
     def __init__(
-        self,
-        parent=None,
-        title=eg.APP_NAME,
-        basePath=None,
-        pluginData=None,
-        message="",
-    ):
+            self,
+            parent=None,
+            title=eg.APP_NAME,
+            basePath=None,
+            pluginData=None,
+            message="", ):
         Dialog.__init__(
             self,
-            None,  #eg.document.frame,
+            None,  # eg.document.frame,
             -1,
             title,
             size=(400, 300),
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         self.text = TEMPLATE.format(**pluginData)
         headerCtrl = eg.HtmlWindow(self, style=wx.html.HW_SCROLLBAR_NEVER)
         headerCtrl.SetBorders(2)
@@ -213,23 +206,21 @@ class PluginOverviewDialog(Dialog):
         self.headerCtrl = headerCtrl
         #height = headerCtrl.GetInternalRepresentation().GetHeight()
         #headerCtrl.SetMinSize((-1, height + 4))
-        #headerCtrl.Layout()
+        # headerCtrl.Layout()
         descriptionCtrl = eg.HtmlWindow(self)
         descriptionCtrl.SetBorders(2)
         descriptionCtrl.SetBasePath(basePath)
         descriptionCtrl.SetPage(pluginData['description'])
         questionCtrl = self.StaticText(message)
-        self.buttonRow = eg.ButtonRow(
-            self, (wx.ID_OK, wx.ID_CANCEL), True, True
-        )
+        self.buttonRow = eg.ButtonRow(self, (wx.ID_OK, wx.ID_CANCEL), True,
+                                      True)
         mainSizer = eg.VBoxSizer(
             (headerCtrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 5),
             (wx.StaticLine(self), 0, wx.EXPAND, 0),
             (descriptionCtrl, 1, wx.EXPAND | wx.ALL, 5),
             (wx.StaticLine(self), 0, wx.EXPAND, 0),
             (questionCtrl, 0, wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5),
-            (self.buttonRow.sizer, 0, wx.EXPAND),
-        )
+            (self.buttonRow.sizer, 0, wx.EXPAND), )
         self.SetSizer(mainSizer)
         self.SetAutoLayout(True)
         mainSizer.Fit(self)
@@ -240,14 +231,15 @@ class PluginOverviewDialog(Dialog):
         self.SetSize((400, 500))
         self.SetMinSize(self.GetSize())
         self.Center()
+
 #        self.SetSizerAndFit(mainSizer)
 #        self.Bind(wx.EVT_SIZE, self.OnSize)
 #        self.Layout()
 
     def OnSize(self, dummyEvent=None):
         self.Layout()
-        #self.headerCtrl.SetPage(self.text)
-        #print repr(self.text)
+        # self.headerCtrl.SetPage(self.text)
+        # print repr(self.text)
         internal = self.headerCtrl.GetInternalRepresentation()
         height = internal.GetHeight()
         #self.headerCtrl.SetSizeHints(self.headerCtrl.GetSize()[0], height)

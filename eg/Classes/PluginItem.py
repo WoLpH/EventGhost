@@ -25,6 +25,7 @@ import eg
 from ActionItem import ActionItem
 from TreeItem import TreeItem
 
+
 class PluginItem(ActionItem):
     xmlTag = "Plugin"
     icon = eg.Icons.PLUGIN_ICON
@@ -48,8 +49,7 @@ class PluginItem(ActionItem):
             guid,
             evalName,
             args,
-            self,
-        )
+            self, )
         self.name = eg.text.General.pluginLabel % info.label
         if info.icon != self.icon:
             self.icon = eg.Icons.PluginSubIcon(info.icon)
@@ -70,11 +70,8 @@ class PluginItem(ActionItem):
             return None
 
         if self.root.Traverse(SearchFunc) is not None:
-            eg.MessageBox(
-                eg.text.General.deletePlugin,
-                eg.APP_NAME,
-                wx.NO_DEFAULT | wx.OK | wx.ICON_EXCLAMATION
-            )
+            eg.MessageBox(eg.text.General.deletePlugin, eg.APP_NAME,
+                          wx.NO_DEFAULT | wx.OK | wx.ICON_EXCLAMATION)
             return False
         if not TreeItem.AskDelete(self):
             return False
@@ -88,6 +85,7 @@ class PluginItem(ActionItem):
             info.Close()
             info.instance.OnDelete()
             info.RemovePluginInstance()
+
         eg.actionThread.Call(DoIt)
 
         ActionItem.Delete(self)
@@ -148,10 +146,8 @@ class PluginItem(ActionItem):
         """
         # if the Configure method of the executable is overriden, we assume
         # the item wants to be configured after creation
-        return (
-            self.executable.Configure.im_func !=
-            eg.PluginBase.Configure.im_func
-        )
+        return (self.executable.Configure.im_func !=
+                eg.PluginBase.Configure.im_func)
 
     def RefreshAllVisibleActions(self):
         """
@@ -169,6 +165,7 @@ class PluginItem(ActionItem):
                 if item.childs and item in item.document.expandedNodes:
                     for child in item.childs:
                         Traverse(child)
+
         Traverse(self.root)
 
     @eg.LogIt

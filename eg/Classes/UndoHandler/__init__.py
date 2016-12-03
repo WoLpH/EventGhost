@@ -18,6 +18,7 @@
 
 MODULE_GLOBALS = globals()
 
+
 class UndoHandler:
     def __getattr__(self, name):
         try:
@@ -30,6 +31,7 @@ class UndoHandler:
 
     def _EmptyNode(*args, **kwargs):
         return []
+
 
 UndoHandler = UndoHandler()
 

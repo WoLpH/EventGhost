@@ -23,6 +23,7 @@ import eg
 
 KIND_TAGS = ["other", "remote", "program", "external"]
 
+
 class Config(eg.PersistentData):
     position = None
     size = (640, 450)
@@ -37,8 +38,7 @@ class Text(eg.TranslatableStrings):
     noMultiloadTitle = "No multiload possible"
     noMultiload = (
         "This plugin doesn't support multiload and you already have one "
-        "instance of this plugin in your configuration."
-    )
+        "instance of this plugin in your configuration.")
     otherPlugins = "General Plugins"
     remotePlugins = "Input Devices"
     programPlugins = "Software Control"
@@ -63,8 +63,7 @@ class AddPluginDialog(eg.TaskletDialog):
             eg.MessageBox(
                 Text.noMultiload,
                 Text.noMultiloadTitle,
-                style=wx.ICON_EXCLAMATION
-            )
+                style=wx.ICON_EXCLAMATION)
             return False
         else:
             return True
@@ -86,27 +85,17 @@ class AddPluginDialog(eg.TaskletDialog):
             parent,
             -1,
             title,
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 
         splitterWindow = wx.SplitterWindow(
             self,
-            style=(
-                wx.SP_LIVE_UPDATE |
-                wx.CLIP_CHILDREN |
-                wx.NO_FULL_REPAINT_ON_RESIZE
-            )
-        )
+            style=(wx.SP_LIVE_UPDATE | wx.CLIP_CHILDREN |
+                   wx.NO_FULL_REPAINT_ON_RESIZE))
 
         self.treeCtrl = treeCtrl = wx.TreeCtrl(
             splitterWindow,
-            style=(
-                wx.TR_SINGLE |
-                wx.TR_HAS_BUTTONS |
-                wx.TR_HIDE_ROOT |
-                wx.TR_LINES_AT_ROOT
-            )
-        )
+            style=(wx.TR_SINGLE | wx.TR_HAS_BUTTONS | wx.TR_HIDE_ROOT |
+                   wx.TR_LINES_AT_ROOT))
 
         treeCtrl.SetMinSize((170, 200))
 
@@ -117,18 +106,15 @@ class AddPluginDialog(eg.TaskletDialog):
 
         root = treeCtrl.AddRoot("")
         typeIds = {
-            KIND_TAGS[0]: treeCtrl.AppendItem(
-                root, getattr(Text, KIND_TAGS[0] + "Plugins"), 1
-            ),
+            KIND_TAGS[0]:
+            treeCtrl.AppendItem(root,
+                                getattr(Text, KIND_TAGS[0] + "Plugins"), 1),
             KIND_TAGS[1]: treeCtrl.AppendItem(
-                root, getattr(Text, KIND_TAGS[1] + "Plugins"), 1
-            ),
+                root, getattr(Text, KIND_TAGS[1] + "Plugins"), 1),
             KIND_TAGS[2]: treeCtrl.AppendItem(
-                root, getattr(Text, KIND_TAGS[2] + "Plugins"), 1
-            ),
+                root, getattr(Text, KIND_TAGS[2] + "Plugins"), 1),
             KIND_TAGS[3]: treeCtrl.AppendItem(
-                root, getattr(Text, KIND_TAGS[3] + "Plugins"), 1
-            ),
+                root, getattr(Text, KIND_TAGS[3] + "Plugins"), 1),
         }
         self.typeIds = typeIds
         itemToSelect = typeIds[KIND_TAGS[0]]
@@ -138,8 +124,7 @@ class AddPluginDialog(eg.TaskletDialog):
                 continue
             if info.icon and info.icon != eg.Icons.PLUGIN_ICON:
                 idx = imageList.Add(
-                    eg.Icons.PluginSubIcon(info.icon).GetBitmap()
-                )
+                    eg.Icons.PluginSubIcon(info.icon).GetBitmap())
             else:
                 idx = 0
 
@@ -162,6 +147,7 @@ class AddPluginDialog(eg.TaskletDialog):
             info = self.treeCtrl.GetPyData(self.treeCtrl.GetSelection())
             if info:
                 eg.PluginInstall.Export(info)
+
         menu = wx.Menu()
         menuId = wx.NewId()
         menu.Append(menuId, eg.text.MainFrame.Menu.Export)
@@ -189,8 +175,8 @@ class AddPluginDialog(eg.TaskletDialog):
         rightSizer.Add(subSizer, 0, wx.EXPAND | wx.LEFT | wx.BOTTOM, 5)
 
         staticBoxSizer = wx.StaticBoxSizer(
-            wx.StaticBox(rightPanel, label=Text.descriptionBox)
-        )
+            wx.StaticBox(
+                rightPanel, label=Text.descriptionBox))
 
         self.descrBox = eg.HtmlWindow(rightPanel)
         staticBoxSizer.Add(self.descrBox, 1, wx.EXPAND)
@@ -212,7 +198,7 @@ class AddPluginDialog(eg.TaskletDialog):
 
         self.SetSizerAndFit(mainSizer)
         #minSize = mainSizer.GetMinSize()
-        #self.SetMinSize(minSize)
+        # self.SetMinSize(minSize)
         self.SetSize(Config.size)
         splitterWindow.SetSashPosition(Config.splitPosition)
         if Config.position:
@@ -227,17 +213,15 @@ class AddPluginDialog(eg.TaskletDialog):
         Config.size = self.GetSizeTuple()
         Config.position = self.GetPositionTuple()
         Config.splitPosition = splitterWindow.GetSashPosition()
-        Config.collapsed = set(
-            kind for kind, treeId in typeIds.iteritems()
-            if not treeCtrl.IsExpanded(treeId)
-        )
+        Config.collapsed = set(kind for kind, treeId in typeIds.iteritems()
+                               if not treeCtrl.IsExpanded(treeId))
         self.__class__.instance = None
 
     def OnItemActivated(self, event):
         item = self.treeCtrl.GetSelection()
         info = self.treeCtrl.GetPyData(item)
         if info is not None:
-            #self.SetResult("huhu")
+            # self.SetResult("huhu")
             self.OnOK(wx.CommandEvent())
             return
         event.Skip()

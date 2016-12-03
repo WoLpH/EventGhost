@@ -39,6 +39,7 @@ else:
     ShutdownBlockReasonCreate = lambda hwnd, msg: None
     ShutdownBlockReasonDestroy = lambda hwnd: None
 
+
 class App(wx.App):
     def __init__(self):
         self.onExitFuncs = []
@@ -59,11 +60,13 @@ class App(wx.App):
         eg.document.Close()
         eg.taskBarIcon.Close()
         if not eg.startupArguments.translate:
+
             def DoOnClose():
                 eg.PrintDebugNotice("Triggering OnClose")
                 egEvent = eg.eventThread.TriggerEvent("OnClose")
                 while not egEvent.isEnded:
                     self.Yield()
+
             wx.CallAfter(DoOnClose)
         self.ExitMainLoop()
         return True
@@ -111,12 +114,9 @@ class App(wx.App):
         while True:
             threads = [
                 thread for thread in threading.enumerate()
-                if (
-                    thread is not currentThread and
-                    thread is not eg.messageReceiver._ThreadWorker__thread and
-                    not thread.isDaemon() and
-                    thread.isAlive()
-                )
+                if (thread is not currentThread and thread is
+                    not eg.messageReceiver._ThreadWorker__thread and
+                    not thread.isDaemon() and thread.isAlive())
             ]
             if len(threads) == 0:
                 break
@@ -126,9 +126,8 @@ class App(wx.App):
             while self.Pending():
                 self.Dispatch()
             time.sleep(0.01)
-        eg.PrintDebugNotice(
-            "Waited for threads shutdown: %f s" % (time.clock() - startTime)
-        )
+        eg.PrintDebugNotice("Waited for threads shutdown: %f s" %
+                            (time.clock() - startTime))
         if eg.debugLevel and len(threads):
             eg.PrintDebugNotice("The following threads did not terminate:")
             for thread in threads:
@@ -207,6 +206,7 @@ class App(wx.App):
                 return True
             else:
                 return False
+
         if threading.currentThread() == eg.mainThread:
             return Do()
         else:

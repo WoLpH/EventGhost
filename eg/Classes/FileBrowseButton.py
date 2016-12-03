@@ -22,11 +22,13 @@ from wx.lib.filebrowsebutton import FileBrowseButton as _FileBrowseButton
 # Local imports
 from eg.Icons import GetInternalBitmap
 
+
 class FileBrowseButton(_FileBrowseButton):
     """
     A control to allow the user to type in a filename or browse with the
     standard file dialog to select a file.
     """
+
     def createBrowseButton(self):
         """
         Create the browse-button control
@@ -57,10 +59,9 @@ class FileBrowseButton(_FileBrowseButton):
         self.SetSizer(box)
         self.Layout()
         if isinstance(size, tuple):
-            size = apply(wx.Size, size)
-        self.SetDimensions(
-            -1, -1, size.width, size.height, wx.SIZE_USE_EXISTING
-        )
+            size = wx.Size(*size)
+        self.SetDimensions(-1, -1, size.width, size.height,
+                           wx.SIZE_USE_EXISTING)
 
     def Enable(self, enable=True):
         self.textControl.Enable(enable)
@@ -69,5 +70,5 @@ class FileBrowseButton(_FileBrowseButton):
     def OnChanged(self, evt):
         if self.callCallback and self.changeCallback:
             self.changeCallback(evt)
-        #ADDED:
+        # ADDED:
         evt.Skip()

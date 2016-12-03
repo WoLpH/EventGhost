@@ -21,19 +21,19 @@ import wx
 # Local imports
 import eg
 
+
 class MessageDialog(wx.Dialog):
     """
     A replacement for wx.MessageDialog, that wraps the message, if the
     dialog would get to wide.
     """
-    def __init__(
-        self,
-        parent,
-        message,
-        caption=eg.APP_NAME,
-        style=wx.OK | wx.CANCEL,
-        pos=wx.DefaultPosition
-    ):
+
+    def __init__(self,
+                 parent,
+                 message,
+                 caption=eg.APP_NAME,
+                 style=wx.OK | wx.CANCEL,
+                 pos=wx.DefaultPosition):
         if parent is None and eg.document.frame:
             parent = eg.document.frame
         dialogStyle = wx.DEFAULT_DIALOG_STYLE
@@ -61,7 +61,8 @@ class MessageDialog(wx.Dialog):
             sizer.Add(staticBitmap, 0, wx.ALL, 12)
         staticText = wx.StaticText(self, -1, message)
         staticText.Wrap(400)
-        sizer.Add(staticText, 0, wx.ALIGN_CENTER | wx.LEFT | wx.TOP | wx.RIGHT, 6)
+        sizer.Add(staticText, 0, wx.ALIGN_CENTER | wx.LEFT | wx.TOP | wx.RIGHT,
+                  6)
         buttonSizer = wx.BoxSizer(wx.HORIZONTAL)
         text = eg.text.General
         if wx.YES_NO & style:

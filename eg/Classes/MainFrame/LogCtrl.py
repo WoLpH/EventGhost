@@ -27,10 +27,12 @@ import eg
 EVENT_ICON = eg.EventItem.icon
 ERROR_ICON = eg.Icons.ERROR_ICON
 
+
 class LogCtrl(wx.ListCtrl):
     """
     Implementation of a ListCtrl with a circular buffer.
     """
+
     def __init__(self, parent):
         self.maxlength = 2000
         self.removeOnMax = 200
@@ -39,18 +41,13 @@ class LogCtrl(wx.ListCtrl):
         wx.ListCtrl.__init__(
             self,
             parent,
-            style=(
-                wx.LC_REPORT |
-                wx.LC_VIRTUAL |
-                wx.NO_FULL_REPAINT_ON_RESIZE |
-                wx.HSCROLL |
-                wx.CLIP_CHILDREN |
-                wx.LC_NO_HEADER
-            )
-        )
+            style=(wx.LC_REPORT | wx.LC_VIRTUAL |
+                   wx.NO_FULL_REPAINT_ON_RESIZE | wx.HSCROLL |
+                   wx.CLIP_CHILDREN | wx.LC_NO_HEADER))
         if eg.config.useFixedFont:
             df = self.GetFont()
-            font = wx.Font(df.GetPointSize(), wx.DEFAULT, wx.NORMAL, wx.NORMAL, False, "Courier New")
+            font = wx.Font(df.GetPointSize(), wx.DEFAULT, wx.NORMAL, wx.NORMAL,
+                           False, "Courier New")
             self.SetFont(font)
 
         self.SetImageList(eg.Icons.gImageList, wx.IMAGE_LIST_SMALL)
@@ -113,6 +110,7 @@ class LogCtrl(wx.ListCtrl):
         eg.log.SetCtrl(self)
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass
@@ -152,26 +150,17 @@ class LogCtrl(wx.ListCtrl):
     def OnCmdCopy(self, dummyEvent=None):
         text = ""
         lines = 1
-        firstItem = item = self.GetNextItem(
-            -1,
-            wx.LIST_NEXT_ALL,
-            wx.LIST_STATE_SELECTED
-        )
+        firstItem = item = self.GetNextItem(-1, wx.LIST_NEXT_ALL,
+                                            wx.LIST_STATE_SELECTED)
         if item != -1:
             text = self.OnGetItemText(item, 0)[1:]
-            item = self.GetNextItem(
-                item,
-                wx.LIST_NEXT_ALL,
-                wx.LIST_STATE_SELECTED
-            )
+            item = self.GetNextItem(item, wx.LIST_NEXT_ALL,
+                                    wx.LIST_STATE_SELECTED)
             while item != -1:
                 lines += 1
                 text += "\r\n" + self.OnGetItemText(item, 0)[1:]
-                item = self.GetNextItem(
-                    item,
-                    wx.LIST_NEXT_ALL,
-                    wx.LIST_STATE_SELECTED
-                )
+                item = self.GetNextItem(item, wx.LIST_NEXT_ALL,
+                                        wx.LIST_STATE_SELECTED)
         if text != "" and wx.TheClipboard.Open():
             textDataObject = wx.TextDataObject(text)
             dataObjectComposite = wx.DataObjectComposite()
@@ -238,10 +227,8 @@ class LogCtrl(wx.ListCtrl):
         line, _, _, when, indent = self.data[item]
         return (
             #strftime(" %X   ", localtime(when))
-            strftime(" %H:%M:%S   ", localtime(when)) +
-            indent * self.indent +
-            line
-        )
+            strftime(" %H:%M:%S   ", localtime(when)) + indent * self.indent +
+            line)
 
     def OnKillFocus(self, event):
         eg.Notify("FocusChange", None)
@@ -280,10 +267,10 @@ class LogCtrl(wx.ListCtrl):
 
     @eg.AssertInMainThread
     def SetData(self, data):
-        #self.Freeze()
+        # self.Freeze()
         self.data = collections.deque(data)
         self.SetItemCount(len(data))
-        #self.Thaw()
+        # self.Thaw()
         self.Scroll()
 
     def SetIndent(self, shouldIndent):

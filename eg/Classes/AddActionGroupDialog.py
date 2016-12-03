@@ -19,14 +19,14 @@
 # Local imports
 import eg
 
+
 class Text(eg.TranslatableStrings):
     caption = "Add Actions?"
     message = (
         "EventGhost can add a folder with all actions of this plugin to your "
         "configuration tree. If you want to do so, select the location where "
         "it should be added and press OK.\n\n"
-        "Otherwise press the cancel button."
-    )
+        "Otherwise press the cancel button.")
 
 
 class AddActionGroupDialog(eg.TreeItemBrowseDialog):
@@ -38,5 +38,4 @@ class AddActionGroupDialog(eg.TreeItemBrowseDialog):
             searchItem=None,
             resultClasses=(eg.FolderItem, eg.RootItem),
             filterClasses=(eg.FolderItem, ),
-            parent=parent,
-        )
+            parent=parent, )

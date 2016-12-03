@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
 
-#pylint: disable-msg=C0103,C0301,C0302
+# pylint: disable-msg=C0103,C0301,C0302
 
 # This file gets automatically extended by ctypeslib.dynamic_module, so don't
 # edit it yourself.
 
-from ctypes import *  #pylint: disable-msg=W0401,W0614
-from ctypes.wintypes import *  #pylint: disable-msg=W0401,W0614
+from ctypes import *  # pylint: disable-msg=W0401,W0614
+from ctypes.wintypes import *  # pylint: disable-msg=W0401,W0614
 import sys
 
 _user32 = WinDLL("user32")
@@ -43,27 +43,25 @@ if __name__ == "__main__":
         print "ctypeslib is not installed!"
     else:
         try:
-            ctypeslib.dynamic_module.include(
-                "#define UNICODE\n"
-                "#define _WIN32_WINNT 0x501\n"
-                "#define WIN32_LEAN_AND_MEAN\n"
-                "#define NO_STRICT\n"
-                "#include <windows.h>\n"
-                "#include <winuser.h>\n"
-                "#include <Dbt.h>\n"
-                "#include <objbase.h>\n"
-                #"#include <Mmsystem.h>\n"
-                "#include <shlobj.h>\n"
-                #"#include <Psapi.h>\n"
-                "#include <tlhelp32.h>\n"
-                "#include <objidl.h>\n"
-                #"#include <setupapi.h>\n"
-                "#include <htmlhelp.h>\n"
-                "#include <shellapi.h>\n"
-                #"#include <difxapi.h>\n"
-                "#include <AccCtrl.h>\n"
-                "#include <Aclapi.h>\n"
-            )
+            ctypeslib.dynamic_module.include("#define UNICODE\n"
+                                             "#define _WIN32_WINNT 0x501\n"
+                                             "#define WIN32_LEAN_AND_MEAN\n"
+                                             "#define NO_STRICT\n"
+                                             "#include <windows.h>\n"
+                                             "#include <winuser.h>\n"
+                                             "#include <Dbt.h>\n"
+                                             "#include <objbase.h>\n"
+                                             #"#include <Mmsystem.h>\n"
+                                             "#include <shlobj.h>\n"
+                                             #"#include <Psapi.h>\n"
+                                             "#include <tlhelp32.h>\n"
+                                             "#include <objidl.h>\n"
+                                             #"#include <setupapi.h>\n"
+                                             "#include <htmlhelp.h>\n"
+                                             "#include <shellapi.h>\n"
+                                             #"#include <difxapi.h>\n"
+                                             "#include <AccCtrl.h>\n"
+                                             "#include <Aclapi.h>\n")
         except WindowsError:
             print "GCC_XML most likely not installed"
 INVALID_HANDLE_VALUE = -1
@@ -196,7 +194,9 @@ ULONG_PTR = c_ulong
 PDWORD_PTR = POINTER(ULONG_PTR)
 SendMessageTimeoutW = _user32.SendMessageTimeoutW
 SendMessageTimeoutW.restype = LRESULT
-SendMessageTimeoutW.argtypes = [HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD_PTR]
+SendMessageTimeoutW.argtypes = [
+    HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD_PTR
+]
 SendMessageTimeout = SendMessageTimeoutW  # alias
 ScreenToClient = _user32.ScreenToClient
 ScreenToClient.restype = BOOL
@@ -260,8 +260,12 @@ GetModuleHandleW = _kernel32.GetModuleHandleW
 GetModuleHandleW.restype = HMODULE
 GetModuleHandleW.argtypes = [LPCWSTR]
 GetModuleHandle = GetModuleHandleW  # alias
+
+
 class tagWNDCLASSW(Structure):
     pass
+
+
 WNDCLASSW = tagWNDCLASSW
 WNDCLASS = WNDCLASSW
 WNDPROC = WINFUNCTYPE(LRESULT, HWND, UINT, WPARAM, LPARAM)
@@ -284,7 +288,10 @@ RegisterClassW.argtypes = [POINTER(WNDCLASSW)]
 RegisterClass = RegisterClassW  # alias
 CreateWindowExW = _user32.CreateWindowExW
 CreateWindowExW.restype = HWND
-CreateWindowExW.argtypes = [DWORD, LPCWSTR, LPCWSTR, DWORD, c_int, c_int, c_int, c_int, HWND, HMENU, HINSTANCE, LPVOID]
+CreateWindowExW.argtypes = [
+    DWORD, LPCWSTR, LPCWSTR, DWORD, c_int, c_int, c_int, c_int, HWND, HMENU,
+    HINSTANCE, LPVOID
+]
 CreateWindowEx = CreateWindowExW  # alias
 DefWindowProcW = _user32.DefWindowProcW
 DefWindowProcW.restype = LRESULT
@@ -302,8 +309,12 @@ SendMessageW = _user32.SendMessageW
 SendMessageW.restype = LRESULT
 SendMessageW.argtypes = [HWND, UINT, WPARAM, LPARAM]
 SendMessage = SendMessageW  # alias
+
+
 class _SECURITY_ATTRIBUTES(Structure):
     pass
+
+
 LPSECURITY_ATTRIBUTES = POINTER(_SECURITY_ATTRIBUTES)
 CreateEventW = _kernel32.CreateEventW
 CreateEventW.restype = HANDLE
@@ -317,12 +328,14 @@ _SECURITY_ATTRIBUTES._fields_ = [
 SetEvent = _kernel32.SetEvent
 SetEvent.restype = BOOL
 SetEvent.argtypes = [HANDLE]
-WAIT_OBJECT_0 = 0L  # Variable c_ulong '0ul'
+WAIT_OBJECT_0 = 0  # Variable c_ulong '0ul'
 WAIT_TIMEOUT = 258  # Variable c_long '258l'
 QS_ALLINPUT = 1279  # Variable c_int '1279'
 MsgWaitForMultipleObjects = _user32.MsgWaitForMultipleObjects
 MsgWaitForMultipleObjects.restype = DWORD
-MsgWaitForMultipleObjects.argtypes = [DWORD, POINTER(HANDLE), BOOL, DWORD, DWORD]
+MsgWaitForMultipleObjects.argtypes = [
+    DWORD, POINTER(HANDLE), BOOL, DWORD, DWORD
+]
 CoInitializeEx = _ole32.CoInitializeEx
 CoInitializeEx.restype = HRESULT
 CoInitializeEx.argtypes = [LPVOID, DWORD]
@@ -366,16 +379,26 @@ PostMessageW = _user32.PostMessageW
 PostMessageW.restype = BOOL
 PostMessageW.argtypes = [HWND, UINT, WPARAM, LPARAM]
 PostMessage = PostMessageW  # alias
+
+
 class tagINPUT(Structure):
     pass
+
+
 LPINPUT = POINTER(tagINPUT)
 SendInput = _user32.SendInput
 SendInput.restype = UINT
 SendInput.argtypes = [UINT, LPINPUT, c_int]
+
+
 class N8tagINPUT5DOLLAR_105E(Union):
     pass
+
+
 class tagMOUSEINPUT(Structure):
     pass
+
+
 tagMOUSEINPUT._fields_ = [
     ('dx', LONG),
     ('dy', LONG),
@@ -385,8 +408,12 @@ tagMOUSEINPUT._fields_ = [
     ('dwExtraInfo', ULONG_PTR),
 ]
 MOUSEINPUT = tagMOUSEINPUT
+
+
 class tagKEYBDINPUT(Structure):
     pass
+
+
 tagKEYBDINPUT._fields_ = [
     ('wVk', WORD),
     ('wScan', WORD),
@@ -395,8 +422,12 @@ tagKEYBDINPUT._fields_ = [
     ('dwExtraInfo', ULONG_PTR),
 ]
 KEYBDINPUT = tagKEYBDINPUT
+
+
 class tagHARDWAREINPUT(Structure):
     pass
+
+
 tagHARDWAREINPUT._fields_ = [
     ('uMsg', DWORD),
     ('wParamL', WORD),
@@ -435,8 +466,12 @@ SetKeyboardState.argtypes = [LPBYTE]
 INPUT = tagINPUT
 INPUT_KEYBOARD = 1  # Variable c_int '1'
 KEYEVENTF_KEYUP = 2  # Variable c_int '2'
+
+
 class tagGUITHREADINFO(Structure):
     pass
+
+
 PGUITHREADINFO = POINTER(tagGUITHREADINFO)
 GetGUIThreadInfo = _user32.GetGUIThreadInfo
 GetGUIThreadInfo.restype = BOOL
@@ -487,8 +522,12 @@ HH_DISPLAY_TOPIC = 0  # Variable c_int '0'
 GetDesktopWindow = _user32.GetDesktopWindow
 GetDesktopWindow.restype = HWND
 GetDesktopWindow.argtypes = []
+
+
 class tagMONITORINFO(Structure):
     pass
+
+
 LPMONITORINFO = POINTER(tagMONITORINFO)
 GetMonitorInfoW = _user32.GetMonitorInfoW
 GetMonitorInfoW.restype = BOOL
@@ -505,8 +544,12 @@ MonitorFromWindow.restype = HMONITOR
 MonitorFromWindow.argtypes = [HWND, DWORD]
 MONITORINFO = tagMONITORINFO
 MONITOR_DEFAULTTONEAREST = 2  # Variable c_int '2'
+
+
 class _MEMORYSTATUSEX(Structure):
     pass
+
+
 MEMORYSTATUSEX = _MEMORYSTATUSEX
 ULONGLONG = c_ulonglong
 DWORDLONG = ULONGLONG
@@ -527,14 +570,16 @@ GlobalMemoryStatusEx.restype = BOOL
 GlobalMemoryStatusEx.argtypes = [LPMEMORYSTATUSEX]
 GetVolumeInformationW = _kernel32.GetVolumeInformationW
 GetVolumeInformationW.restype = BOOL
-GetVolumeInformationW.argtypes = [LPCWSTR, LPWSTR, DWORD, LPDWORD, LPDWORD, LPDWORD, LPWSTR, DWORD]
+GetVolumeInformationW.argtypes = [
+    LPCWSTR, LPWSTR, DWORD, LPDWORD, LPDWORD, LPDWORD, LPWSTR, DWORD
+]
 GetVolumeInformation = GetVolumeInformationW  # alias
 WaitForSingleObject = _kernel32.WaitForSingleObject
 WaitForSingleObject.restype = DWORD
 WaitForSingleObject.argtypes = [HANDLE, DWORD]
-INFINITE = 4294967295L  # Variable c_uint '-1u'
-MAXDWORD = 4294967295L  # Variable c_uint '-1u'
-GENERIC_READ = 2147483648L  # Variable c_ulong '-2147483648ul'
+INFINITE = 4294967295  # Variable c_uint '-1u'
+MAXDWORD = 4294967295  # Variable c_uint '-1u'
+GENERIC_READ = 2147483648  # Variable c_ulong '-2147483648ul'
 GENERIC_WRITE = 1073741824  # Variable c_long '1073741824l'
 OPEN_EXISTING = 3  # Variable c_int '3'
 FILE_ATTRIBUTE_NORMAL = 128  # Variable c_int '128'
@@ -562,13 +607,23 @@ EV_RLSD = 32  # Variable c_int '32'
 EV_RXCHAR = 1  # Variable c_int '1'
 EV_RXFLAG = 2  # Variable c_int '2'
 EV_TXEMPTY = 4  # Variable c_int '4'
+
+
 class _OVERLAPPED(Structure):
     pass
+
+
 OVERLAPPED = _OVERLAPPED
+
+
 class N11_OVERLAPPED4DOLLAR_81E(Union):
     pass
+
+
 class N11_OVERLAPPED4DOLLAR_814DOLLAR_82E(Structure):
     pass
+
+
 N11_OVERLAPPED4DOLLAR_814DOLLAR_82E._fields_ = [
     ('Offset', DWORD),
     ('OffsetHigh', DWORD),
@@ -586,8 +641,12 @@ _OVERLAPPED._fields_ = [
     ('_0', N11_OVERLAPPED4DOLLAR_81E),
     ('hEvent', HANDLE),
 ]
+
+
 class _DCB(Structure):
     pass
+
+
 DCB = _DCB
 _DCB._fields_ = [
     ('DCBlength', DWORD),
@@ -619,8 +678,12 @@ _DCB._fields_ = [
     ('EvtChar', c_char),
     ('wReserved1', WORD),
 ]
+
+
 class _COMMCONFIG(Structure):
     pass
+
+
 COMMCONFIG = _COMMCONFIG
 _COMMCONFIG._fields_ = [
     ('dwSize', DWORD),
@@ -632,8 +695,12 @@ _COMMCONFIG._fields_ = [
     ('dwProviderSize', DWORD),
     ('wcProviderData', WCHAR * 1),
 ]
+
+
 class _COMSTAT(Structure):
     pass
+
+
 COMSTAT = _COMSTAT
 _COMSTAT._fields_ = [
     ('fCtsHold', DWORD, 1),
@@ -647,8 +714,12 @@ _COMSTAT._fields_ = [
     ('cbInQue', DWORD),
     ('cbOutQue', DWORD),
 ]
+
+
 class _COMMTIMEOUTS(Structure):
     pass
+
+
 COMMTIMEOUTS = _COMMTIMEOUTS
 _COMMTIMEOUTS._fields_ = [
     ('ReadIntervalTimeout', DWORD),
@@ -662,7 +733,9 @@ ResetEvent.restype = BOOL
 ResetEvent.argtypes = [HANDLE]
 CreateFileW = _kernel32.CreateFileW
 CreateFileW.restype = HANDLE
-CreateFileW.argtypes = [LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE]
+CreateFileW.argtypes = [
+    LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE
+]
 CreateFile = CreateFileW  # alias
 LPOVERLAPPED = POINTER(_OVERLAPPED)
 ReadFile = _kernel32.ReadFile
@@ -715,7 +788,9 @@ SM_CXVSCROLL = 2  # Variable c_int '2'
 GA_PARENT = 1  # Variable c_int '1'
 CreateNamedPipeW = _kernel32.CreateNamedPipeW
 CreateNamedPipeW.restype = HANDLE
-CreateNamedPipeW.argtypes = [LPCWSTR, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, LPSECURITY_ATTRIBUTES]
+CreateNamedPipeW.argtypes = [
+    LPCWSTR, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, LPSECURITY_ATTRIBUTES
+]
 CreateNamedPipe = CreateNamedPipeW  # alias
 FlushFileBuffers = _kernel32.FlushFileBuffers
 FlushFileBuffers.restype = BOOL
@@ -735,12 +810,20 @@ PIPE_READMODE_MESSAGE = 2  # Variable c_int '2'
 PIPE_WAIT = 0  # Variable c_int '0'
 PIPE_UNLIMITED_INSTANCES = 255  # Variable c_int '255'
 ERROR_NOT_CONNECTED = 2250  # Variable c_long '2250l'
+
+
 class _SHELLEXECUTEINFOW(Structure):
     pass
+
+
 SHELLEXECUTEINFOW = _SHELLEXECUTEINFOW
 SHELLEXECUTEINFO = SHELLEXECUTEINFOW
+
+
 class N18_SHELLEXECUTEINFOW5DOLLAR_249E(Union):
     pass
+
+
 N18_SHELLEXECUTEINFOW5DOLLAR_249E._pack_ = 1
 N18_SHELLEXECUTEINFOW5DOLLAR_249E._fields_ = [
     ('hIcon', HANDLE),
@@ -806,7 +889,9 @@ TOKEN_INFORMATION_CLASS = _TOKEN_INFORMATION_CLASS
 PDWORD = POINTER(DWORD)
 GetTokenInformation = _Advapi32.GetTokenInformation
 GetTokenInformation.restype = BOOL
-GetTokenInformation.argtypes = [HANDLE, TOKEN_INFORMATION_CLASS, LPVOID, DWORD, PDWORD]
+GetTokenInformation.argtypes = [
+    HANDLE, TOKEN_INFORMATION_CLASS, LPVOID, DWORD, PDWORD
+]
 GetCurrentThread = _kernel32.GetCurrentThread
 GetCurrentThread.restype = HANDLE
 GetCurrentThread.argtypes = []
@@ -816,11 +901,19 @@ GetCurrentProcess.argtypes = []
 TOKEN_QUERY = 8  # Variable c_int '8'
 ERROR_NO_TOKEN = 1008  # Variable c_long '1008l'
 ERROR_INSUFFICIENT_BUFFER = 122  # Variable c_long '122l'
+
+
 class _TOKEN_GROUPS(Structure):
     pass
+
+
 TOKEN_GROUPS = _TOKEN_GROUPS
+
+
 class _SID_AND_ATTRIBUTES(Structure):
     pass
+
+
 PSID = PVOID
 _SID_AND_ATTRIBUTES._fields_ = [
     ('Sid', PSID),
@@ -833,15 +926,20 @@ _TOKEN_GROUPS._fields_ = [
 ]
 SECURITY_BUILTIN_DOMAIN_RID = 32  # Variable c_long '32l'
 DOMAIN_ALIAS_RID_ADMINS = 544  # Variable c_long '544l'
+
+
 class _SID_IDENTIFIER_AUTHORITY(Structure):
     pass
+
+
 PSID_IDENTIFIER_AUTHORITY = POINTER(_SID_IDENTIFIER_AUTHORITY)
 AllocateAndInitializeSid = _Advapi32.AllocateAndInitializeSid
 AllocateAndInitializeSid.restype = BOOL
-AllocateAndInitializeSid.argtypes = [PSID_IDENTIFIER_AUTHORITY, BYTE, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, POINTER(PSID)]
-_SID_IDENTIFIER_AUTHORITY._fields_ = [
-    ('Value', BYTE * 6),
+AllocateAndInitializeSid.argtypes = [
+    PSID_IDENTIFIER_AUTHORITY, BYTE, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD,
+    DWORD, DWORD, POINTER(PSID)
 ]
+_SID_IDENTIFIER_AUTHORITY._fields_ = [('Value', BYTE * 6), ]
 SID_IDENTIFIER_AUTHORITY = _SID_IDENTIFIER_AUTHORITY
 EqualSid = _Advapi32.EqualSid
 EqualSid.restype = BOOL
@@ -849,8 +947,12 @@ EqualSid.argtypes = [PSID, PSID]
 FreeSid = _Advapi32.FreeSid
 FreeSid.restype = PVOID
 FreeSid.argtypes = [PSID]
+
+
 class _GUID(Structure):
     pass
+
+
 GUID = _GUID
 _GUID._fields_ = [
     ('Data1', c_ulong),
@@ -864,10 +966,14 @@ CLSIDFromString = _ole32.CLSIDFromString
 CLSIDFromString.restype = HRESULT
 CLSIDFromString.argtypes = [LPOLESTR, LPCLSID]
 ERROR_NO_MORE_ITEMS = 259  # Variable c_long '259l'
-ENUM_CURRENT_SETTINGS = 4294967295L  # Variable c_ulong '-1u'
+ENUM_CURRENT_SETTINGS = 4294967295  # Variable c_ulong '-1u'
 EDS_RAWMODE = 2  # Variable c_int '2'
+
+
 class _DISPLAY_DEVICEW(Structure):
     pass
+
+
 PDISPLAY_DEVICEW = POINTER(_DISPLAY_DEVICEW)
 EnumDisplayDevicesW = _user32.EnumDisplayDevicesW
 EnumDisplayDevicesW.restype = BOOL
@@ -881,17 +987,27 @@ _DISPLAY_DEVICEW._fields_ = [
     ('DeviceID', WCHAR * 128),
     ('DeviceKey', WCHAR * 128),
 ]
+
+
 class _devicemodeW(Structure):
     pass
+
+
 LPDEVMODEW = POINTER(_devicemodeW)
 EnumDisplaySettingsExW = _user32.EnumDisplaySettingsExW
 EnumDisplaySettingsExW.restype = BOOL
 EnumDisplaySettingsExW.argtypes = [LPCWSTR, DWORD, LPDEVMODEW, DWORD]
 EnumDisplaySettingsEx = EnumDisplaySettingsExW  # alias
+
+
 class N12_devicemodeW4DOLLAR_96E(Union):
     pass
+
+
 class N12_devicemodeW4DOLLAR_964DOLLAR_97E(Structure):
     pass
+
+
 N12_devicemodeW4DOLLAR_964DOLLAR_97E._fields_ = [
     ('dmOrientation', c_short),
     ('dmPaperSize', c_short),
@@ -902,8 +1018,12 @@ N12_devicemodeW4DOLLAR_964DOLLAR_97E._fields_ = [
     ('dmDefaultSource', c_short),
     ('dmPrintQuality', c_short),
 ]
+
+
 class N12_devicemodeW4DOLLAR_964DOLLAR_98E(Structure):
     pass
+
+
 N12_devicemodeW4DOLLAR_964DOLLAR_98E._fields_ = [
     ('dmPosition', POINTL),
     ('dmDisplayOrientation', DWORD),
@@ -914,8 +1034,12 @@ N12_devicemodeW4DOLLAR_96E._fields_ = [
     ('_0', N12_devicemodeW4DOLLAR_964DOLLAR_97E),
     ('_1', N12_devicemodeW4DOLLAR_964DOLLAR_98E),
 ]
+
+
 class N12_devicemodeW4DOLLAR_99E(Union):
     pass
+
+
 N12_devicemodeW4DOLLAR_99E._fields_ = [
     ('dmDisplayFlags', DWORD),
     ('dmNup', DWORD),
@@ -980,8 +1104,12 @@ WaitNamedPipe = WaitNamedPipeW  # alias
 FILE_SHARE_READ = 1  # Variable c_int '1'
 FILE_SHARE_WRITE = 2  # Variable c_int '2'
 ERROR_MORE_DATA = 234  # Variable c_long '234l'
+
+
 class tagRAWINPUTDEVICELIST(Structure):
     pass
+
+
 PRAWINPUTDEVICELIST = POINTER(tagRAWINPUTDEVICELIST)
 PUINT = POINTER(c_uint)
 GetRawInputDeviceList = _user32.GetRawInputDeviceList
@@ -995,8 +1123,12 @@ GetRawInputDeviceInfoW = _user32.GetRawInputDeviceInfoW
 GetRawInputDeviceInfoW.restype = UINT
 GetRawInputDeviceInfoW.argtypes = [HANDLE, UINT, LPVOID, PUINT]
 GetRawInputDeviceInfo = GetRawInputDeviceInfoW  # alias
+
+
 class tagRAWINPUTDEVICE(Structure):
     pass
+
+
 RAWINPUTDEVICE = tagRAWINPUTDEVICE
 PCRAWINPUTDEVICE = POINTER(RAWINPUTDEVICE)
 RegisterRawInputDevices = _user32.RegisterRawInputDevices
@@ -1012,8 +1144,12 @@ HRAWINPUT = HANDLE
 GetRawInputData = _user32.GetRawInputData
 GetRawInputData.restype = UINT
 GetRawInputData.argtypes = [HRAWINPUT, UINT, LPVOID, PUINT, UINT]
+
+
 class tagRAWINPUTHEADER(Structure):
     pass
+
+
 RAWINPUTHEADER = tagRAWINPUTHEADER
 tagRAWINPUTHEADER._fields_ = [
     ('dwType', DWORD),
@@ -1021,17 +1157,31 @@ tagRAWINPUTHEADER._fields_ = [
     ('hDevice', HANDLE),
     ('wParam', WPARAM),
 ]
+
+
 class tagRAWINPUT(Structure):
     pass
+
+
 RAWINPUT = tagRAWINPUT
+
+
 class N11tagRAWINPUT5DOLLAR_110E(Union):
     pass
+
+
 class tagRAWMOUSE(Structure):
     pass
+
+
 class N11tagRAWMOUSE5DOLLAR_108E(Union):
     pass
+
+
 class N11tagRAWMOUSE5DOLLAR_1085DOLLAR_109E(Structure):
     pass
+
+
 N11tagRAWMOUSE5DOLLAR_1085DOLLAR_109E._fields_ = [
     ('usButtonFlags', USHORT),
     ('usButtonData', USHORT),
@@ -1051,8 +1201,12 @@ tagRAWMOUSE._fields_ = [
     ('ulExtraInformation', ULONG),
 ]
 RAWMOUSE = tagRAWMOUSE
+
+
 class tagRAWKEYBOARD(Structure):
     pass
+
+
 tagRAWKEYBOARD._fields_ = [
     ('MakeCode', USHORT),
     ('Flags', USHORT),
@@ -1062,8 +1216,12 @@ tagRAWKEYBOARD._fields_ = [
     ('ExtraInformation', ULONG),
 ]
 RAWKEYBOARD = tagRAWKEYBOARD
+
+
 class tagRAWHID(Structure):
     pass
+
+
 tagRAWHID._fields_ = [
     ('dwSizeHid', DWORD),
     ('dwCount', DWORD),
@@ -1080,13 +1238,23 @@ tagRAWINPUT._fields_ = [
     ('data', N11tagRAWINPUT5DOLLAR_110E),
 ]
 RAWINPUTDEVICELIST = tagRAWINPUTDEVICELIST
+
+
 class tagRID_DEVICE_INFO(Structure):
     pass
+
+
 RID_DEVICE_INFO = tagRID_DEVICE_INFO
+
+
 class N18tagRID_DEVICE_INFO5DOLLAR_111E(Union):
     pass
+
+
 class tagRID_DEVICE_INFO_MOUSE(Structure):
     pass
+
+
 tagRID_DEVICE_INFO_MOUSE._fields_ = [
     ('dwId', DWORD),
     ('dwNumberOfButtons', DWORD),
@@ -1094,8 +1262,12 @@ tagRID_DEVICE_INFO_MOUSE._fields_ = [
     ('fHasHorizontalWheel', BOOL),
 ]
 RID_DEVICE_INFO_MOUSE = tagRID_DEVICE_INFO_MOUSE
+
+
 class tagRID_DEVICE_INFO_KEYBOARD(Structure):
     pass
+
+
 tagRID_DEVICE_INFO_KEYBOARD._fields_ = [
     ('dwType', DWORD),
     ('dwSubType', DWORD),
@@ -1105,8 +1277,12 @@ tagRID_DEVICE_INFO_KEYBOARD._fields_ = [
     ('dwNumberOfKeysTotal', DWORD),
 ]
 RID_DEVICE_INFO_KEYBOARD = tagRID_DEVICE_INFO_KEYBOARD
+
+
 class tagRID_DEVICE_INFO_HID(Structure):
     pass
+
+
 tagRID_DEVICE_INFO_HID._fields_ = [
     ('dwVendorId', DWORD),
     ('dwProductId', DWORD),
@@ -1137,8 +1313,12 @@ RIM_INPUT = 0  # Variable c_int '0'
 RIDEV_NOLEGACY = 48  # Variable c_int '48'
 RIDEV_INPUTSINK = 256  # Variable c_int '256'
 WM_INPUT = 255  # Variable c_int '255'
+
+
 def GET_RAWINPUT_CODE_WPARAM(wParam):
     return ((wParam) & 0xff)  # macro
+
+
 TCHAR = WCHAR
 OpenSCManagerW = _Advapi32.OpenSCManagerW
 OpenSCManagerW.restype = SC_HANDLE
@@ -1147,7 +1327,10 @@ OpenSCManager = OpenSCManagerW  # alias
 SC_MANAGER_ALL_ACCESS = 983103  # Variable c_long '983103l'
 CreateServiceW = _Advapi32.CreateServiceW
 CreateServiceW.restype = SC_HANDLE
-CreateServiceW.argtypes = [SC_HANDLE, LPCWSTR, LPCWSTR, DWORD, DWORD, DWORD, DWORD, LPCWSTR, LPCWSTR, LPDWORD, LPCWSTR, LPCWSTR, LPCWSTR]
+CreateServiceW.argtypes = [
+    SC_HANDLE, LPCWSTR, LPCWSTR, DWORD, DWORD, DWORD, DWORD, LPCWSTR, LPCWSTR,
+    LPDWORD, LPCWSTR, LPCWSTR, LPCWSTR
+]
 CreateService = CreateServiceW  # alias
 SERVICE_ALL_ACCESS = 983551  # Variable c_long '983551l'
 SERVICE_WIN32_OWN_PROCESS = 16  # Variable c_int '16'
@@ -1172,9 +1355,15 @@ _SC_STATUS_TYPE = c_int  # enum
 SC_STATUS_TYPE = _SC_STATUS_TYPE
 QueryServiceStatusEx = _Advapi32.QueryServiceStatusEx
 QueryServiceStatusEx.restype = BOOL
-QueryServiceStatusEx.argtypes = [SC_HANDLE, SC_STATUS_TYPE, LPBYTE, DWORD, LPDWORD]
+QueryServiceStatusEx.argtypes = [
+    SC_HANDLE, SC_STATUS_TYPE, LPBYTE, DWORD, LPDWORD
+]
+
+
 class _SERVICE_STATUS_PROCESS(Structure):
     pass
+
+
 SERVICE_STATUS_PROCESS = _SERVICE_STATUS_PROCESS
 _SERVICE_STATUS_PROCESS._fields_ = [
     ('dwServiceType', DWORD),
@@ -1204,8 +1393,12 @@ StartServiceW = _Advapi32.StartServiceW
 StartServiceW.restype = BOOL
 StartServiceW.argtypes = [SC_HANDLE, DWORD, POINTER(LPCWSTR)]
 StartService = StartServiceW  # alias
+
+
 class _SERVICE_STATUS(Structure):
     pass
+
+
 LPSERVICE_STATUS = POINTER(_SERVICE_STATUS)
 ControlService = _Advapi32.ControlService
 ControlService.restype = BOOL
@@ -1219,12 +1412,18 @@ _SERVICE_STATUS._fields_ = [
     ('dwCheckPoint', DWORD),
     ('dwWaitHint', DWORD),
 ]
+
+
 class _ENUM_SERVICE_STATUSW(Structure):
     pass
+
+
 LPENUM_SERVICE_STATUSW = POINTER(_ENUM_SERVICE_STATUSW)
 EnumDependentServicesW = _Advapi32.EnumDependentServicesW
 EnumDependentServicesW.restype = BOOL
-EnumDependentServicesW.argtypes = [SC_HANDLE, DWORD, LPENUM_SERVICE_STATUSW, DWORD, LPDWORD, LPDWORD]
+EnumDependentServicesW.argtypes = [
+    SC_HANDLE, DWORD, LPENUM_SERVICE_STATUSW, DWORD, LPDWORD, LPDWORD
+]
 EnumDependentServices = EnumDependentServicesW  # alias
 SERVICE_STATUS = _SERVICE_STATUS
 _ENUM_SERVICE_STATUSW._fields_ = [
@@ -1236,13 +1435,15 @@ ChangeServiceConfig2W = _Advapi32.ChangeServiceConfig2W
 ChangeServiceConfig2W.restype = BOOL
 ChangeServiceConfig2W.argtypes = [SC_HANDLE, DWORD, LPVOID]
 ChangeServiceConfig2 = ChangeServiceConfig2W  # alias
+
+
 class _SERVICE_DESCRIPTIONW(Structure):
     pass
+
+
 SERVICE_DESCRIPTIONW = _SERVICE_DESCRIPTIONW
 SERVICE_DESCRIPTION = SERVICE_DESCRIPTIONW
-_SERVICE_DESCRIPTIONW._fields_ = [
-    ('lpDescription', LPWSTR),
-]
+_SERVICE_DESCRIPTIONW._fields_ = [('lpDescription', LPWSTR), ]
 SERVICE_CONFIG_DESCRIPTION = 1  # Variable c_int '1'
 SERVICE_CHANGE_CONFIG = 2  # Variable c_int '2'
 GetExitCodeProcess = _kernel32.GetExitCodeProcess
@@ -1257,9 +1458,16 @@ PulseEvent.argtypes = [HANDLE]
 LPOVERLAPPED_COMPLETION_ROUTINE = WINFUNCTYPE(None, DWORD, DWORD, LPOVERLAPPED)
 ReadDirectoryChangesW = _kernel32.ReadDirectoryChangesW
 ReadDirectoryChangesW.restype = BOOL
-ReadDirectoryChangesW.argtypes = [HANDLE, LPVOID, DWORD, BOOL, DWORD, LPDWORD, LPOVERLAPPED, LPOVERLAPPED_COMPLETION_ROUTINE]
+ReadDirectoryChangesW.argtypes = [
+    HANDLE, LPVOID, DWORD, BOOL, DWORD, LPDWORD, LPOVERLAPPED,
+    LPOVERLAPPED_COMPLETION_ROUTINE
+]
+
+
 class _FILE_NOTIFY_INFORMATION(Structure):
     pass
+
+
 FILE_NOTIFY_INFORMATION = _FILE_NOTIFY_INFORMATION
 _FILE_NOTIFY_INFORMATION._fields_ = [
     ('NextEntryOffset', DWORD),
@@ -1280,15 +1488,26 @@ FILE_ACTION_REMOVED = 2  # Variable c_int '2'
 FILE_ACTION_MODIFIED = 3  # Variable c_int '3'
 FILE_ACTION_RENAMED_OLD_NAME = 4  # Variable c_int '4'
 FILE_ACTION_RENAMED_NEW_NAME = 5  # Variable c_int '5'
+
+
 class _STARTUPINFOW(Structure):
     pass
+
+
 LPSTARTUPINFOW = POINTER(_STARTUPINFOW)
+
+
 class _PROCESS_INFORMATION(Structure):
     pass
+
+
 LPPROCESS_INFORMATION = POINTER(_PROCESS_INFORMATION)
 CreateProcessW = _kernel32.CreateProcessW
 CreateProcessW.restype = BOOL
-CreateProcessW.argtypes = [LPCWSTR, LPWSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, BOOL, DWORD, LPVOID, LPCWSTR, LPSTARTUPINFOW, LPPROCESS_INFORMATION]
+CreateProcessW.argtypes = [
+    LPCWSTR, LPWSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, BOOL, DWORD,
+    LPVOID, LPCWSTR, LPSTARTUPINFOW, LPPROCESS_INFORMATION
+]
 CreateProcess = CreateProcessW  # alias
 _PROCESS_INFORMATION._fields_ = [
     ('hProcess', HANDLE),
@@ -1333,8 +1552,12 @@ RegisterWindowMessageW = _user32.RegisterWindowMessageW
 RegisterWindowMessageW.restype = UINT
 RegisterWindowMessageW.argtypes = [LPCWSTR]
 RegisterWindowMessage = RegisterWindowMessageW  # alias
+
+
 class tagCOPYDATASTRUCT(Structure):
     pass
+
+
 COPYDATASTRUCT = tagCOPYDATASTRUCT
 tagCOPYDATASTRUCT._fields_ = [
     ('dwData', ULONG_PTR),
@@ -1343,8 +1566,15 @@ tagCOPYDATASTRUCT._fields_ = [
 ]
 PCOPYDATASTRUCT = POINTER(tagCOPYDATASTRUCT)
 WM_COPYDATA = 74  # Variable c_int '74'
-def CreateWindowW(lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam):
-    return CreateWindowExW(0L, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)  # macro
+
+
+def CreateWindowW(lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight,
+                  hWndParent, hMenu, hInstance, lpParam):
+    return CreateWindowExW(0, lpClassName, lpWindowName, dwStyle, x, y, nWidth,
+                           nHeight, hWndParent, hMenu, hInstance,
+                           lpParam)  # macro
+
+
 CreateWindow = CreateWindowW  # alias
 DestroyWindow = _user32.DestroyWindow
 DestroyWindow.restype = BOOL
@@ -1374,7 +1604,9 @@ InitiateSystemShutdownW.argtypes = [LPWSTR, LPWSTR, DWORD, BOOL, BOOL]
 InitiateSystemShutdown = InitiateSystemShutdownW  # alias
 DeviceIoControl = _kernel32.DeviceIoControl
 DeviceIoControl.restype = BOOL
-DeviceIoControl.argtypes = [HANDLE, DWORD, LPVOID, DWORD, LPVOID, DWORD, LPDWORD, LPOVERLAPPED]
+DeviceIoControl.argtypes = [
+    HANDLE, DWORD, LPVOID, DWORD, LPVOID, DWORD, LPDWORD, LPOVERLAPPED
+]
 SystemParametersInfoW = _user32.SystemParametersInfoW
 SystemParametersInfoW.restype = BOOL
 SystemParametersInfoW.argtypes = [UINT, UINT, PVOID, UINT]
@@ -1382,8 +1614,12 @@ SystemParametersInfo = SystemParametersInfoW  # alias
 ExitWindowsEx = _user32.ExitWindowsEx
 ExitWindowsEx.restype = BOOL
 ExitWindowsEx.argtypes = [UINT, DWORD]
+
+
 class _LUID(Structure):
     pass
+
+
 PLUID = POINTER(_LUID)
 LookupPrivilegeValueW = _Advapi32.LookupPrivilegeValueW
 LookupPrivilegeValueW.restype = BOOL
@@ -1393,14 +1629,24 @@ _LUID._fields_ = [
     ('LowPart', DWORD),
     ('HighPart', LONG),
 ]
+
+
 class _TOKEN_PRIVILEGES(Structure):
     pass
+
+
 PTOKEN_PRIVILEGES = POINTER(_TOKEN_PRIVILEGES)
 AdjustTokenPrivileges = _Advapi32.AdjustTokenPrivileges
 AdjustTokenPrivileges.restype = BOOL
-AdjustTokenPrivileges.argtypes = [HANDLE, BOOL, PTOKEN_PRIVILEGES, DWORD, PTOKEN_PRIVILEGES, PDWORD]
+AdjustTokenPrivileges.argtypes = [
+    HANDLE, BOOL, PTOKEN_PRIVILEGES, DWORD, PTOKEN_PRIVILEGES, PDWORD
+]
+
+
 class _LUID_AND_ATTRIBUTES(Structure):
     pass
+
+
 LUID = _LUID
 _LUID_AND_ATTRIBUTES._fields_ = [
     ('Luid', LUID),
@@ -1419,7 +1665,9 @@ SC_SCREENSAVE = 61760  # Variable c_int '61760'
 SC_MONITORPOWER = 61808  # Variable c_int '61808'
 TOKEN_ADJUST_PRIVILEGES = 32  # Variable c_int '32'
 WSTRING = c_wchar_p
-SE_SHUTDOWN_NAME = u'SeShutdownPrivilege'  # Variable WSTRING '(const wchar_t*)"S\\000e\\000S\\000h\\000u\\000t\\000d\\000o\\000w\\000n\\000P\\000r\\000i\\000v\\000i\\000l\\000e\\000g\\000e\\000\\000"'
+# Variable WSTRING '(const
+# wchar_t*)"S\\000e\\000S\\000h\\000u\\000t\\000d\\000o\\000w\\000n\\000P\\000r\\000i\\000v\\000i\\000l\\000e\\000g\\000e\\000\\000"'
+SE_SHUTDOWN_NAME = u'SeShutdownPrivilege'
 SE_PRIVILEGE_ENABLED = 2  # Variable c_long '2l'
 EWX_LOGOFF = 0  # Variable c_int '0'
 SPI_SETDESKWALLPAPER = 20  # Variable c_int '20'
@@ -1427,16 +1675,24 @@ SPIF_SENDWININICHANGE = 2  # Variable c_int '2'
 SPIF_SENDCHANGE = SPIF_SENDWININICHANGE  # alias
 SPIF_UPDATEINIFILE = 1  # Variable c_int '1'
 WM_DEVICECHANGE = 537  # Variable c_int '537'
+
+
 class _DEV_BROADCAST_HDR(Structure):
     pass
+
+
 DEV_BROADCAST_HDR = _DEV_BROADCAST_HDR
 _DEV_BROADCAST_HDR._fields_ = [
     ('dbch_size', DWORD),
     ('dbch_devicetype', DWORD),
     ('dbch_reserved', DWORD),
 ]
+
+
 class _DEV_BROADCAST_DEVICEINTERFACE_W(Structure):
     pass
+
+
 DEV_BROADCAST_DEVICEINTERFACE_W = _DEV_BROADCAST_DEVICEINTERFACE_W
 DEV_BROADCAST_DEVICEINTERFACE = DEV_BROADCAST_DEVICEINTERFACE_W
 _DEV_BROADCAST_DEVICEINTERFACE_W._fields_ = [
@@ -1446,8 +1702,12 @@ _DEV_BROADCAST_DEVICEINTERFACE_W._fields_ = [
     ('dbcc_classguid', GUID),
     ('dbcc_name', c_wchar * 1),
 ]
+
+
 class _DEV_BROADCAST_VOLUME(Structure):
     pass
+
+
 DEV_BROADCAST_VOLUME = _DEV_BROADCAST_VOLUME
 _DEV_BROADCAST_VOLUME._fields_ = [
     ('dbcv_size', DWORD),

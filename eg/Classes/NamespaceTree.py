@@ -22,6 +22,7 @@ import wx.gizmos
 # Local imports
 import eg
 
+
 class NamespaceTree(wx.gizmos.TreeListCtrl):
     def __init__(self, parent, namespace):
         self.namespace = namespace
@@ -29,13 +30,10 @@ class NamespaceTree(wx.gizmos.TreeListCtrl):
             self,
             parent,
             style=(
-                wx.TR_FULL_ROW_HIGHLIGHT |
-                wx.TR_DEFAULT_STYLE |
-                wx.VSCROLL |
-                wx.ALWAYS_SHOW_SB  #|
-                #wx.CLIP_CHILDREN
-            )
-        )
+                wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_DEFAULT_STYLE | wx.VSCROLL |
+                wx.ALWAYS_SHOW_SB  # |
+                # wx.CLIP_CHILDREN
+            ))
         self.AddColumn("Name")
         self.AddColumn("Type")
         self.AddColumn("Value")
@@ -58,9 +56,7 @@ class NamespaceTree(wx.gizmos.TreeListCtrl):
     @classmethod
     def Test(cls):
         dialog = eg.Dialog(
-            None,
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            None, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         tree = cls(dialog, eg)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(tree, 1, wx.EXPAND)

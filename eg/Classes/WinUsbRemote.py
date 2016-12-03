@@ -24,25 +24,23 @@ from eg.WinApi.Dynamic import c_ubyte, cast, POINTER, WinDLL
 
 PUBYTE = POINTER(c_ubyte)
 
+
 class WinUsbRemote(object):
     threadId = None
     dll = None
 
-    def __init__(
-        self,
-        deviceInterfaceGuid,
-        callback,
-        dataSize=1,
-        suppressRepeat=False
-    ):
+    def __init__(self,
+                 deviceInterfaceGuid,
+                 callback,
+                 dataSize=1,
+                 suppressRepeat=False):
         self.callback = callback
         self.dataSize = dataSize
         self.suppressRepeat = suppressRepeat
         self.deviceInterfaceGuid = unicode(deviceInterfaceGuid)
         if self.dll is None:
             self.__class__.dll = WinDLL(
-                join(eg.sitePackagesDir, "WinUsbWrapper.dll").encode('mbcs')
-            )
+                join(eg.sitePackagesDir, "WinUsbWrapper.dll").encode('mbcs'))
         self.Open()
 
     def Close(self):
@@ -61,10 +59,6 @@ class WinUsbRemote(object):
 
     def Open(self):
         msgId = eg.messageReceiver.AddWmUserHandler(self.MsgHandler)
-        self.threadId = self.dll.Start(
-            eg.messageReceiver.hwnd,
-            msgId,
-            self.deviceInterfaceGuid,
-            self.dataSize,
-            int(self.suppressRepeat)
-        )
+        self.threadId = self.dll.Start(eg.messageReceiver.hwnd, msgId,
+                                       self.deviceInterfaceGuid, self.dataSize,
+                                       int(self.suppressRepeat))

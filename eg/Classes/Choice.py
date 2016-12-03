@@ -18,20 +18,18 @@
 
 import wx
 
+
 class Choice(wx.Choice):
-    def __init__(
-        self,
-        parent,
-        value,
-        choices,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        *args,
-        **kwargs
-    ):
-        wx.Choice.__init__(
-            self, parent, -1, pos, size, choices, *args, **kwargs
-        )
+    def __init__(self,
+                 parent,
+                 value,
+                 choices,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 *args,
+                 **kwargs):
+        wx.Choice.__init__(self, parent, -1, pos, size, choices, *args,
+                           **kwargs)
         self.SetValue(value)
 
     def GetValue(self):

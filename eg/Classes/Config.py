@@ -25,11 +25,12 @@ from types import ClassType, InstanceType
 import eg
 from eg.Utils import GetClosestLanguage
 
+
 class Section:
     def __init__(self, defaults=None):
         if defaults:
             for key, value in defaults.__dict__.iteritems():
-                if type(value) == ClassType:
+                if isinstance(value, ClassType):
                     setattr(self, key, Section(value))
                 elif not hasattr(self, key):
                     setattr(self, key, value)
@@ -69,7 +70,7 @@ class Config(Section):
     showTrayIcon = True
     useFixedFont = False
 
-    class plugins:  #pylint: disable-msg=C0103
+    class plugins:  # pylint: disable-msg=C0103
         pass
 
     def __init__(self):
@@ -86,11 +87,9 @@ class Config(Section):
 
         if exists(configFilePath):
             try:
-                eg.ExecFile(
-                    configFilePath,
-                    {"__metaclass__": MakeSectionMetaClass},
-                    self.__dict__
-                )
+                eg.ExecFile(configFilePath,
+                            {"__metaclass__": MakeSectionMetaClass},
+                            self.__dict__)
             except:
                 if eg.debugLevel:
                     raise
@@ -109,18 +108,18 @@ def MakeSectionMetaClass(dummyName, dummyBases, dct):
     section.__dict__ = dct
     return section
 
+
 def RecursivePySave(obj, fileWriter, indent=""):
     objDict = obj.__dict__
-    keys = objDict.keys()
-    keys.sort()
+    keys = sorted(objDict.keys())
     classKeys = []
     for key in keys:
         if key.startswith("_"):
             continue
         value = objDict[key]
-        if type(value) == ClassType:
+        if isinstance(value, ClassType):
             classKeys.append(key)
-        elif type(value) == InstanceType:
+        elif isinstance(value, InstanceType):
             classKeys.append(key)
         else:
             line = indent + key + " = " + repr(value) + "\n"

@@ -49,8 +49,8 @@ from Dynamic import (
     sizeof,
     Sleep,
     StartService,
-    WinError,
-)
+    WinError, )
+
 
 class Service(object):
     schService = None
@@ -71,9 +71,9 @@ class Service(object):
             return
         # Get a handle to the SCM database.
         schSCManager = OpenSCManager(
-            None,                    # local computer
-            None,                    # ServicesActive database
-            SC_MANAGER_ALL_ACCESS    # full access rights
+            None,  # local computer
+            None,  # ServicesActive database
+            SC_MANAGER_ALL_ACCESS  # full access rights
         )
         if not schSCManager:
             raise WinError()
@@ -85,9 +85,9 @@ class Service(object):
         self.GetServiceControlManager()
         # Get a handle to the service.
         self.schService = OpenService(
-            self.schSCManager,       # SCM database
-            self.serviceName,        # name of service
-            SERVICE_ALL_ACCESS       # need delete access
+            self.schSCManager,  # SCM database
+            self.serviceName,  # name of service
+            SERVICE_ALL_ACCESS  # need delete access
         )
         if not self.schService:
             raise WinError()
@@ -112,19 +112,19 @@ class Service(object):
         self.GetServiceControlManager()
         # Create the service
         schService = CreateService(
-            self.schSCManager,          # SCM database
-            self.serviceName,           # name of service
-            self.serviceName,           # service name to display
-            SERVICE_ALL_ACCESS,         # desired access
+            self.schSCManager,  # SCM database
+            self.serviceName,  # name of service
+            self.serviceName,  # service name to display
+            SERVICE_ALL_ACCESS,  # desired access
             SERVICE_WIN32_OWN_PROCESS,  # service type
-            SERVICE_AUTO_START,         # start type
-            SERVICE_ERROR_NORMAL,       # error control type
-            path,                       # path to service's binary
-            None,                       # no load ordering group
-            None,                       # no tag identifier
-            None,                       # no dependencies
-            None,                       # LocalSystem account
-            None                        # no password
+            SERVICE_AUTO_START,  # start type
+            SERVICE_ERROR_NORMAL,  # error control type
+            path,  # path to service's binary
+            None,  # no load ordering group
+            None,  # no tag identifier
+            None,  # no dependencies
+            None,  # LocalSystem account
+            None  # no password
         )
         if not schService:
             raise WinError()
@@ -137,9 +137,9 @@ class Service(object):
         serviceDescription = SERVICE_DESCRIPTION()
         serviceDescription.lpDescription = description
         if not ChangeServiceConfig2(
-            self.schService,  # handle to service
-            SERVICE_CONFIG_DESCRIPTION,  # change: description
-            byref(serviceDescription)  # new description
+                self.schService,  # handle to service
+                SERVICE_CONFIG_DESCRIPTION,  # change: description
+                byref(serviceDescription)  # new description
         ):
             raise WinError()
 
@@ -152,10 +152,8 @@ class Service(object):
         ssStatus = self.GetStatus()
         # Check if the service is already running. It would be possible to stop
         # the service here, but for simplicity this example just returns.
-        if (
-            ssStatus.dwCurrentState != SERVICE_STOPPED and
-            ssStatus.dwCurrentState != SERVICE_STOP_PENDING
-        ):
+        if (ssStatus.dwCurrentState != SERVICE_STOPPED and
+                ssStatus.dwCurrentState != SERVICE_STOP_PENDING):
             return
 
         # Save the tick count and initial checkpoint.
@@ -180,9 +178,9 @@ class Service(object):
                     raise TimeOutError()
         # Attempt to start the service.
         if not StartService(
-            self.schService,  # handle to service
-            0,                # number of arguments
-            None              # no arguments
+                self.schService,  # handle to service
+                0,  # number of arguments
+                None  # no arguments
         ):
             raise WinError()
         #print("Service start pending...")
@@ -245,14 +243,11 @@ class Service(object):
             if GetTickCount() - dwStartTime > dwTimeout:
                 raise TimeOutError()
         # If the service is running, dependencies must be stopped first.
-        #self.StopDependentServices()
+        # self.StopDependentServices()
 
         # Send a stop code to the service.
-        if not ControlService(
-                self.schService,
-                SERVICE_CONTROL_STOP,
-                cast(byref(ssStatus), LPSERVICE_STATUS)
-        ):
+        if not ControlService(self.schService, SERVICE_CONTROL_STOP,
+                              cast(byref(ssStatus), LPSERVICE_STATUS)):
             raise WinError()
 
         # Wait for the service to stop.

@@ -28,6 +28,7 @@ from types import ModuleType
 # Local imports
 import eg
 
+
 def DeInit():
     eg.PrintDebugNotice("stopping threads")
     eg.actionThread.Func(eg.actionThread.StopSession)()
@@ -40,6 +41,7 @@ def DeInit():
     eg.messageReceiver.Stop()
     if eg.dummyAsyncoreDispatcher:
         eg.dummyAsyncoreDispatcher.close()
+
 
 def ImportAll():
     from os.path import join, basename
@@ -54,7 +56,7 @@ def ImportAll():
                 if not os.path.exists(join(path, "__init__.py")):
                     continue
                 moduleName = moduleRoot + "." + name
-                #print moduleName
+                # print moduleName
                 __import__(moduleName)
                 Traverse(path, moduleName)
                 continue
@@ -65,19 +67,20 @@ def ImportAll():
                 continue
             moduleName = moduleRoot + "." + base
             if moduleName in (
-                "eg.StaticImports",
-                "eg.CorePluginModule.EventGhost.OsdSkins.Default",
-            ):
+                    "eg.StaticImports",
+                    "eg.CorePluginModule.EventGhost.OsdSkins.Default", ):
                 continue
-            #print moduleName
+            # print moduleName
             __import__(moduleName)
 
     Traverse(join(eg.mainDir, "eg"), "eg")
     Traverse(eg.corePluginDir, "eg.CorePluginModule")
 
+
 def Init():
     if eg.startupArguments.isMain or eg.startupArguments.install:
         import WinApi.COMServer  # NOQA
+
 
 def InitGui():
     #import eg.WinApi.COMServer
@@ -108,11 +111,7 @@ def InitGui():
         startupFile = None
 
     eg.eventThread.Start()
-    wx.CallAfter(
-        eg.eventThread.Call,
-        eg.eventThread.StartSession,
-        startupFile
-    )
+    wx.CallAfter(eg.eventThread.Call, eg.eventThread.StartSession, startupFile)
 
     if config.checkUpdate:
         # avoid more than one check per day
@@ -127,6 +126,7 @@ def InitGui():
         windll.kernel32.RegisterApplicationRestart(args, 8)
 
     eg.Print(eg.text.MainFrame.Logger.welcomeText)
+
 
 def InitPathsAndBuiltins():
     sys.path.insert(0, eg.mainDir.encode('mbcs'))
@@ -145,9 +145,7 @@ def InitPathsAndBuiltins():
                 os.path.join(
                     winreg.QueryValue(hand, None),
                     "Lib",
-                    "site-packages",
-                )
-            )
+                    "site-packages", ))
     except:
         pass
 
@@ -174,6 +172,7 @@ def InitPathsAndBuiltins():
     sys.modules["eg.UserPluginModule"] = userPluginPackage
     eg.UserPluginModule = userPluginPackage
 
+
 def InitPil():
     """
     Initialize PIL's Image module.
@@ -185,10 +184,16 @@ def InitPil():
     import PIL.GifImagePlugin
     PIL.Image._initialized = 2
 
+
 # replace builtin input() with a small dialog
+
+
 def Input(prompt=None):
     return eval(eg.SimpleInputDialog.RawInput(prompt))
 
+
 # replace builtin raw_input() with a small dialog
+
+
 def RawInput(prompt=None):
     return eg.SimpleInputDialog.RawInput(prompt)

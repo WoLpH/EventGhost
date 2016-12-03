@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class SmartSpinNumCtrl(wx.Window):
     """
     A wx.Control that shows a fixed width floating point value and spin
@@ -28,18 +29,16 @@ class SmartSpinNumCtrl(wx.Window):
     """
     ctrl = None
 
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        value=0.0,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        style=wx.TE_RIGHT,
-        validator=wx.DefaultValidator,
-        name="eg.SmartSpinNumCtrl",
-        **kwargs
-    ):
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 value=0.0,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=wx.TE_RIGHT,
+                 validator=wx.DefaultValidator,
+                 name="eg.SmartSpinNumCtrl",
+                 **kwargs):
         self.initValue = 0.0
         self.value = value
         self.parent = parent
@@ -61,16 +60,11 @@ class SmartSpinNumCtrl(wx.Window):
         self.ctrl = self.CreateCtrl(int(not isinstance(value, (int, float))))
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
-    def CreateCtrl(self, ctrlType, init = True):
+    def CreateCtrl(self, ctrlType, init=True):
         szr = self.sizer
         szr.Clear(True)
         if ctrlType == 0:
-            ctrl = eg.SpinNumCtrl(
-                self,
-                -1,
-                self.initValue,
-                **self.kwargs
-            )
+            ctrl = eg.SpinNumCtrl(self, -1, self.initValue, **self.kwargs)
             ctrl.numCtrl.Bind(wx.EVT_RIGHT_UP, self.OnRclick)
             ctrl.numCtrl.SetToolTipString(eg.text.General.smartSpinTooltip)
             if init:
@@ -79,12 +73,12 @@ class SmartSpinNumCtrl(wx.Window):
             ctrl = wx.TextCtrl(
                 self,
                 -1,
-                str(self.value),
-            )
+                str(self.value), )
             ctrl.Bind(wx.EVT_RIGHT_UP, self.OnRclick)
             ctrl.SetToolTipString(eg.text.General.smartSpinTooltip)
             if not init:
-                ctrl.SetValue(("", "{eg.result}", "{eg.event.payload}", "")[ctrlType])
+                ctrl.SetValue(("", "{eg.result}", "{eg.event.payload}", "")[
+                    ctrlType])
         szr.Add(ctrl, 1, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
         szr.Layout()
         self.UpdateWidth(ctrl)
@@ -105,12 +99,8 @@ class SmartSpinNumCtrl(wx.Window):
             self.popupId1 = wx.NewId()
             self.popupId2 = wx.NewId()
             self.popupId3 = wx.NewId()
-            self.popups = (
-                self.popupId0,
-                self.popupId1,
-                self.popupId2,
-                self.popupId3
-            )
+            self.popups = (self.popupId0, self.popupId1, self.popupId2,
+                           self.popupId3)
             self.Bind(wx.EVT_MENU, self.OnMenu, id=self.popupId0)
             self.Bind(wx.EVT_MENU, self.OnMenu, id=self.popupId1)
             self.Bind(wx.EVT_MENU, self.OnMenu, id=self.popupId2)
@@ -144,11 +134,13 @@ class SmartSpinNumCtrl(wx.Window):
         elif isinstance(value, (int, float)):
             value = str(value)
         res = self.ctrl.SetValue(value)
-        wx.PostEvent(self, eg.ValueChangedEvent(self.GetId(), value = value))
+        wx.PostEvent(self, eg.ValueChangedEvent(self.GetId(), value=value))
         return res
 
     def UpdateWidth(self, ctrl):
-        w = (self.tW, self.nW)[int(isinstance(ctrl, eg.Classes.SpinNumCtrl.SpinNumCtrl))]
+        w = (
+            self.tW,
+            self.nW)[int(isinstance(ctrl, eg.Classes.SpinNumCtrl.SpinNumCtrl))]
         parentSizer = self.GetContainingSizer()
         if parentSizer:
             parentSizer.SetItemMinSize(self, w, -1)

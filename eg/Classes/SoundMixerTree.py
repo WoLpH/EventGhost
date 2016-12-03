@@ -88,8 +88,7 @@ from eg.WinApi.Dynamic.Mmsystem import (
     mixerOpen,
     MMSYSERR_NOERROR,
     pointer,
-    sizeof,
-)
+    sizeof, )
 from eg.WinApi.SoundMixer import SoundMixerException
 
 MCD_UNSIGNED = MIXERCONTROLDETAILS_UNSIGNED
@@ -103,37 +102,37 @@ MIXERCONTROLDETAILS_NAMES = {
 }
 
 CONTROLTYPES = {
-    #MIXERCONTROL_CT_CLASS_FADER
+    # MIXERCONTROL_CT_CLASS_FADER
     MIXERCONTROL_CONTROLTYPE_VOLUME: ("Volume", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_BASS: ("Bass", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_TREBLE: ("Treble", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_EQUALIZER: ("Equalizer", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_FADER: ("Generic Fader", MCD_UNSIGNED),
 
-    #MIXERCONTROL_CT_CLASS_LIST
+    # MIXERCONTROL_CT_CLASS_LIST
     MIXERCONTROL_CONTROLTYPE_SINGLESELECT: ("Single Select", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT: ("Multiple Select", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_MUX: ("Mux", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_MIXER: ("Mixer", MCD_BOOLEAN),
 
-    #MIXERCONTROL_CT_CLASS_METER
+    # MIXERCONTROL_CT_CLASS_METER
     MIXERCONTROL_CONTROLTYPE_BOOLEANMETER: ("Boolean Meter", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_PEAKMETER: ("Peak Meter", MCD_SIGNED),
     MIXERCONTROL_CONTROLTYPE_SIGNEDMETER: ("Signed Meter", MCD_SIGNED),
     MIXERCONTROL_CONTROLTYPE_UNSIGNEDMETER: ("Unsigned Meter", MCD_UNSIGNED),
 
-    #MIXERCONTROL_CT_CLASS_NUMBER
+    # MIXERCONTROL_CT_CLASS_NUMBER
     MIXERCONTROL_CONTROLTYPE_SIGNED: ("Signed", MCD_SIGNED),
     MIXERCONTROL_CONTROLTYPE_UNSIGNED: ("Unsigned", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_PERCENT: ("Percent", MCD_UNSIGNED),
     MIXERCONTROL_CONTROLTYPE_DECIBELS: ("Decibels", MCD_SIGNED),
 
-    #MIXERCONTROL_CT_CLASS_SLIDER
+    # MIXERCONTROL_CT_CLASS_SLIDER
     MIXERCONTROL_CONTROLTYPE_SLIDER: ("Slider", MCD_SIGNED),
     MIXERCONTROL_CONTROLTYPE_PAN: ("Pan", MCD_SIGNED),
     MIXERCONTROL_CONTROLTYPE_QSOUNDPAN: ("Qsound Pan", MCD_SIGNED),
 
-    #MIXERCONTROL_CT_CLASS_SWITCH
+    # MIXERCONTROL_CT_CLASS_SWITCH
     MIXERCONTROL_CONTROLTYPE_BOOLEAN: ("Boolean", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_BUTTON: ("Button", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_LOUDNESS: ("Loudness", MCD_BOOLEAN),
@@ -142,7 +141,7 @@ CONTROLTYPES = {
     MIXERCONTROL_CONTROLTYPE_ONOFF: ("OnOff", MCD_BOOLEAN),
     MIXERCONTROL_CONTROLTYPE_STEREOENH: ("Stereo Enhance", MCD_BOOLEAN),
 
-    #MIXERCONTROL_CT_CLASS_TIME
+    # MIXERCONTROL_CT_CLASS_TIME
     MIXERCONTROL_CONTROLTYPE_MICROTIME: "Microseconds",
     MIXERCONTROL_CONTROLTYPE_MILLITIME: "Milliseconds",
 }
@@ -216,10 +215,10 @@ MIXER_CONTROL_CLASSES = {
     },
     MIXERCONTROL_CT_CLASS_CUSTOM: {
         "name": "Custom",
-        "types": {
-        }
+        "types": {}
     },
 }
+
 
 class SoundMixerTree(wx.TreeCtrl):
     def __init__(self, parent, panel, *args, **kwargs):
@@ -241,17 +240,12 @@ class SoundMixerTree(wx.TreeCtrl):
         mixerLineControls.dwLineID = mixerline.dwLineID
         mixerLineControls.pamxctrl = pointer(mixerControlArray[0])
         mixerLineControls.cbmxctrl = sizeof(MIXERCONTROL)
-        mixerGetLineControls(
-            self.mixerHandle,
-            byref(mixerLineControls),
-            MIXER_GETLINECONTROLSF_ALL
-        )
+        mixerGetLineControls(self.mixerHandle,
+                             byref(mixerLineControls),
+                             MIXER_GETLINECONTROLSF_ALL)
         for i in range(numCtrls):
             mixerControl = mixerControlArray[i]
-            ctrlItem = self.AppendItem(
-                parentItem,
-                mixerControl.szName
-            )
+            ctrlItem = self.AppendItem(parentItem, mixerControl.szName)
             self.SetPyData(ctrlItem, mixerControl.dwControlID)
 
     def FillTree(self):
@@ -271,26 +265,23 @@ class SoundMixerTree(wx.TreeCtrl):
         for i in range(mixercaps.cDestinations):
             mixerline.cbStruct = sizeof(MIXERLINE)
             mixerline.dwDestination = i
-            if mixerGetLineInfo(
-                mixerHandle, byref(mixerline), MIXER_GETLINEINFOF_DESTINATION
-            ):
+            if mixerGetLineInfo(mixerHandle,
+                                byref(mixerline),
+                                MIXER_GETLINEINFOF_DESTINATION):
                 continue
             destItem = self.AppendItem(
-                root, mixerline.szName + ": %i" % mixerline.cChannels
-            )
+                root, mixerline.szName + ": %i" % mixerline.cChannels)
             self.AddControls(destItem, mixerline)
             for n in range(mixerline.cConnections):
                 mixerline.cbStruct = sizeof(MIXERLINE)
                 mixerline.dwDestination = i
                 mixerline.dwSource = n
-                if mixerGetLineInfo(
-                    mixerHandle, byref(mixerline), MIXER_GETLINEINFOF_SOURCE
-                ):
+                if mixerGetLineInfo(mixerHandle,
+                                    byref(mixerline),
+                                    MIXER_GETLINEINFOF_SOURCE):
                     continue
                 sourceItem = self.AppendItem(
-                    destItem,
-                    mixerline.szName + ": %i" % mixerline.cChannels
-                )
+                    destItem, mixerline.szName + ": %i" % mixerline.cChannels)
                 self.AddControls(sourceItem, mixerline)
 
     def OnSelectionChanged(self, event):
@@ -312,11 +303,9 @@ class SoundMixerTree(wx.TreeCtrl):
         mixerLineControls.dwControlID = dwControlID
         mixerLineControls.pamxctrl = pointer(mixerControl)
         mixerLineControls.cbmxctrl = sizeof(MIXERCONTROL)
-        err = mixerGetLineControls(
-            self.mixerHandle,
-            byref(mixerLineControls),
-            MIXER_GETLINECONTROLSF_ONEBYID
-        )
+        err = mixerGetLineControls(self.mixerHandle,
+                                   byref(mixerLineControls),
+                                   MIXER_GETLINECONTROLSF_ONEBYID)
         if err:
             print "error", err
             return
@@ -324,19 +313,16 @@ class SoundMixerTree(wx.TreeCtrl):
         idCtrl = wx.StaticText(panel, -1, "Name: " + mixerControl.szName)
         sizer.Add(idCtrl)
 
-        idCtrl = wx.StaticText(
-            panel, -1, "Short Name: " + mixerControl.szShortName
-        )
+        idCtrl = wx.StaticText(panel, -1,
+                               "Short Name: " + mixerControl.szShortName)
         sizer.Add(idCtrl)
 
         dwControlType = mixerControl.dwControlType
 
-        controlClass = MIXER_CONTROL_CLASSES[
-            dwControlType & MIXERCONTROL_CT_CLASS_MASK
-        ]
-        idCtrl = wx.StaticText(
-            panel, -1, "Classification: " + controlClass["name"]
-        )
+        controlClass = MIXER_CONTROL_CLASSES[dwControlType &
+                                             MIXERCONTROL_CT_CLASS_MASK]
+        idCtrl = wx.StaticText(panel, -1,
+                               "Classification: " + controlClass["name"])
         sizer.Add(idCtrl)
 
         controlClassTypeName = controlClass["types"][dwControlType]
@@ -379,11 +365,9 @@ class SoundMixerTree(wx.TreeCtrl):
         mixerControlDetails.cbDetails = sizeof(details)
         mixerControlDetails.paDetails = cast(pointer(details), c_void_p)
         valueType()
-        mixerGetControlDetails(
-            self.mixerHandle,
-            byref(mixerControlDetails),
-            MIXER_GETCONTROLDETAILSF_VALUE
-        )
+        mixerGetControlDetails(self.mixerHandle,
+                               byref(mixerControlDetails),
+                               MIXER_GETCONTROLDETAILSF_VALUE)
         values = []
         for i in range(cChannels * numMultipleItems):
             if valueType == MCD_BOOLEAN:
@@ -396,22 +380,16 @@ class SoundMixerTree(wx.TreeCtrl):
         idCtrl = wx.StaticText(panel, -1, "Value: %r" % values)
         sizer.Add(idCtrl)
 
-        if (
-            dwControlType & MIXERCONTROL_CT_CLASS_MASK ==
-            MIXERCONTROL_CT_CLASS_LIST
-        ):
-            labels = (
-                MIXERCONTROLDETAILS_LISTTEXT * (cChannels * numMultipleItems)
-            )()
+        if (dwControlType & MIXERCONTROL_CT_CLASS_MASK ==
+                MIXERCONTROL_CT_CLASS_LIST):
+            labels = (MIXERCONTROLDETAILS_LISTTEXT *
+                      (cChannels * numMultipleItems))()
             mixerControlDetails.cbDetails = sizeof(
-                MIXERCONTROLDETAILS_LISTTEXT
-            )
+                MIXERCONTROLDETAILS_LISTTEXT)
             mixerControlDetails.paDetails = cast(pointer(labels), c_void_p)
-            mixerGetControlDetails(
-                self.mixerHandle,
-                byref(mixerControlDetails),
-                MIXER_GETCONTROLDETAILSF_LISTTEXT
-            )
+            mixerGetControlDetails(self.mixerHandle,
+                                   byref(mixerControlDetails),
+                                   MIXER_GETCONTROLDETAILSF_LISTTEXT)
             for i in range(cChannels * numMultipleItems):
                 print labels[i].szName
         panel.SetSizerAndFit(sizer)

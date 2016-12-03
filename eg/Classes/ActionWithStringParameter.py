@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class ActionWithStringParameter(eg.ActionBase):
     """
     Simple action class, that only has a single string parameter.
@@ -42,10 +43,8 @@ class ActionWithStringParameter(eg.ActionBase):
         parameterDescription = None
         if self.parameterDescription:
             parameterDescription = self.parameterDescription
-        elif (
-            hasattr(self, "text") and
-            hasattr(self.text, "parameterDescription")
-        ):
+        elif (hasattr(self, "text") and
+              hasattr(self.text, "parameterDescription")):
             parameterDescription = self.text.parameterDescription
 
         if parameterDescription:

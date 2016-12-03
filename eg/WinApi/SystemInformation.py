@@ -88,6 +88,7 @@ EDITIONS = {
 
 GetSystemMetrics = windll.user32.GetSystemMetrics
 
+
 class OSVERSIONINFOEX(Structure):
     _fields_ = [
         ('dwOSVersionInfoSize', DWORD),
@@ -196,14 +197,12 @@ def GetWindowsVersionString():
             }[(
                 major_version,
                 minor_version,
-                osvi.wProductType == VER_NT_WORKSTATION,
-            )]
+                osvi.wProductType == VER_NT_WORKSTATION, )]
         except KeyError:
             os_type = "Unknown OS %d.%d" % (major_version, minor_version)
         dwType = DWORD()
-        windll.kernel32.GetProductInfo(
-            major_version, minor_version, 0, 0, byref(dwType)
-        )
+        windll.kernel32.GetProductInfo(major_version, minor_version, 0, 0,
+                                       byref(dwType))
         try:
             name = EDITIONS[dwType.value] % os_type
         except KeyError:
@@ -222,6 +221,7 @@ def GetWindowsVersionString():
         name += ", 32-bit"
     name += " (build %d)" % osvi.dwBuildNumber
     return "Microsoft Windows " + name
+
 
 if __name__ == "__main__":
     print GetWindowsVersionString()

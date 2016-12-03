@@ -60,6 +60,7 @@ ID = defaultdict(wx.NewId, {
 
 Text = eg.text.MainFrame
 
+
 class Config(eg.PersistentData):
     position = (50, 50)
     size = (700, 450)
@@ -76,10 +77,9 @@ class MainFrame(wx.Frame):
     """
     This is the MainFrame of EventGhost
     """
-    style = (
-        wx.MINIMIZE_BOX | wx.MAXIMIZE_BOX | wx.RESIZE_BORDER | wx.CAPTION |
-        wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CLIP_CHILDREN | wx.TAB_TRAVERSAL
-    )
+    style = (wx.MINIMIZE_BOX | wx.MAXIMIZE_BOX | wx.RESIZE_BORDER |
+             wx.CAPTION | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
+             wx.TAB_TRAVERSAL)
 
     @eg.AssertInMainThread
     def __init__(self, document):
@@ -100,8 +100,7 @@ class MainFrame(wx.Frame):
             document.GetTitle(),
             pos=Config.position,
             size=(1, 1),
-            style=self.style
-        )
+            style=self.style)
         self.SetMinSize((400, 200))
         document.frame = self
         auiManager = wx.aui.AuiManager(self, wx.aui.AUI_MGR_DEFAULT)
@@ -159,26 +158,19 @@ class MainFrame(wx.Frame):
                 pass
         artProvider = auiManager.GetArtProvider()
         artProvider.SetMetric(wx.aui.AUI_DOCKART_PANE_BORDER_SIZE, 0)
-        artProvider.SetMetric(
-            wx.aui.AUI_DOCKART_GRADIENT_TYPE,
-            wx.aui.AUI_GRADIENT_HORIZONTAL
-        )
-        artProvider.SetColour(
-            wx.aui.AUI_DOCKART_INACTIVE_CAPTION_COLOUR,
-            eg.colour.inactiveCaption
-        )
+        artProvider.SetMetric(wx.aui.AUI_DOCKART_GRADIENT_TYPE,
+                              wx.aui.AUI_GRADIENT_HORIZONTAL)
+        artProvider.SetColour(wx.aui.AUI_DOCKART_INACTIVE_CAPTION_COLOUR,
+                              eg.colour.inactiveCaption)
         artProvider.SetColour(
             wx.aui.AUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR,
-            eg.colour.inactiveCaptionGradient
-        )
-        artProvider.SetColour(
-            wx.aui.AUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,
-            eg.colour.inactiveCaptionTextColour
-        )
+            eg.colour.inactiveCaptionGradient)
+        artProvider.SetColour(wx.aui.AUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,
+                              eg.colour.inactiveCaptionTextColour)
         auiManager.GetPane("tree").Caption(" " + Text.Tree.caption)
         self.toolBar.Show(Config.showToolbar)
         auiManager.Update()
-        auiManager.GetPane("logger").MinSize((100, 100))\
+        auiManager.GetPane("logger").MinSize((100, 100)) \
             .Caption(" " + Text.Logger.caption)
 
         # create an accelerator for the "Log only assigned and activated
@@ -201,34 +193,34 @@ class MainFrame(wx.Frame):
             hotKey = result.groups()[0].upper()
         else:
             hotKey = "L"
-
         # create an accelerator for the "Del" key. This way we can temporarily
         # disable it while editing a tree label.
         # (see TreeCtrl.py OnBeginLabelEdit and OnEndLabelEdit)
 
         def OnDelKey(dummyEvent):
             self.DispatchCommand('OnCmdDelete')
+
         delId = wx.NewId()
         wx.EVT_MENU(self, delId, OnDelKey)
 
         def OnEnterKey(dummyEvent):
             if self.lastFocus == self.treeCtrl.editControl:
                 self.treeCtrl.EndEditLabel(self.treeCtrl.editLabelId, False)
+
         enterId = wx.NewId()
         wx.EVT_MENU(self, enterId, OnEnterKey)
 
-        self.acceleratorTable = wx.AcceleratorTable(
-            [
-                (wx.ACCEL_NORMAL, wx.WXK_DELETE, delId),
-                (wx.ACCEL_NORMAL, wx.WXK_RETURN, enterId),
-                (wx.ACCEL_ALT, ord(hotKey), toggleOnlyLogAssignedId),
-            ]
-        )
+        self.acceleratorTable = wx.AcceleratorTable([
+            (wx.ACCEL_NORMAL, wx.WXK_DELETE, delId),
+            (wx.ACCEL_NORMAL, wx.WXK_RETURN, enterId),
+            (wx.ACCEL_ALT, ord(hotKey), toggleOnlyLogAssignedId),
+        ])
         self.SetAcceleratorTable(self.acceleratorTable)
         self.logCtrl.Bind(wx.EVT_SIZE, self.OnLogCtrlSize)
         eg.EnsureVisible(self)
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass
@@ -241,14 +233,9 @@ class MainFrame(wx.Frame):
         logCtrl.SetIndent(Config.indentLog)
         self.auiManager.AddPane(
             logCtrl,
-            wx.aui.AuiPaneInfo().
-            Name("logger").
-            Left().
-            MinSize((280, 300)).
-            MaximizeButton(True).
-            CloseButton(False).
-            Caption(" " + Text.Logger.caption)
-        )
+            wx.aui.AuiPaneInfo().Name("logger").Left().MinSize(
+                (280, 300)).MaximizeButton(True).CloseButton(False).Caption(
+                    " " + Text.Logger.caption))
         self.auiManager.Update()
         logCtrl.Thaw()
         return logCtrl
@@ -395,11 +382,9 @@ class MainFrame(wx.Frame):
         # the execute button must be added with unique id, because otherwise
         # the menu command OnCmdExecute will be used in conjunction to
         # our special mouse click handlers
-        toolBar.AddSimpleTool(
-            ID_TOOLBAR_EXECUTE,
-            GetInternalBitmap("Execute"),
-            getattr(text, "Execute")
-        )
+        toolBar.AddSimpleTool(ID_TOOLBAR_EXECUTE,
+                              GetInternalBitmap("Execute"),
+                              getattr(text, "Execute"))
 
         toolBar.EnableTool(wx.ID_SAVE, self.document.isDirty)
         toolBar.Realize()
@@ -413,16 +398,9 @@ class MainFrame(wx.Frame):
         treeCtrl = TreeCtrl(self, document=self.document)
         self.auiManager.AddPane(
             treeCtrl,
-            wx.aui.AuiPaneInfo().
-            Name("tree").
-            Center().
-            MinSize((100, 100)).
-            Floatable(True).
-            Dockable(True).
-            MaximizeButton(True).
-            Caption(" " + Text.Tree.caption).
-            CloseButton(False)
-        )
+            wx.aui.AuiPaneInfo().Name("tree").Center().MinSize(
+                (100, 100)).Floatable(True).Dockable(True).MaximizeButton(
+                    True).Caption(" " + Text.Tree.caption).CloseButton(False))
         self.auiManager.Update()
         treeCtrl.SetFocus()
         return treeCtrl
@@ -495,21 +473,13 @@ class MainFrame(wx.Frame):
 
     def DisplayError(self, errorText):
         eg.MessageBox(
-            errorText,
-            style=wx.ICON_EXCLAMATION | wx.OK,
-            parent=self
-        )
+            errorText, style=wx.ICON_EXCLAMATION | wx.OK, parent=self)
 
     def GetEditCmdState(self):
         focus = self.lastFocus
         if focus == self.treeCtrl.editControl:
-            return (
-                focus.CanCut(),
-                focus.CanCopy(),
-                False,
-                focus.CanPaste(),
-                focus.CanDelete()
-            )
+            return (focus.CanCut(), focus.CanCopy(), False, focus.CanPaste(),
+                    focus.CanDelete())
         elif focus == self.logCtrl:
             return (False, True, False, False, False)
         elif focus == self.treeCtrl:
@@ -571,10 +541,10 @@ class MainFrame(wx.Frame):
             # avoid programmatic change of the selected item while editing
             self.UpdateViewOptions()
             # temporarily disable the "Del" accelerator
-            #self.SetAcceleratorTable(wx.AcceleratorTable([]))
+            # self.SetAcceleratorTable(wx.AcceleratorTable([]))
         elif self.lastFocus == self.treeCtrl.editControl:
             # restore the "Del" accelerator
-            #self.SetAcceleratorTable(self.acceleratorTable)
+            # self.SetAcceleratorTable(self.acceleratorTable)
             self.UpdateViewOptions()
 
         self.lastFocus = focus
@@ -711,20 +681,20 @@ class MainFrame(wx.Frame):
         wx.Frame.Raise(self)
 
     def SetupEditMenu(self, menu):
-        canCut, canCopy, canPython, canPaste, canDelete = self.GetEditCmdState()
+        canCut, canCopy, canPython, canPaste, canDelete = self.GetEditCmdState(
+        )
         menu.Enable(wx.ID_CUT, canCut)
         menu.Enable(wx.ID_COPY, canCopy)
         menu.Enable(ID_PYTHON, canPython)
         menu.Enable(wx.ID_PASTE, canPaste)
         menu.Enable(wx.ID_DELETE, canDelete)
         selection = self.treeCtrl.GetSelectedNode()
-        menu.Check(ID_DISABLED, selection is not None and not selection.isEnabled)
+        menu.Check(ID_DISABLED, selection is not None and
+                   not selection.isEnabled)
 
     def UpdateRatio(self):
         self.logCtrl.SetColumnWidth(
-            0,
-            self.logCtrl.GetSizeTuple()[0] - self.corConst
-        )
+            0, self.logCtrl.GetSizeTuple()[0] - self.corConst)
         if not eg.config.propResize:
             return
         panel = self.auiManager.GetPane("logger")
@@ -732,7 +702,7 @@ class MainFrame(wx.Frame):
             if self.ratioLock:
                 self.ratioLock = False
                 self.UpdateSize()
-                #self.UpdateSize(False)
+                # self.UpdateSize(False)
             dir = self.GetPanelDirection(panel)
             coord = None
             if dir in ("2", "4"):
@@ -771,19 +741,15 @@ class MainFrame(wx.Frame):
                     s = "%s%i%s" % (s[:b2], l_val, s[e:])
                     self.auiManager.LoadPerspective(s, True)
                     self.logCtrl.SetColumnWidth(
-                        0,
-                        self.logCtrl.GetSizeTuple()[0] - self.corConst
-                    )
+                        0, self.logCtrl.GetSizeTuple()[0] - self.corConst)
         self.mainSizeFlag = True
         if not self.IsMaximized() and not self.IsIconized():
             Config.size = self.GetSizeTuple()
 
     def UpdateViewOptions(self):
         expandOnEvents = (
-            not self.IsIconized() and
-            Config.expandOnEvents and
-            (self.treeCtrl and self.treeCtrl.editLabelId is None)
-        )
+            not self.IsIconized() and Config.expandOnEvents and
+            (self.treeCtrl and self.treeCtrl.editLabelId is None))
         self.document.ActionItem.shouldSelectOnExecute = expandOnEvents
         self.document.MacroItem.shouldSelectOnExecute = expandOnEvents
 
@@ -842,10 +808,8 @@ class MainFrame(wx.Frame):
         self.findDialog.Show()
 
     def OnCmdFindNext(self):
-        if (
-            self.findDialog is None or
-            not self.findDialog.searchButton.IsEnabled()
-        ):
+        if (self.findDialog is None or
+                not self.findDialog.searchButton.IsEnabled()):
             self.OnCmdFind()
         else:
             self.findDialog.OnFindButton()
@@ -853,8 +817,8 @@ class MainFrame(wx.Frame):
     #---- View ---------------------------------------------------------------
     def OnCmdHideShowToolbar(self):
         Config.showToolbar = not Config.showToolbar
-        #self.auiManager.GetPane("toolBar").Show(Config.showToolbar)
-        #self.auiManager.Update()
+        # self.auiManager.GetPane("toolBar").Show(Config.showToolbar)
+        # self.auiManager.Update()
         self.toolBar.Show(Config.showToolbar)
         self.Layout()
         self.SendSizeEvent()
@@ -931,12 +895,8 @@ class MainFrame(wx.Frame):
 
     #---- Help ---------------------------------------------------------------
     def OnCmdHelpContents(self):
-        HtmlHelp(
-            GetDesktopWindow(),
-            join(eg.mainDir, "EventGhost.chm"),
-            HH_DISPLAY_TOPIC,
-            0
-        )
+        HtmlHelp(GetDesktopWindow(),
+                 join(eg.mainDir, "EventGhost.chm"), HH_DISPLAY_TOPIC, 0)
 
     def OnCmdWebHomepage(self):
         import webbrowser
@@ -1013,6 +973,7 @@ class MainFrame(wx.Frame):
                 except:
                     pass
             self.setText(text)
+
         FillingTree.display.im_func.func_code = display.func_code
 
         fileName = join(eg.configDir, 'PyCrust')
@@ -1021,11 +982,10 @@ class MainFrame(wx.Frame):
 
         eg.pyCrustFrame = frame = py.crust.CrustFrame(
             rootObject=eg.globals.__dict__,
-            #locals=eg.globals.__dict__,
+            # locals=eg.globals.__dict__,
             rootLabel="eg.globals",
             config=pyCrustConfig,
-            dataDir=eg.configDir,
-        )
+            dataDir=eg.configDir, )
         tree = frame.crust.filling.tree
         tree.Expand(tree.GetRootItem())
 
@@ -1036,7 +996,8 @@ class MainFrame(wx.Frame):
             # delete the notebook explicitly, the program crashes on exit.
             frame.crust.notebook.Destroy()
             eg.pyCrustFrame = None
-            #event.Skip()
+            # event.Skip()
+
         frame.Bind(wx.EVT_CLOSE, OnPyCrustClose)
         frame.Show()
 

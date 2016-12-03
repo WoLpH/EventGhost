@@ -27,21 +27,19 @@ from eg.Classes.TreeItem import (
     HINT_MOVE_BEFORE_OR_AFTER,
     HINT_MOVE_EVERYWHERE,
     HINT_MOVE_INSIDE,
-    HINT_NO_DROP,
-)
+    HINT_NO_DROP, )
 from eg.WinApi.Dynamic import SendMessageTimeout
 
-HITTEST_FLAG = (
-    wx.TREE_HITTEST_ONITEMLABEL |
-    wx.TREE_HITTEST_ONITEMICON |
-    wx.TREE_HITTEST_ONITEMRIGHT
-)
+HITTEST_FLAG = (wx.TREE_HITTEST_ONITEMLABEL | wx.TREE_HITTEST_ONITEMICON |
+                wx.TREE_HITTEST_ONITEMRIGHT)
+
 
 class DropSource(wx.DropSource):
     """
     This class represents a source for a drag and drop operation of the
     TreeCtrl.
     """
+
     @eg.AssertInMainThread
     def __init__(self, win, text):
         wx.DropSource.__init__(self, win)
@@ -72,6 +70,7 @@ class DropTarget(wx.PyDropTarget):
     This class represents a target for a drag and drop operation of the
     TreeCtrl.
     """
+
     @eg.AssertInMainThread
     def __init__(self, treeCtrl):
         wx.PyDropTarget.__init__(self)
@@ -105,12 +104,12 @@ class DropTarget(wx.PyDropTarget):
         self.OnLeave()
         # Called when OnDrop returns True.
         tree = self.treeCtrl
-        #tree.ClearInsertMark()
+        # tree.ClearInsertMark()
         if self.isExternalDrag and self.whereToDrop is not None:
             # We need to get the data and do something with it.
             if self.GetData():
                 # copy the data from the drag source to our data object
-                #if tree.GetSelection().IsOk():
+                # if tree.GetSelection().IsOk():
                 #    tree.SelectItem(tree.GetSelection(), False)
                 if self.lastHighlighted is not None:
                     tree.SetItemDropHighlight(self.lastHighlighted, False)
@@ -118,11 +117,8 @@ class DropTarget(wx.PyDropTarget):
                     label = self.customData.GetData()
                     self.customData.SetData("")
                     parent, pos = self.whereToDrop
-                    eg.UndoHandler.NewEvent(tree.document).Do(
-                        parent,
-                        pos,
-                        label
-                    )
+                    eg.UndoHandler.NewEvent(tree.document).Do(parent, pos,
+                                                              label)
         # what is returned signals the source what to do
         # with the original data (move, copy, etc.)  In this
         # case we just return the suggested value given to us.
@@ -162,10 +158,8 @@ class DropTarget(wx.PyDropTarget):
         # expand a container, if the mouse is hold over it for some time
         if dstItemId == self.lastTargetItemId:
             if self.lastDropTime + 0.6 < clock():
-                if (
-                    dstNode.__class__ == dstNode.document.FolderItem or
-                    insertionHint & HINT_MOVE_INSIDE
-                ):
+                if (dstNode.__class__ == dstNode.document.FolderItem or
+                        insertionHint & HINT_MOVE_INSIDE):
                     if not tree.IsExpanded(dstItemId):
                         tree.Expand(dstItemId)
         else:
@@ -290,7 +284,7 @@ class EditControlProxy(object):
     def CanCopy(self):
         return self.realControl.CanCopy()
 
-    #def CanPython(self):
+    # def CanPython(self):
     #    return self.realControl.CanPython()
 
     def CanPaste(self):
@@ -311,12 +305,12 @@ class EditControlProxy(object):
 
     def OnCmdPython(self):
         eg.PrintNotice("DEBUG: TreeCtrl: OnCmdPython")
-        #self.realControl.Copy()
+        # self.realControl.Copy()
 
     def OnCmdPaste(self):
         self.realControl.Paste()
 
-    #def OnCmdClear(self):
+    # def OnCmdClear(self):
     def OnCmdDelete(self):  # Pako
         start, end = self.realControl.GetSelection()
         if end - start == 0:
@@ -337,12 +331,8 @@ class TreeCtrl(wx.TreeCtrl):
         self.editLabelId = None
         self.insertionMark = None
         self.editControl = EditControlProxy(self)
-        style = (
-            wx.TR_HAS_BUTTONS |
-            wx.TR_EDIT_LABELS |
-            wx.TR_ROW_LINES |
-            wx.CLIP_CHILDREN
-        )
+        style = (wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS | wx.TR_ROW_LINES |
+                 wx.CLIP_CHILDREN)
         wx.TreeCtrl.__init__(self, parent, size=size, style=style)
         self.SetImageList(eg.Icons.gImageList)
         self.hwnd = self.GetHandle()
@@ -397,12 +387,8 @@ class TreeCtrl(wx.TreeCtrl):
 
     @eg.AssertInMainThread
     def CreateRoot(self, node):
-        itemId = self.AddRoot(
-            node.GetLabel(),
-            node.imageIndex,
-            -1,
-            wx.TreeItemData(node)
-        )
+        itemId = self.AddRoot(node.GetLabel(), node.imageIndex, -1,
+                              wx.TreeItemData(node))
         self.visibleNodes[node] = itemId
         self.SetItemHasChildren(itemId, True)
         self.Expand(itemId)
@@ -410,13 +396,9 @@ class TreeCtrl(wx.TreeCtrl):
 
     @eg.AssertInMainThread
     def CreateTreeItem(self, node, parentId):
-        itemId = self.AppendItem(
-            parentId,
-            node.GetLabel(),
-            node.imageIndex,
-            -1,
-            wx.TreeItemData(node)
-        )
+        itemId = self.AppendItem(parentId,
+                                 node.GetLabel(), node.imageIndex, -1,
+                                 wx.TreeItemData(node))
         node.SetAttributes(self, itemId)
         self.visibleNodes[node] = itemId
         if node.childs:
@@ -430,14 +412,9 @@ class TreeCtrl(wx.TreeCtrl):
         if pos == -1 or pos >= len(parentNode.childs):
             return self.CreateTreeItem(node, parentId)
         else:
-            itemId = self.InsertItemBefore(
-                parentId,
-                pos,
-                node.GetLabel(),
-                node.imageIndex,
-                -1,
-                wx.TreeItemData(node)
-            )
+            itemId = self.InsertItemBefore(parentId, pos,
+                                           node.GetLabel(), node.imageIndex,
+                                           -1, wx.TreeItemData(node))
             node.SetAttributes(self, itemId)
             self.visibleNodes[node] = itemId
             if node.childs:
@@ -488,13 +465,8 @@ class TreeCtrl(wx.TreeCtrl):
         node = self.GetSelectedNode()
         if node is None:
             return (False, False, False, False, False)
-        return (
-            node.CanCut(),
-            node.CanCopy(),
-            node.CanPython(),
-            node.CanPaste(),
-            node.CanDelete()
-        )
+        return (node.CanCut(), node.CanCopy(), node.CanPython(),
+                node.CanPaste(), node.CanDelete())
 
     @eg.AssertInMainThread
     def GetFirstVisibleNode(self):
@@ -736,22 +708,18 @@ class TreeCtrl(wx.TreeCtrl):
 
     @eg.AssertInMainThread
     @eg.LogIt
-    def OnNodeAdded(self, (node, pos)):
+    def OnNodeAdded(self, xxx_todo_changeme):
         """
         Handles eg.Notify("NodeAdded")
         """
+        (node, pos) = xxx_todo_changeme
         parentNode = node.parent
         if parentNode in self.visibleNodes:
             parentId = self.visibleNodes[parentNode]
             if len(parentNode.childs):
                 self.SetItemHasChildren(parentId)
             if self.IsExpanded(parentId):
-                self.CreateTreeItemAt(
-                    node,
-                    parentId,
-                    parentNode,
-                    pos
-                )
+                self.CreateTreeItemAt(node, parentId, parentNode, pos)
             elif parentNode in self.expandedNodes:
                 self.Expand(parentId)
 
@@ -776,10 +744,11 @@ class TreeCtrl(wx.TreeCtrl):
 
     @eg.AssertInMainThread
     @eg.LogIt
-    def OnNodeDeleted(self, (node, parent)):
+    def OnNodeDeleted(self, xxx_todo_changeme1):
         """
         Handles eg.Notify("NodeDeleted")
         """
+        (node, parent) = xxx_todo_changeme1
         if parent in self.visibleNodes:
             if node in self.visibleNodes:
                 itemId = self.visibleNodes.pop(node)
@@ -802,12 +771,10 @@ class TreeCtrl(wx.TreeCtrl):
             parent = self.root
             for pos in path[:-1]:
                 childNode = parent.childs[pos]
-                if (
-                    childNode not in self.visibleNodes and
-                    parent not in self.expandedNodes
-                ):
-                        self.Expand(self.visibleNodes[parent])
+                if (childNode not in self.visibleNodes and
+                        parent not in self.expandedNodes):
+                    self.Expand(self.visibleNodes[parent])
                 parent = childNode
-            if parent not in self. expandedNodes:
+            if parent not in self.expandedNodes:
                 self.Expand(self.visibleNodes[parent])
         self.SelectItem(self.visibleNodes[node])

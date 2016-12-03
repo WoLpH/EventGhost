@@ -21,6 +21,7 @@ from time import clock
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
+
 class Nec(IrProtocolBase):
     """
     IR decoder for the NEC protocol.
@@ -40,7 +41,7 @@ class Nec(IrProtocolBase):
             raise DecodeError("start pause too long")
         if space < 4000:
             if space > 2000 and self.lastTime + 0.150 > clock():
-                #print "repeat", clock() - self.lastTime, self.lastCode
+                # print "repeat", clock() - self.lastTime, self.lastCode
                 self.lastTime = clock()
                 return self.lastCode
             raise DecodeError("wrong start pause")

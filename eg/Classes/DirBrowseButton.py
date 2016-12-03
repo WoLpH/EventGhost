@@ -21,28 +21,28 @@ import wx
 # Local imports
 import eg
 
+
 class DirBrowseButton(eg.FileBrowseButton):
     """
     A control to allow the user to type in a filename or browse with the
     standard file dialog to select a directory.
     """
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        pos = wx.DefaultPosition,
-        size = wx.DefaultSize,
-        style = wx.TAB_TRAVERSAL,
-        labelText = 'Select a directory:',
-        buttonText = 'Browse',
-        toolTip = 'Type directory name or browse to select',
-        dialogTitle = '',
-        startDirectory = '.',
-        changeCallback = None,
-        dialogClass = wx.DirDialog,
-        newDirectory = False,
-        name = 'dirBrowseButton'
-    ):
+
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=wx.TAB_TRAVERSAL,
+                 labelText='Select a directory:',
+                 buttonText='Browse',
+                 toolTip='Type directory name or browse to select',
+                 dialogTitle='',
+                 startDirectory='.',
+                 changeCallback=None,
+                 dialogClass=wx.DirDialog,
+                 newDirectory=False,
+                 name='dirBrowseButton'):
         eg.FileBrowseButton.__init__(
             self,
             parent,
@@ -55,9 +55,8 @@ class DirBrowseButton(eg.FileBrowseButton):
             toolTip,
             dialogTitle,
             startDirectory,
-            changeCallback = changeCallback,
-            name = name
-        )
+            changeCallback=changeCallback,
+            name=name)
         self.dialogClass = dialogClass
         self.newDirectory = newDirectory
 
@@ -67,10 +66,11 @@ class DirBrowseButton(eg.FileBrowseButton):
         if not self.newDirectory:
             style |= wx.DD_DIR_MUST_EXIST
 
-        dialog = self.dialogClass(self,
-                                  message = self.dialogTitle,
-                                  defaultPath = self.startDirectory,
-                                  style = style)
+        dialog = self.dialogClass(
+            self,
+            message=self.dialogTitle,
+            defaultPath=self.startDirectory,
+            style=style)
 
         if dialog.ShowModal() == wx.ID_OK:
             self.SetValue(dialog.GetPath())

@@ -21,15 +21,15 @@ import wx
 # Local imports
 import eg
 
+
 class PasswordCtrl(wx.TextCtrl):
     def __init__(
-        self,
-        parent,
-        id=-1,
-        value="",
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-    ):
+            self,
+            parent,
+            id=-1,
+            value="",
+            pos=wx.DefaultPosition,
+            size=wx.DefaultSize, ):
         if isinstance(value, eg.Password):
             self.password = value
         else:
@@ -41,8 +41,7 @@ class PasswordCtrl(wx.TextCtrl):
             self.password.Get(),
             pos,
             size,
-            style=wx.TE_PASSWORD,
-        )
+            style=wx.TE_PASSWORD, )
 
     def GetValue(self):
         value = wx.TextCtrl.GetValue(self)

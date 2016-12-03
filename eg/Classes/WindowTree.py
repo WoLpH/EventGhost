@@ -28,19 +28,17 @@ from eg.WinApi import (
     GetProcessName,
     GetTopLevelWindowList,
     GetWindowText,
-    GetWindowThreadProcessId,
-)
+    GetWindowThreadProcessId, )
 from eg.WinApi.Dynamic import (
     GA_PARENT,
     GA_ROOT,
-    GetAncestor,
-)
+    GetAncestor, )
 from eg.WinApi.Utils import (
     GetHwndChildren,
     GetHwndIcon,
     HighlightWindow,
-    HwndHasChildren,
-)
+    HwndHasChildren, )
+
 
 class WindowTree(wx.TreeCtrl):
     def __init__(self, parent, includeInvisible=False):
@@ -50,13 +48,9 @@ class WindowTree(wx.TreeCtrl):
             self,
             parent,
             -1,
-            style=(
-                wx.TR_DEFAULT_STYLE |
-                wx.TR_HIDE_ROOT |
-                wx.TR_FULL_ROW_HIGHLIGHT
-            ),
-            size=(-1, 150)
-        )
+            style=(wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT |
+                   wx.TR_FULL_ROW_HIGHLIGHT),
+            size=(-1, 150))
         self.imageList = imageList = wx.ImageList(16, 16)
         imageList.Add(GetInternalBitmap("cwindow"))
         imageList.Add(GetInternalBitmap("cedit"))
@@ -71,6 +65,7 @@ class WindowTree(wx.TreeCtrl):
             for _ in range(10):
                 HighlightWindow(hwnd)
                 sleep(0.1)
+
         menu = wx.Menu()
         menuId = wx.NewId()
         menu.Append(menuId, "Highlight")
@@ -83,6 +78,7 @@ class WindowTree(wx.TreeCtrl):
         self.AppendPrograms()
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass
@@ -106,17 +102,14 @@ class WindowTree(wx.TreeCtrl):
                 if icon:
                     iconIndex = self.imageList.AddIcon(icon)
                     self.SetItemImage(
-                        index,
-                        iconIndex,
-                        which=wx.TreeItemIcon_Normal
-                    )
+                        index, iconIndex, which=wx.TreeItemIcon_Normal)
 
             if HwndHasChildren(hwnd, self.includeInvisible):
                 self.SetItemHasChildren(index, True)
 
     def AppendPrograms(self):
         self.pids.clear()
-        processes = EnumProcesses()    # get PID list
+        processes = EnumProcesses()  # get PID list
         for pid in processes:
             self.pids[pid] = []
 
@@ -160,11 +153,7 @@ class WindowTree(wx.TreeCtrl):
             newItem = self.AppendItem(item, name)
             self.SetPyData(newItem, hwnd)
             self.SetItemText(newItem, name + className)
-            self.SetItemImage(
-                newItem,
-                iconIndex,
-                which=wx.TreeItemIcon_Normal
-            )
+            self.SetItemImage(newItem, iconIndex, which=wx.TreeItemIcon_Normal)
             if HwndHasChildren(hwnd, self.includeInvisible):
                 self.SetItemHasChildren(newItem, True)
 

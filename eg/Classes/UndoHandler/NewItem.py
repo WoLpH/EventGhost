@@ -20,10 +20,12 @@
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class NewItem(UndoHandlerBase):
     """
     Abstract class for the creation of new tree items.
     """
+
     def Do(self, selection):
         raise NotImplementedError
 

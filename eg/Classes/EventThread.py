@@ -26,13 +26,13 @@ from eg.WinApi.Dynamic import (
     FormatError,
     OpenProcess,
     PROCESS_SET_QUOTA,
-    SetProcessWorkingSetSize,
-)
+    SetProcessWorkingSetSize, )
 
 # some shortcuts
 EventGhostEvent = eg.EventGhostEvent
 actionThread = eg.actionThread
 ActionThreadCall = actionThread.Call
+
 
 class EventThread(ThreadWorker):
     def __init__(self):
@@ -51,12 +51,10 @@ class EventThread(ThreadWorker):
     def Poll(self):
         if eg.config.limitMemory and eg.document.frame is None:
             try:
-                if 0 == SetProcessWorkingSetSize(
-                    self.hHandle,
-                    3670016,
-                    eg.config.limitMemorySize * 1048576
-                ):
-                    #TODO: what to do here?
+                if 0 == SetProcessWorkingSetSize(self.hHandle, 3670016,
+                                                 eg.config.limitMemorySize *
+                                                 1048576):
+                    # TODO: what to do here?
                     eg.PrintDebugNotice(FormatError())
                     self.__class__.Poll = self.Poll2
             except:
@@ -83,13 +81,11 @@ class EventThread(ThreadWorker):
         actionThread.Func(actionThread.StopSession, 120)()
         eg.PrintDebugNotice("StopSession done")
 
-    def TriggerEnduringEvent(
-        self,
-        suffix,
-        payload=None,
-        prefix="Main",
-        source=eg
-    ):
+    def TriggerEnduringEvent(self,
+                             suffix,
+                             payload=None,
+                             prefix="Main",
+                             source=eg):
         event = EventGhostEvent(suffix, payload, prefix, source)
         if event.source in self.filters:
             for filterFunc in self.filters[event.source]:
@@ -98,6 +94,7 @@ class EventThread(ThreadWorker):
 
         def Transfer():
             ActionThreadCall(event.Execute)
+
         self.AppendAction(Transfer)
 
         return event
@@ -115,17 +112,12 @@ class EventThread(ThreadWorker):
         def Transfer():
             ActionThreadCall(event.Execute)
             event.SetShouldEnd()
+
         self.AppendAction(Transfer)
 
         return event
 
-    def TriggerEventWait(
-        self,
-        suffix,
-        payload=None,
-        prefix="Main",
-        source=eg
-    ):
+    def TriggerEventWait(self, suffix, payload=None, prefix="Main", source=eg):
         event = EventGhostEvent(suffix, payload, prefix, source)
         if event.source in self.filters:
             for filterFunc in self.filters[event.source]:

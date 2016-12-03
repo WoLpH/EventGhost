@@ -26,10 +26,12 @@ from os.path import basename, dirname
 from threading import Thread
 from time import clock
 
+
 class TransferDialog(wx.Dialog):
     """
     The progress dialog that is shown while the file is transfered.
     """
+
     def __init__(self, parent, transfers, stopEvent=None):
         self.stopEvent = stopEvent
         self.abort = False
@@ -37,10 +39,7 @@ class TransferDialog(wx.Dialog):
         self.speed = 0
         wx.Dialog.__init__(self, parent, title="Transfer Progress")
         self.messageCtrl = wx.StaticText(
-            self,
-            label="",
-            style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE
-        )
+            self, label="", style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE)
         style = wx.ALIGN_RIGHT | wx.ST_NO_AUTORESIZE
 
         def SText(label, *args, **kwargs):
@@ -63,8 +62,7 @@ class TransferDialog(wx.Dialog):
             self,
             range=1000,
             style=wx.GA_HORIZONTAL | wx.GA_SMOOTH,
-            size=(-1, 15)
-        )
+            size=(-1, 15))
         overallStaticBox = wx.StaticBox(self, label="Overall")
         self.overallFileCtrl = SText("", style=wx.ST_NO_AUTORESIZE)
         self.overallProgressCtrl = SText("      %", style=style)
@@ -72,8 +70,7 @@ class TransferDialog(wx.Dialog):
             self,
             range=1000,
             style=wx.GA_HORIZONTAL | wx.GA_SMOOTH,
-            size=(-1, 15)
-        )
+            size=(-1, 15))
 
         self.cancelButton = wx.Button(self, wx.ID_CANCEL)
         self.cancelButton.Bind(wx.EVT_BUTTON, self.OnCancel)
@@ -123,7 +120,8 @@ class TransferDialog(wx.Dialog):
         sizer0.Add(sizer3, 0, wx.EXPAND | wx.ALL, 5)
         sizer0.Add(sizer6, 0, wx.EXPAND | wx.ALL, 5)
         sizer0.Add((10, 10))
-        sizer0.Add(self.cancelButton, 0, wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, 10)
+        sizer0.Add(self.cancelButton, 0, wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM,
+                   10)
 
         self.SetSizerAndFit(sizer0)
         self.SetSize((400, -1))
@@ -217,8 +215,7 @@ class TransferDialog(wx.Dialog):
                 urlParts.hostname,
                 urlParts.port,
                 urlParts.username,
-                urlParts.password,
-            )
+                urlParts.password, )
         except paramiko.SSHException:
             exit("Error: Couldn't connect to server")
         except paramiko.AuthenicationException:
@@ -230,10 +227,10 @@ class TransferDialog(wx.Dialog):
             client = sshClient.open_sftp()
         except:
             exit("Error: Can't create SFTP client")
-        destPath = urlParts.path  #IGNORE:E1101
+        destPath = urlParts.path  # IGNORE:E1101
         destDir = dirname(destPath)
-#        log("Changing path to: %s" % destDir)
-#        client.chdir(destDir)
+        #        log("Changing path to: %s" % destDir)
+        #        client.chdir(destDir)
         log("Getting directory listing...")
         fileList = client.listdir(destDir)
         log("Creating temp name.")
@@ -279,10 +276,12 @@ class TransferDialog(wx.Dialog):
             self.overallSize = 0
             self.transferedSize = 0
             todo = self.CreateActions()
-            for i, (action, src, dest, size, transferedSize) in enumerate(todo):
+            for i, (action, src, dest, size,
+                    transferedSize) in enumerate(todo):
                 self.transferedSize = transferedSize
                 self.currentFileCtrl.SetLabel(basename(dest))
-                self.overallFileCtrl.SetLabel("File %d of %d" % (i + 1, len(todo)))
+                self.overallFileCtrl.SetLabel("File %d of %d" %
+                                              (i + 1, len(todo)))
                 action(src, dest, size)
         finally:
             if self.stopEvent:
@@ -305,7 +304,8 @@ class TransferDialog(wx.Dialog):
         self.overallProgressCtrl.SetLabel("%d%%" % allPercent)
         self.speedCtrl.SetLabel("%0.2f KiB/s" % (speed / 1024))
         self.remainingCtrl.SetLabel(GetTimeStr(remainingTime + 1))
-        self.remainingSizeCtrl.SetLabel(FormatBytes(self.overallSize - overallPos))
+        self.remainingSizeCtrl.SetLabel(
+            FormatBytes(self.overallSize - overallPos))
         self.totalSizeCtrl.SetLabel(FormatBytes(self.overallSize))
 
 
@@ -313,7 +313,9 @@ class ProgressFile(object):
     """
     A proxy to a file, that also holds progress information.
     """
-    def __init__(self, fileObject, size, progressCallback=None, initialSpeed=0):
+
+    def __init__(self, fileObject, size, progressCallback=None,
+                 initialSpeed=0):
         self.progressCallback = progressCallback
         self.period = 15
         self.start = 0
@@ -357,14 +359,14 @@ class ProgressFile(object):
         if self.rate < 0:
             self.rate = 0
 
-    def close(self):  #IGNORE:C0103 Invalid name "read"
+    def close(self):  # IGNORE:C0103 Invalid name "read"
         """
         Implements a file-like close()
         """
         self.fileObject.close()
         elapsed = (clock() - self.startTime)  # NOQA
 
-    def read(self, size):  #IGNORE:C0103 Invalid name "read"
+    def read(self, size):  # IGNORE:C0103 Invalid name "read"
         """
         Implements a file-like read() but also updates the progress variables.
         """
@@ -390,6 +392,7 @@ def FormatBytes(numBytes):
     Returns a formatted string of a byte count value.
     """
     return locale.format("%d", numBytes, grouping=True)
+
 
 def GetTimeStr(seconds):
     """

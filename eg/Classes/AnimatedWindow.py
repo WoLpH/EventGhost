@@ -23,12 +23,12 @@ from time import clock
 # Local imports
 from eg.Icons import GetInternalBitmap, GetInternalImage
 
+
 class AnimatedWindow(wx.PyWindow):
     def __init__(self, parent):
         wx.PyWindow.__init__(self, parent)
-        self.font = wx.Font(
-            40, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_ITALIC, wx.FONTWEIGHT_BOLD
-        )
+        self.font = wx.Font(40, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_ITALIC,
+                            wx.FONTWEIGHT_BOLD)
         self.SetBackgroundColour((255, 255, 255))
         self.logo1 = GetInternalBitmap("opensource-55x48")
         self.logo2 = GetInternalBitmap("python-powered")
@@ -80,24 +80,15 @@ class AnimatedWindow(wx.PyWindow):
         height2 = self.logo2.GetHeight()
         height = max(height1, height2)
 
+        deviceContext.DrawBitmap(self.logo1, self.width - width1 - width2,
+                                 self.height - height +
+                                 (height - height1) // 2, True)
+        deviceContext.DrawBitmap(self.logo2, self.width - width2,
+                                 self.height - height +
+                                 (height - height2) // 2, True)
         deviceContext.DrawBitmap(
-            self.logo1,
-            self.width - width1 - width2,
-            self.height - height + (height - height1) // 2,
-            True
-        )
-        deviceContext.DrawBitmap(
-            self.logo2,
-            self.width - width2,
-            self.height - height + (height - height2) // 2,
-            True
-        )
-        deviceContext.DrawBitmap(
-            self.logo3,
-            (self.width - self.logo3.GetWidth()) // 2,
-            (self.height - self.logo3.GetHeight()) // 3,
-            True
-        )
+            self.logo3, (self.width - self.logo3.GetWidth()) // 2,
+            (self.height - self.logo3.GetHeight()) // 3, True)
         deviceContext.EndDrawing()
 
     def OnSize(self, dummyEvent):

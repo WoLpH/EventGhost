@@ -25,6 +25,7 @@ MODES = {
     3: "Gamepad",
 }
 
+
 class Rcmm(IrProtocolBase):
     def Decode(self, data):
         raise DecodeError("not implemented")

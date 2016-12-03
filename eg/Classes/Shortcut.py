@@ -19,17 +19,16 @@
 import pythoncom
 from win32com.shell import shell
 
+
 class Shortcut:
     @classmethod
-    def Create(
-        cls,
-        path,
-        target,
-        arguments="",
-        startIn="",
-        icon=("", 0),
-        description=""
-    ):
+    def Create(cls,
+               path,
+               target,
+               arguments="",
+               startIn="",
+               icon=("", 0),
+               description=""):
         """Create a Windows shortcut:
 
         path - As what file should the shortcut be created?
@@ -47,12 +46,9 @@ class Shortcut:
             description="Python Interpreter"
         )
         """
-        sh = pythoncom.CoCreateInstance(
-            shell.CLSID_ShellLink,
-            None,
-            pythoncom.CLSCTX_INPROC_SERVER,
-            shell.IID_IShellLink
-        )
+        sh = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,
+                                        pythoncom.CLSCTX_INPROC_SERVER,
+                                        shell.IID_IShellLink)
         sh.SetPath(target)
         sh.SetDescription(description)
         sh.SetArguments(arguments)
@@ -63,13 +59,11 @@ class Shortcut:
 
     @classmethod
     def Get(cls, filename):
-        sh = pythoncom.CoCreateInstance(
-            shell.CLSID_ShellLink,
-            None,
-            pythoncom.CLSCTX_INPROC_SERVER,
-            shell.IID_IShellLink
-        )
-        persist = sh.QueryInterface(pythoncom.IID_IPersistFile).Load(filename)  # NOQA
+        sh = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,
+                                        pythoncom.CLSCTX_INPROC_SERVER,
+                                        shell.IID_IShellLink)
+        persist = sh.QueryInterface(pythoncom.IID_IPersistFile).Load(
+            filename)  # NOQA
         self = cls()
         self.path = filename
         self.target = sh.GetPath(shell.SLGP_SHORTPATH)[0]

@@ -43,8 +43,7 @@ from Dynamic import (
     SetNamedPipeHandleState,
     WaitNamedPipe,
     WinError,
-    WriteFile,
-)
+    WriteFile, )
 
 BUFSIZE = 4096
 MESSAGE_ARGS = 0
@@ -52,6 +51,7 @@ MESSAGE_STDOUT = 1
 MESSAGE_STDERR = 2
 MESSAGE_RESULT = 3
 MESSAGE_EXCEPTION = 4
+
 
 class PipeStream(object):
     def __init__(self, hPipe, code):
@@ -68,15 +68,13 @@ def FormatException(excInfo):
     if excTraceback:
         decode = codecs.getdecoder('mbcs')
         for filename, lineno, funcname, text in extract_tb(excTraceback):
-            lines.append(
-                u'  File "%s", line %d, in %s\n' % (
-                    decode(filename)[0], lineno, funcname
-                )
-            )
+            lines.append(u'  File "%s", line %d, in %s\n' %
+                         (decode(filename)[0], lineno, funcname))
             if text:
                 lines.append(u"    %s\n" % text)
     lines += format_exception_only(excType, excValue)
     return u"".join(lines)
+
 
 def ReadPipeMessage(hPipe):
     data = ""
@@ -84,13 +82,7 @@ def ReadPipeMessage(hPipe):
     chBuf = create_string_buffer(BUFSIZE)
     cbRead = DWORD(0)
     while not fSuccess:  # repeat loop if ERROR_MORE_DATA
-        fSuccess = ReadFile(
-            hPipe,
-            chBuf,
-            BUFSIZE,
-            byref(cbRead),
-            None
-        )
+        fSuccess = ReadFile(hPipe, chBuf, BUFSIZE, byref(cbRead), None)
         if fSuccess == 1:
             data += chBuf.value
             break
@@ -99,37 +91,30 @@ def ReadPipeMessage(hPipe):
         data += chBuf.value
     return loads(data)
 
+
 def WritePipeMessage(hPipe, code, data):
     message = dumps((code, data))
     cbWritten = DWORD(0)
-    fSuccess = WriteFile(
-        hPipe,
-        message,
-        len(message),
-        byref(cbWritten),
-        None
-    )
+    fSuccess = WriteFile(hPipe, message, len(message), byref(cbWritten), None)
     if (not fSuccess) or (len(message) != cbWritten.value):
         raise Exception("WritePipeMessage failed")
 
+
 def Main(pipeName, debugLevel):
     if debugLevel:
+
         def Debug(msg):
             sys.stdout.write(msg + "\n")
     else:
+
         def Debug(msg):
             pass
+
     if not WaitNamedPipe(pipeName, 5000):
         raise WinError()
-    hPipe = CreateFile(
-        pipeName,
-        GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ | FILE_SHARE_WRITE,
-        None,
-        OPEN_EXISTING,
-        0,
-        None
-    )
+    hPipe = CreateFile(pipeName, GENERIC_READ | GENERIC_WRITE,
+                       FILE_SHARE_READ | FILE_SHARE_WRITE, None, OPEN_EXISTING,
+                       0, None)
     if hPipe == INVALID_HANDLE_VALUE:
         raise WinError()
     try:
@@ -142,13 +127,11 @@ def Main(pipeName, debugLevel):
         sys.stdout = PipeStream(hPipe, MESSAGE_STDOUT)
         Debug("reading startup message")
         code, (scriptPath, funcName, args, kwargs) = ReadPipeMessage(hPipe)
-        Debug(
-            "got startup message:\n"
-            "  path: %r\n"
-            "  funcName: %r\n"
-            "  args: %r\n"
-            "  kwargs: %r" % (scriptPath, funcName, args, kwargs)
-        )
+        Debug("got startup message:\n"
+              "  path: %r\n"
+              "  funcName: %r\n"
+              "  args: %r\n"
+              "  kwargs: %r" % (scriptPath, funcName, args, kwargs))
         if code != MESSAGE_ARGS:
             raise Exception("Unexpected message type")
         try:
@@ -170,15 +153,13 @@ def Main(pipeName, debugLevel):
             result = func(*args, **kwargs)
             Debug("result: %r" % result)
         except:
-            WritePipeMessage(
-                hPipe,
-                MESSAGE_EXCEPTION,
-                FormatException(sys.exc_info())
-            )
+            WritePipeMessage(hPipe, MESSAGE_EXCEPTION,
+                             FormatException(sys.exc_info()))
         else:
             WritePipeMessage(hPipe, MESSAGE_RESULT, result)
     finally:
         CloseHandle(hPipe)
+
 
 if __name__ == "__main__":
     Main(sys.argv[1], int(sys.argv[2]))

@@ -29,13 +29,13 @@ from Crypto.Cipher import AES
 import eg
 from eg.WinApi.Dynamic import GetVolumeInformation, DWORD, byref
 
+
 class MasterPasswordDialog(wx.Dialog):
     def __init__(self):
         self.result = None
         wx.Dialog.__init__(self, eg.document.frame)
-        staticText = wx.StaticText(
-            self, -1, "Please enter your master password:"
-        )
+        staticText = wx.StaticText(self, -1,
+                                   "Please enter your master password:")
         self.passwordCtrl = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.buttonRow = eg.ButtonRow(self, (wx.ID_OK, wx.ID_CANCEL))
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -135,21 +135,17 @@ class Password(object):
 def GetMachineKey():
     # Get the volume serial number of the system drive
     volumeSerialBuffer = DWORD()
-    GetVolumeInformation(
-        "C:\\", None, 0, byref(volumeSerialBuffer), None, None, None, 0
-    )
+    GetVolumeInformation("C:\\", None, 0,
+                         byref(volumeSerialBuffer), None, None, None, 0)
     value = volumeSerialBuffer.value
-    volumeSerial = (
-        chr((value >> 24) & 0xFF) +
-        chr((value >> 16) & 0xFF) +
-        chr((value >> 8) & 0xFF) +
-        chr(value & 0xFF)
-    )
+    volumeSerial = (chr((value >> 24) & 0xFF) + chr((value >> 16) & 0xFF) +
+                    chr((value >> 8) & 0xFF) + chr(value & 0xFF))
     # The last 6 bytes of the UUID returned from UuidCreateSequential contain
     # the hardware MAC address.
     uuid = ctypes.create_string_buffer(16)
     ctypes.windll.rpcrt4.UuidCreateSequential(uuid)
     mac = uuid.raw[-6:]
     return volumeSerial + mac
+
 
 MACHINE_KEY = GetMachineKey()

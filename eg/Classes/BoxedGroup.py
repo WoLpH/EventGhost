@@ -19,6 +19,7 @@
 import types
 import wx
 
+
 class BoxedGroup(wx.StaticBoxSizer):
     def __init__(self, parent, label="", *items):
         staticBox = wx.StaticBox(parent, -1, label)
@@ -28,31 +29,19 @@ class BoxedGroup(wx.StaticBoxSizer):
             lineSizer = wx.BoxSizer(wx.HORIZONTAL)
             if isinstance(item, types.StringTypes):
                 labelCtrl = wx.StaticText(parent, -1, item)
-                lineSizer.Add(
-                    labelCtrl,
-                    0,
-                    wx.LEFT | wx.ALIGN_CENTER_VERTICAL,
-                    5
-                )
+                lineSizer.Add(labelCtrl, 0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL,
+                              5)
                 self.items.append([labelCtrl])
             elif isinstance(item, (types.ListType, types.TupleType)):
                 lineItems = []
                 for subitem in item:
                     if isinstance(subitem, types.StringTypes):
                         subitem = wx.StaticText(parent, -1, subitem)
-                        lineSizer.Add(
-                            subitem,
-                            0,
-                            wx.LEFT | wx.ALIGN_CENTER_VERTICAL,
-                            5
-                        )
+                        lineSizer.Add(subitem, 0, wx.LEFT |
+                                      wx.ALIGN_CENTER_VERTICAL, 5)
                     else:
-                        lineSizer.Add(
-                            subitem,
-                            0,
-                            wx.ALL | wx.ALIGN_CENTER_VERTICAL,
-                            5
-                        )
+                        lineSizer.Add(subitem, 0, wx.ALL |
+                                      wx.ALIGN_CENTER_VERTICAL, 5)
                     lineItems.append(subitem)
                 self.items.append(lineItems)
             else:

@@ -20,6 +20,7 @@
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class Rename(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Rename.replace("&", "")
 

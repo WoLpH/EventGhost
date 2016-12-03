@@ -26,11 +26,13 @@ import eg
 REPLACE_BR_TAG = re.compile('<br[ \/]*>')
 REMOVE_HTML_PATTERN = re.compile('<([^!>]([^>]|\n)*)>')
 
+
 class HeaderBox(wx.PyWindow):
     """
     The top description box of every tree item configuration dialog.
     """
-    def __init__(self, parent, name="", text="", icon=None, url = None):
+
+    def __init__(self, parent, name="", text="", icon=None, url=None):
         text = REPLACE_BR_TAG.sub('\n', text)
         text = REMOVE_HTML_PATTERN.sub('', text).strip()
         if text == name:
@@ -38,8 +40,7 @@ class HeaderBox(wx.PyWindow):
         self.parent = parent
         wx.PyWindow.__init__(self, parent, -1)
         self.SetBackgroundColour(
-            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
-        )
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
 
         nameBox = wx.StaticText(self, -1, name)
         font = wx.Font(8, wx.SWISS, wx.NORMAL, wx.FONTWEIGHT_BOLD)
@@ -47,9 +48,7 @@ class HeaderBox(wx.PyWindow):
 
         self.text = '<html><body bgcolor="%s" text="%s">%s</body></html>' % (
             self.GetBackgroundColour().GetAsString(wx.C2S_HTML_SYNTAX),
-            self.GetForegroundColour().GetAsString(wx.C2S_HTML_SYNTAX),
-            text
-        )
+            self.GetForegroundColour().GetAsString(wx.C2S_HTML_SYNTAX), text)
         if url:
             self.text = eg.Utils.AppUrl(self.text, url)
         descBox = eg.HtmlWindow(self, style=wx.html.HW_NO_SELECTION)
@@ -67,12 +66,10 @@ class HeaderBox(wx.PyWindow):
             ((4, 4)),
             (eg.VBoxSizer(
                 ((4, 4)),
-                (eg.HBoxSizer(
-                    (nameBox, 1, wx.EXPAND | wx.ALIGN_BOTTOM),
-                ), 0, wx.EXPAND | wx.TOP, 2),
-                (descBox, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 8),
-            ), 1, wx.EXPAND),
-        )
+                (eg.HBoxSizer((nameBox, 1, wx.EXPAND | wx.ALIGN_BOTTOM), ), 0,
+                 wx.EXPAND | wx.TOP, 2),
+                (descBox, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 8), ), 1,
+             wx.EXPAND), )
         # odd sequence to setup the window, but all other ways seem
         # to wrap the text wrong
         self.SetSizer(mainSizer)

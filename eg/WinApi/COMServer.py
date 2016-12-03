@@ -29,6 +29,7 @@ from win32com.server.register import RegisterClasses
 # Local imports
 import eg
 
+
 class EventGhostCom:
     _public_methods_ = [
         'TriggerEvent',
@@ -76,19 +77,18 @@ if hasattr(sys, "frozen"):
 
 try:
     RegisterClasses(EventGhostCom, quiet=True)
-except pywintypes.error, data:
+except pywintypes.error as data:
     if data[0] != 5:
         raise
 sys.coinit_flags = 2
 try:
     __factory_infos = factory.RegisterClassFactories(
-        [EventGhostCom._reg_clsid_]
-    )
+        [EventGhostCom._reg_clsid_])
 except:
     __factory_infos = []
     eg.PrintError("RegisterClassFactories failed!")
 #import win32api
-#pythoncom.EnableQuitMessage(win32api.GetCurrentThreadId())
+# pythoncom.EnableQuitMessage(win32api.GetCurrentThreadId())
 pythoncom.CoResumeClassObjects()
 
 try:
@@ -96,9 +96,11 @@ try:
 except:
     sys.stderr.write("Unable to establish COM dispatch!\n")
 
+
 def DeInit():
     # shutdown COM-Server
     factory.RevokeClassFactories(__factory_infos)
     pythoncom.CoUninitialize()
+
 
 atexit.register(DeInit)

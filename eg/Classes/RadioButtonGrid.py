@@ -18,19 +18,18 @@
 
 import wx
 
+
 class RadioButtonGrid(wx.Panel):
     CtrlType = wx.RadioButton
     firstCtrlStyle = wx.RB_GROUP
 
-    def __init__(
-        self,
-        parent,
-        id = wx.ID_ANY,
-        pos = wx.DefaultPosition,
-        size = wx.DefaultSize,
-        rows = None,
-        columns = None
-    ):
+    def __init__(self,
+                 parent,
+                 id=wx.ID_ANY,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 rows=None,
+                 columns=None):
         wx.Panel.__init__(self, parent, id, pos, size)
         biggestWidth = 0
         sizer = wx.FlexGridSizer(len(rows) + 2, len(columns) + 1)

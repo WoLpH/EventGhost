@@ -21,28 +21,26 @@ import wx
 # Local imports
 import eg
 
+
 class Config(eg.PersistentData):
     position = None
     size = (400, 300)
 
 
 class HtmlDialog(eg.Dialog):
-    def __init__(
-        self,
-        parent=None,
-        title=eg.APP_NAME,
-        source="",
-        icon=None,
-        basePath=None,
-        style=wx.OK
-    ):
+    def __init__(self,
+                 parent=None,
+                 title=eg.APP_NAME,
+                 source="",
+                 icon=None,
+                 basePath=None,
+                 style=wx.OK):
         eg.Dialog.__init__(
             self,
             parent,
             -1,
             title,
-            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         if icon:
             self.SetIcon(icon)
         htmlCtrl = eg.HtmlWindow(self, -1, style=wx.SUNKEN_BORDER)
@@ -57,8 +55,7 @@ class HtmlDialog(eg.Dialog):
         self.buttonRow = eg.ButtonRow(self, buttonIds, True, True)
         mainSizer = eg.VBoxSizer(
             (htmlCtrl, 1, wx.EXPAND | wx.ALL, 5),
-            (self.buttonRow.sizer, 0, wx.EXPAND),
-        )
+            (self.buttonRow.sizer, 0, wx.EXPAND), )
         self.SetSizerAndFit(mainSizer)
         if Config.position is not None:
             self.SetPosition(Config.position)

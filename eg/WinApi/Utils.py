@@ -29,24 +29,77 @@ import Dynamic
 from eg.cFunctions import GetProcessName, GetWindowChildsList
 from Dynamic import (
     # ctypes stuff
-    byref, sizeof, WinError, _kernel32,
+    byref,
+    sizeof,
+    WinError,
+    _kernel32,
     # functions
-    AttachThreadInput, BringWindowToTop, CreatePen, DeleteObject,
-    EnumChildWindows, EnumDisplayMonitors, FindWindow, GetAncestor,
-    GetClassLong, GetCurrentThreadId, GetCursorPos, GetDC, GetForegroundWindow,
-    GetParent, GetStockObject, GetSystemMetrics, GetWindowDC, GetWindowLong,
-    GetWindowRect, GetWindowThreadProcessId, InvalidateRect, IsIconic,
-    IsWindow, IsWindowVisible, PtVisible, Rectangle, ReleaseDC, RestoreDC,
-    SaveDC, ScreenToClient, SelectObject, SendMessageTimeout,
-    SendNotifyMessage, SetROP2, ShowWindow, UpdateWindow, WindowFromPoint,
+    AttachThreadInput,
+    BringWindowToTop,
+    CreatePen,
+    DeleteObject,
+    EnumChildWindows,
+    EnumDisplayMonitors,
+    FindWindow,
+    GetAncestor,
+    GetClassLong,
+    GetCurrentThreadId,
+    GetCursorPos,
+    GetDC,
+    GetForegroundWindow,
+    GetParent,
+    GetStockObject,
+    GetSystemMetrics,
+    GetWindowDC,
+    GetWindowLong,
+    GetWindowRect,
+    GetWindowThreadProcessId,
+    InvalidateRect,
+    IsIconic,
+    IsWindow,
+    IsWindowVisible,
+    PtVisible,
+    Rectangle,
+    ReleaseDC,
+    RestoreDC,
+    SaveDC,
+    ScreenToClient,
+    SelectObject,
+    SendMessageTimeout,
+    SendNotifyMessage,
+    SetROP2,
+    ShowWindow,
+    UpdateWindow,
+    WindowFromPoint,
     # types
-    BOOL, DWORD, HWND, LPARAM, MONITORENUMPROC, POINT, RECT, RGB, WINFUNCTYPE,
+    BOOL,
+    DWORD,
+    HWND,
+    LPARAM,
+    MONITORENUMPROC,
+    POINT,
+    RECT,
+    RGB,
+    WINFUNCTYPE,
     # constants
-    GA_ROOT, GCL_HICON, GCL_HICONSM, GWL_EXSTYLE, ICON_BIG, ICON_SMALL,
-    NULL_BRUSH, PS_INSIDEFRAME, R2_NOT, SC_CLOSE, SM_CXBORDER,
-    SMTO_ABORTIFHUNG, SMTO_BLOCK, SW_RESTORE, SW_SHOWNA, WM_GETICON,
-    WM_SYSCOMMAND, WS_EX_TOPMOST,
-)
+    GA_ROOT,
+    GCL_HICON,
+    GCL_HICONSM,
+    GWL_EXSTYLE,
+    ICON_BIG,
+    ICON_SMALL,
+    NULL_BRUSH,
+    PS_INSIDEFRAME,
+    R2_NOT,
+    SC_CLOSE,
+    SM_CXBORDER,
+    SMTO_ABORTIFHUNG,
+    SMTO_BLOCK,
+    SW_RESTORE,
+    SW_SHOWNA,
+    WM_GETICON,
+    WM_SYSCOMMAND,
+    WS_EX_TOPMOST, )
 from Dynamic.PsApi import EnumProcesses
 
 ENUM_CHILD_PROC = WINFUNCTYPE(BOOL, HWND, LPARAM)
@@ -59,6 +112,7 @@ FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100
 FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000
 FORMAT_MESSAGE_IGNORE_INSERTS = 0x00000200
 
+
 def BestWindowFromPoint(point):
     x, y = point
     foundWindow = WindowFromPoint(POINT(x, y))
@@ -66,17 +120,13 @@ def BestWindowFromPoint(point):
     hWnds = GetWindowChildsList(GetAncestor(foundWindow, GA_ROOT), True)
     if not hWnds:
         return foundWindow
-    foundWindowArea = sys.maxint
+    foundWindowArea = sys.maxsize
     rect = RECT()
     clientPoint = POINT()
     for hWnd in hWnds:
         GetWindowRect(hWnd, byref(rect))
-        if (
-            x >= rect.left and
-            x <= rect.right and
-            y >= rect.top and
-            y <= rect.bottom
-        ):
+        if (x >= rect.left and x <= rect.right and y >= rect.top and
+                y <= rect.bottom):
             hdc = GetDC(hWnd)
             clientPoint.x, clientPoint.y = x, y
             ScreenToClient(hWnd, byref(clientPoint))
@@ -87,6 +137,7 @@ def BestWindowFromPoint(point):
                     foundWindowArea = area
             ReleaseDC(hWnd, hdc)
     return foundWindow
+
 
 def BringHwndToFront(hWnd, invalidate=True):
     if hWnd is None:
@@ -118,8 +169,10 @@ def BringHwndToFront(hWnd, invalidate=True):
     if foregroundThreadID != ourThreadID:
         AttachThreadInput(foregroundThreadID, ourThreadID, False)
 
+
 def CloseHwnd(hWnd):
     SendNotifyMessage(hWnd, WM_SYSCOMMAND, SC_CLOSE, 0)
+
 
 def FormatError(code=None):
     """
@@ -130,18 +183,9 @@ def FormatError(code=None):
         code = GetLastError()
     lpMsgBuf = LPWSTR()
     numChars = _kernel32.FormatMessageW(
-        (
-            FORMAT_MESSAGE_ALLOCATE_BUFFER |
-            FORMAT_MESSAGE_FROM_SYSTEM |
-            FORMAT_MESSAGE_IGNORE_INSERTS
-        ),
-        None,
-        code,
-        0,
-        byref(lpMsgBuf),
-        0,
-        None
-    )
+        (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+         FORMAT_MESSAGE_IGNORE_INSERTS), None, code, 0,
+        byref(lpMsgBuf), 0, None)
     if numChars == 0:
         return "No error message available."
     #raise Exception("FormatMessage failed on 0x%X with 0x%X" % (code & 0xFFFFFFFF, GetLastError()))
@@ -149,23 +193,27 @@ def FormatError(code=None):
     _kernel32.LocalFree(lpMsgBuf)
     return message.encode("CP1252", 'backslashreplace')
 
+
 # Monkey patch the new FormatError into ctypes
 ctypes.FormatError = FormatError
 Dynamic.FormatError = FormatError
 
-def GetAlwaysOnTop(hwnd = None):
+
+def GetAlwaysOnTop(hwnd=None):
     hwnd = GetBestHwnd(hwnd)
     style = GetWindowLong(hwnd, GWL_EXSTYLE)
     isAlwaysOnTop = (style & WS_EX_TOPMOST) != 0
     return isAlwaysOnTop
 
-def GetBestHwnd(hwnd = None):
+
+def GetBestHwnd(hwnd=None):
     if isinstance(hwnd, int):
         return hwnd
     elif len(eg.lastFoundWindows):
         return eg.lastFoundWindows[0]
     else:
         return GetForegroundWindow()
+
 
 def GetContainingMonitor(win):
     monitorDims = GetMonitorDimensions()
@@ -177,11 +225,12 @@ def GetContainingMonitor(win):
         # Otherwise, default to the main monitor
         return monitorDims[0], 0
 
-def GetHwnds(pid = None, processName = None):
+
+def GetHwnds(pid=None, processName=None):
     if pid:
         pass
     elif processName:
-        pids = GetPids(processName = processName)
+        pids = GetPids(processName=processName)
         if pids:
             pid = pids[0]
         else:
@@ -202,6 +251,7 @@ def GetHwnds(pid = None, processName = None):
     EnumWindows(callback, hwnds)
     return hwnds
 
+
 def GetHwndChildren(hWnd, invisible):
     """
     Return a list of all direct children of the window 'hwnd'.
@@ -211,29 +261,22 @@ def GetHwndChildren(hWnd, invisible):
         if GetParent(childHwnd) == hWnd
     ]
 
+
 def GetHwndIcon(hWnd):
     """
     Get a wx.Icon from a window through its hwnd window handle
     """
     hIcon = DWORD()
-    res = SendMessageTimeout(
-        hWnd, WM_GETICON, ICON_SMALL, 0, SMTO_ABORTIFHUNG, 1000, byref(hIcon)
-    )
+    res = SendMessageTimeout(hWnd, WM_GETICON, ICON_SMALL, 0, SMTO_ABORTIFHUNG,
+                             1000, byref(hIcon))
 
     if res == 0:
         hIcon.value = 0
     if hIcon.value < 10:
         hIcon.value = GetClassLong(hWnd, GCL_HICONSM)
         if hIcon.value == 0:
-            res = SendMessageTimeout(
-                hWnd,
-                WM_GETICON,
-                ICON_BIG,
-                0,
-                SMTO_ABORTIFHUNG,
-                1000,
-                byref(hIcon)
-            )
+            res = SendMessageTimeout(hWnd, WM_GETICON, ICON_BIG, 0,
+                                     SMTO_ABORTIFHUNG, 1000, byref(hIcon))
             if res == 0:
                 hIcon.value = 0
             if hIcon.value < 10:
@@ -250,24 +293,24 @@ def GetHwndIcon(hWnd):
     else:
         return None
 
+
 def GetMonitorDimensions():
     retval = []
 
     def MonitorEnumProc(dummy1, dummy2, lprcMonitor, dummy3):
         displayRect = lprcMonitor.contents
-        rect = wx.Rect(
-            displayRect.left,
-            displayRect.top,
-            displayRect.right - displayRect.left,
-            displayRect.bottom - displayRect.top
-        )
+        rect = wx.Rect(displayRect.left, displayRect.top,
+                       displayRect.right - displayRect.left,
+                       displayRect.bottom - displayRect.top)
         retval.append(rect)
         return 1
+
     EnumDisplayMonitors(0, None, MONITORENUMPROC(MonitorEnumProc), 0)
 
     return retval
 
-def GetPids(processName = None, hwnd = None):
+
+def GetPids(processName=None, hwnd=None):
     if processName:
         pass
     elif hwnd:
@@ -277,14 +320,17 @@ def GetPids(processName = None, hwnd = None):
 
     try:
         pids = []
-        for proc in GetObject("winmgmts:").ExecQuery("SELECT * FROM Win32_Process WHERE Name = '" + str(processName.replace("'", "\\'")) + "'"):
+        for proc in GetObject("winmgmts:").ExecQuery(
+                "SELECT * FROM Win32_Process WHERE Name = '" + str(
+                    processName.replace("'", "\\'")) + "'"):
             pids.append(proc.ProcessID)
         return pids
     except:
         return False
 
+
 # now implemented as C function in cFunctions.pyd
-#def GetProcessName(pid):
+# def GetProcessName(pid):
 #    # See http://msdn2.microsoft.com/en-us/library/ms686701.aspx
 #    hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
 #    pe32 = PROCESSENTRY32()
@@ -302,7 +348,8 @@ def GetPids(processName = None, hwnd = None):
 #    finally:
 #        CloseHandle(hProcessSnap)
 
-def GetProcessNameEx(pid = None, hwnd = None, fullPath = False):
+
+def GetProcessNameEx(pid=None, hwnd=None, fullPath=False):
     if pid:
         pass
     elif hwnd:
@@ -311,12 +358,15 @@ def GetProcessNameEx(pid = None, hwnd = None, fullPath = False):
         return False
 
     try:
-        result = GetObject("winmgmts:").ExecQuery("SELECT * FROM Win32_Process WHERE ProcessID = '" + str(int(pid)) + "'")[0]
+        result = GetObject("winmgmts:").ExecQuery(
+            "SELECT * FROM Win32_Process WHERE ProcessID = '" + str(int(
+                pid)) + "'")[0]
         return result.ExecutablePath.strip('"') if fullPath else result.Name
     except:
         return False
 
-def GetWindowDimensions(hwnd = None):
+
+def GetWindowDimensions(hwnd=None):
     hwnd = GetBestHwnd(hwnd)
     windowDims = RECT()
     GetWindowRect(hwnd, byref(windowDims))
@@ -324,10 +374,12 @@ def GetWindowDimensions(hwnd = None):
     height = windowDims.bottom - windowDims.top
     return wx.Rect(windowDims.left, windowDims.top, width, height)
 
+
 def GetWindowProcessName(hWnd):
     dwProcessId = DWORD()
     GetWindowThreadProcessId(hWnd, byref(dwProcessId))
     return GetProcessName(dwProcessId.value)
+
 
 def HighlightWindow(hWnd):
     """
@@ -373,6 +425,7 @@ def HighlightWindow(hWnd):
     # must have valid objects selected into it at all times.
     DeleteObject(hpen)
 
+
 def HwndHasChildren(hWnd, invisible):
     """
     Return True if the window 'hwnd' has children.
@@ -380,17 +433,21 @@ def HwndHasChildren(hWnd, invisible):
     """
     data = [False]
     if invisible:
+
         def EnumFunc(hWndChild, lParam):
             data[0] = True
             return False
     else:
+
         def EnumFunc(hWndChild, lParam):
             if IsWindowVisible(hWndChild):
                 data[0] = True
                 return False
             return True
+
     EnumChildWindows(hWnd, ENUM_CHILD_PROC(EnumFunc), 0)
     return data[0]
+
 
 def IsWin64():
     try:
@@ -400,18 +457,20 @@ def IsWin64():
         return False
     return True
 
-def KillProcess(pid = None, processName = None, hwnd = None, signal = 0, restart = False):
+
+def KillProcess(pid=None, processName=None, hwnd=None, signal=0,
+                restart=False):
     if pid:
         pass
     elif processName:
-        pids = GetPids(processName = processName)
+        pids = GetPids(processName=processName)
         if pids:
             pid = pids[0]
         else:
             return False
     elif hwnd:
         hwnd = GetBestHwnd(hwnd)
-        pids = GetPids(hwnd = hwnd)
+        pids = GetPids(hwnd=hwnd)
         if pids:
             pid = pids[0]
         else:
@@ -419,7 +478,7 @@ def KillProcess(pid = None, processName = None, hwnd = None, signal = 0, restart
     else:
         return False
 
-    fullPath = GetProcessNameEx(pid = pid, fullPath = True)
+    fullPath = GetProcessNameEx(pid=pid, fullPath=True)
 
     try:
         proc = OpenProcess(1, 0, pid)
@@ -430,17 +489,25 @@ def KillProcess(pid = None, processName = None, hwnd = None, signal = 0, restart
     except:
         return False
 
+
 def PluginIsEnabled(plugin):
-    return PluginIsLoaded(plugin) and eg.plugins.__dict__[plugin].plugin.info.isStarted
+    return PluginIsLoaded(plugin) and eg.plugins.__dict__[
+        plugin].plugin.info.isStarted
+
 
 def PluginIsLoaded(plugin):
     return hasattr(eg.plugins, plugin)
 
+
 def ProcessExists(pid):
     try:
-        return bool(GetObject("winmgmts:").ExecQuery("SELECT * FROM Win32_Process WHERE ProcessId = " + str(int(pid))).count)
+        return bool(
+            GetObject("winmgmts:").ExecQuery(
+                "SELECT * FROM Win32_Process WHERE ProcessId = " + str(
+                    int(pid))).count)
     except:
         return False
+
 
 def PyEnumProcesses():
     size = 1024
@@ -456,11 +523,13 @@ def PyEnumProcesses():
         size *= 10
     return data[:pBytesReturned.value / sizeof(DWORD)]
 
+
 def PyFindWindow(className=None, windowName=None):
     hWnd = FindWindow(className, windowName)
     if not hWnd:
         raise WinError()
     return hWnd
+
 
 def PyGetCursorPos():
     """
@@ -471,6 +540,7 @@ def PyGetCursorPos():
     point = POINT()
     GetCursorPos(point)
     return point.x, point.y
+
 
 def PyGetWindowThreadProcessId(hWnd):
     """
@@ -483,18 +553,16 @@ def PyGetWindowThreadProcessId(hWnd):
     threadId = GetWindowThreadProcessId(hWnd, byref(dwProcessId))
     return threadId, dwProcessId.value
 
-def PySendMessageTimeout(
-    hWnd,
-    msg,
-    wParam=0,
-    lParam=0,
-    flags=SMTO_BLOCK | SMTO_ABORTIFHUNG,
-    timeout=2000
-):
+
+def PySendMessageTimeout(hWnd,
+                         msg,
+                         wParam=0,
+                         lParam=0,
+                         flags=SMTO_BLOCK | SMTO_ABORTIFHUNG,
+                         timeout=2000):
     resultData = DWORD()
-    res = SendMessageTimeout(
-        hWnd, msg, wParam, lParam, flags, timeout, byref(resultData)
-    )
+    res = SendMessageTimeout(hWnd, msg, wParam, lParam, flags, timeout,
+                             byref(resultData))
     if not res:
         raise WinError()
     return resultData.value

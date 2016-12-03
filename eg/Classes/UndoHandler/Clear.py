@@ -20,6 +20,7 @@
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class Clear(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Delete.replace("&", "")
 

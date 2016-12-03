@@ -83,8 +83,7 @@ from Dynamic.Mmsystem import (
     mixerSetControlDetails,
     MMSYSERR_NOERROR,
     pointer,
-    sizeof,
-)
+    sizeof, )
 
 MIXER_CONTROL_CLASSES = {
     MIXERCONTROL_CT_CLASS_FADER: {
@@ -153,23 +152,23 @@ MIXER_CONTROL_CLASSES = {
     },
     MIXERCONTROL_CT_CLASS_CUSTOM: {
         "name": "CUSTOM",
-        "types": {
-        }
+        "types": {}
     },
 }
 
 # Exceptions
+
+
 class SoundMixerException(Exception):
     pass
+
 
 def ChangeMasterVolumeBy(value, deviceId=0):
     # Obtain the volumne control object
     deviceId = GetDeviceId(deviceId)
     hmixer, mixerControl = GetMixerControl(
-        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
-        MIXERCONTROL_CONTROLTYPE_VOLUME,
-        deviceId
-    )
+        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS, MIXERCONTROL_CONTROLTYPE_VOLUME,
+        deviceId)
 
     # Then get the volume
     oldVolume = GetControlValue(hmixer, mixerControl)
@@ -183,6 +182,7 @@ def ChangeMasterVolumeBy(value, deviceId=0):
         newVolume = maximum
     SetControlValue(hmixer, mixerControl, newVolume)
 
+
 def GetControls(hmixer, mixerline):
     numCtrls = mixerline.cControls
     if numCtrls == 0:
@@ -194,16 +194,14 @@ def GetControls(hmixer, mixerline):
     mixerLineControls.dwLineID = mixerline.dwLineID
     mixerLineControls.pamxctrl = pointer(mixerControlArray[0])
     mixerLineControls.cbmxctrl = sizeof(MIXERCONTROL)
-    mixerGetLineControls(
-        hmixer, byref(mixerLineControls), MIXER_GETLINECONTROLSF_ALL
-    )
+    mixerGetLineControls(hmixer,
+                         byref(mixerLineControls), MIXER_GETLINECONTROLSF_ALL)
     result = []
     for i in range(numCtrls):
         mixerControl = mixerControlArray[i]
         dwControlType = mixerControl.dwControlType
-        controlClass = MIXER_CONTROL_CLASSES[
-            dwControlType & MIXERCONTROL_CT_CLASS_MASK
-        ]
+        controlClass = MIXER_CONTROL_CLASSES[dwControlType &
+                                             MIXERCONTROL_CT_CLASS_MASK]
         controlClassTypeName = controlClass["types"][dwControlType]
         flagNames = []
         fdwControl = mixerControl.fdwControl
@@ -213,18 +211,14 @@ def GetControls(hmixer, mixerline):
             flagNames.append("Multiple(%i)" % mixerControl.cMultipleItems)
         if fdwControl & MIXERCONTROL_CONTROLF_UNIFORM:
             flagNames.append("Uniform")
-        result.append(
-            (
-                mixerControl.szName,
-                controlClass["name"],
-                controlClassTypeName,
-                ", ".join(flagNames)
-            )
-        )
+        result.append((mixerControl.szName, controlClass["name"],
+                       controlClassTypeName, ", ".join(flagNames)))
     return result
+
 
 def GetControlDetails():
     pass
+
 
 def GetControlValue(hmixer, mixerControl):
     valueDetails = MIXERCONTROLDETAILS_UNSIGNED()
@@ -243,6 +237,7 @@ def GetControlValue(hmixer, mixerControl):
         raise SoundMixerException()
     return valueDetails.dwValue
 
+
 def GetDeviceId(deviceId, strVal=False):
     if strVal and deviceId == "Primary Sound Driver":
         deviceId = 0
@@ -252,7 +247,7 @@ def GetDeviceId(deviceId, strVal=False):
             if deviceId < len(devices) - 1 and deviceId > -1:
                 return devices[deviceId]
             else:
-                #return devices[0]
+                # return devices[0]
                 raise SoundMixerException()
         else:
             return deviceId
@@ -265,8 +260,9 @@ def GetDeviceId(deviceId, strVal=False):
             else:
                 return devices.index(deviceId) - 1
         else:
-            #return 0
+            # return 0
             raise SoundMixerException()
+
 
 def GetDeviceLines(deviceId=0):
     deviceId = GetDeviceId(deviceId)
@@ -285,9 +281,8 @@ def GetDeviceLines(deviceId=0):
     for destinationNum in range(mixercaps.cDestinations):
         mixerline.cbStruct = sizeof(MIXERLINE)
         mixerline.dwDestination = destinationNum
-        if mixerGetLineInfo(
-            hmixer, byref(mixerline), MIXER_GETLINEINFOF_DESTINATION
-        ):
+        if mixerGetLineInfo(hmixer,
+                            byref(mixerline), MIXER_GETLINEINFOF_DESTINATION):
             continue
         print "Destination:", destinationNum, mixerline.szName
         for name in GetControls(hmixer, mixerline):
@@ -296,22 +291,20 @@ def GetDeviceLines(deviceId=0):
             mixerline.cbStruct = sizeof(MIXERLINE)
             mixerline.dwDestination = destinationNum
             mixerline.dwSource = sourceNum
-            if mixerGetLineInfo(
-                hmixer, byref(mixerline), MIXER_GETLINEINFOF_SOURCE
-            ):
+            if mixerGetLineInfo(hmixer,
+                                byref(mixerline), MIXER_GETLINEINFOF_SOURCE):
                 continue
             print "    Source:", sourceNum, mixerline.szName
             for name in GetControls(hmixer, mixerline):
                 print "            Control:", name
 
+
 def GetMasterVolume(deviceId=0):
     # Obtain the volumne control object
     deviceId = GetDeviceId(deviceId)
     hmixer, mixerControl = GetMixerControl(
-        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
-        MIXERCONTROL_CONTROLTYPE_VOLUME,
-        deviceId
-    )
+        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS, MIXERCONTROL_CONTROLTYPE_VOLUME,
+        deviceId)
 
     # Then get the volume
     value = GetControlValue(hmixer, mixerControl)
@@ -320,6 +313,7 @@ def GetMasterVolume(deviceId=0):
     minimum = mixerControl.Bounds.lMinimum
     value = 100.0 * (value - minimum) / (maximum - minimum)
     return value
+
 
 def GetMixerControl(componentType, ctrlType, deviceId=0):
     """
@@ -345,11 +339,8 @@ def GetMixerControl(componentType, ctrlType, deviceId=0):
     mixerLine.dwComponentType = componentType
 
     # Obtain a line corresponding to the component type
-    rc = mixerGetLineInfo(
-        hmixer,
-        byref(mixerLine),
-        MIXER_GETLINEINFOF_COMPONENTTYPE
-    )
+    rc = mixerGetLineInfo(hmixer,
+                          byref(mixerLine), MIXER_GETLINEINFOF_COMPONENTTYPE)
     if rc != MMSYSERR_NOERROR:
         raise SoundMixerException()
 
@@ -360,14 +351,13 @@ def GetMixerControl(componentType, ctrlType, deviceId=0):
     mixerLineControls.pamxctrl = pointer(mixerControl)
 
     # Get the control
-    rc = mixerGetLineControls(
-        hmixer,
-        byref(mixerLineControls),
-        MIXER_GETLINECONTROLSF_ONEBYTYPE
-    )
+    rc = mixerGetLineControls(hmixer,
+                              byref(mixerLineControls),
+                              MIXER_GETLINECONTROLSF_ONEBYTYPE)
     if MMSYSERR_NOERROR != rc:
         raise SoundMixerException()
     return hmixer, mixerControl
+
 
 def GetMixerDevices(useList=False):
     """
@@ -383,19 +373,20 @@ def GetMixerDevices(useList=False):
             continue
         # store the name of the device
         result.append(mixcaps.szPname)
-    return result if useList else dict((i - 1, result[i]) for i in range(len(result)))
+    return result if useList else dict((i - 1, result[i])
+                                       for i in range(len(result)))
+
 
 def GetMute(deviceId=0):
     # Obtain the volumne control object
     deviceId = GetDeviceId(deviceId)
     hmixer, mixerControl = GetMixerControl(
-        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
-        MIXERCONTROL_CONTROLTYPE_MUTE,
-        deviceId
-    )
+        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS, MIXERCONTROL_CONTROLTYPE_MUTE,
+        deviceId)
 
     # Then get the volume
     return GetControlValue(hmixer, mixerControl)
+
 
 def SetControlValue(hmixer, mixerControl, value):
     """
@@ -422,14 +413,13 @@ def SetControlValue(hmixer, mixerControl, value):
     if rc != MMSYSERR_NOERROR:
         raise SoundMixerException()
 
+
 def SetMasterVolume(value, deviceId=0):
     # Obtain the volumne control object
     deviceId = GetDeviceId(deviceId)
-    hmixer, volCtrl = GetMixerControl(
-        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
-        MIXERCONTROL_CONTROLTYPE_VOLUME,
-        deviceId
-    )
+    hmixer, volCtrl = GetMixerControl(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
+                                      MIXERCONTROL_CONTROLTYPE_VOLUME,
+                                      deviceId)
 
     maximum = volCtrl.Bounds.lMaximum
     minimum = volCtrl.Bounds.lMinimum
@@ -440,23 +430,24 @@ def SetMasterVolume(value, deviceId=0):
         newValue = maximum
     SetControlValue(hmixer, volCtrl, newValue)
 
+
 def SetMute(mute=True, deviceId=0):
     # Obtain the volumne control object
     deviceId = GetDeviceId(deviceId)
     hmixer, mixerControl = GetMixerControl(
-        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS,
-        MIXERCONTROL_CONTROLTYPE_MUTE,
-        deviceId
-    )
+        MIXERLINE_COMPONENTTYPE_DST_SPEAKERS, MIXERCONTROL_CONTROLTYPE_MUTE,
+        deviceId)
 
     # Then set the volume
     return SetControlValue(hmixer, mixerControl, int(mute))
+
 
 def ToggleMute(deviceId=0):
     deviceId = GetDeviceId(deviceId)
     flag = not GetMute(deviceId)
     SetMute(flag, deviceId)
     return flag
+
 
 if __name__ == '__main__':
     print GetDeviceLines()

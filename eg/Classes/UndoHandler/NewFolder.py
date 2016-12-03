@@ -20,6 +20,7 @@
 import eg
 from NewItem import NewItem
 
+
 class NewFolder(NewItem):
     """
     Create a new FolderItem if the user has choosen to do so from the menu
@@ -33,18 +34,15 @@ class NewFolder(NewItem):
         document = self.document
 
         def ProcessInActionThread():
-            if isinstance(
-                selection,
-                (document.MacroItem, document.AutostartItem)
-            ):
+            if isinstance(selection,
+                          (document.MacroItem, document.AutostartItem)):
                 parent = selection.parent
                 pos = parent.childs.index(selection) + 1
                 if pos >= len(parent.childs):
                     pos = -1
-            elif isinstance(
-                selection,
-                (document.ActionItem, document.EventItem, document.PluginItem)
-            ):
+            elif isinstance(selection,
+                            (document.ActionItem, document.EventItem,
+                             document.PluginItem)):
                 parent = selection.parent.parent
                 pos = parent.childs.index(selection.parent) + 1
                 if pos >= len(parent.childs):
@@ -53,10 +51,8 @@ class NewFolder(NewItem):
                 parent = selection
                 pos = -1
             return document.FolderItem.Create(
-                parent,
-                pos,
-                name=eg.text.General.unnamedFolder
-            )
+                parent, pos, name=eg.text.General.unnamedFolder)
+
         item = eg.actionThread.Func(ProcessInActionThread)()
         self.StoreItem(item)
         item.Select()

@@ -20,12 +20,18 @@ import wx
 
 # Local imports
 from eg.WinApi.Dynamic import (
-    GetSystemMetrics, GetModuleHandle, CreateWindowEx,
-    WS_CHILD, WS_VISIBLE, SBS_SIZEGRIP, SBS_SIZEBOXTOPLEFTALIGN,
-    SM_CYHSCROLL, SM_CXVSCROLL,
-)
+    GetSystemMetrics,
+    GetModuleHandle,
+    CreateWindowEx,
+    WS_CHILD,
+    WS_VISIBLE,
+    SBS_SIZEGRIP,
+    SBS_SIZEBOXTOPLEFTALIGN,
+    SM_CYHSCROLL,
+    SM_CXVSCROLL, )
 
 FLAGS = WS_CHILD | WS_VISIBLE | SBS_SIZEGRIP | SBS_SIZEBOXTOPLEFTALIGN
+
 
 class SizeGrip(wx.PyWindow):
     def __init__(self, parent):
@@ -34,17 +40,10 @@ class SizeGrip(wx.PyWindow):
         self.SetMinSize(size)
         self.SetMaxSize(size)
 
-        self.sizeGripHandle = CreateWindowEx(
-            0,
-            "Scrollbar",
-            None,
-            FLAGS,
-            0, 0, 0, 0,
-            self.GetHandle(),
-            0,
-            GetModuleHandle(None),
-            None
-        )
+        self.sizeGripHandle = CreateWindowEx(0, "Scrollbar", None, FLAGS, 0, 0,
+                                             0, 0,
+                                             self.GetHandle(), 0,
+                                             GetModuleHandle(None), None)
 
     def AcceptsFocus(self):
         return False

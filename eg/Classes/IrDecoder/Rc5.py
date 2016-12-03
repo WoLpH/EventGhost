@@ -129,6 +129,7 @@ STREAMZAP = {
     0x63: "Blue",
 }
 
+
 class Rc5(ManchesterCoding2):
     """
     IR decoder for the Philips RC-5 protocol.

@@ -25,17 +25,18 @@ from pkg_resources import parse_version
 # Local imports
 import eg
 
+
 class Text(eg.TranslatableStrings):
     newVersionMesg = \
-        "A new version of EventGhost has been released!\n\n"\
-        "Your version:\t%s\n"\
-        "Newest version:\t%s\n\n"\
+        "A new version of EventGhost has been released!\n\n" \
+        "Your version:\t%s\n" \
+        "Newest version:\t%s\n\n" \
         "Do you want to visit the download page now?"
     waitMesg = "Please wait while EventGhost retrieves update information."
     ManOkMesg = "There is currently no newer version of EventGhost available."
     ManErrorMesg = \
-        "It wasn't possible to get the information from the EventGhost "\
-        "website.\n\n"\
+        "It wasn't possible to get the information from the EventGhost " \
+        "website.\n\n" \
         "Please try it again later."
     wipUpdateMsg = "Update check not available when running from source."
 
@@ -55,15 +56,11 @@ class MessageDialog(eg.Dialog):
     def __init__(self, version, url):
         self.url = url
         eg.Dialog.__init__(self, None, -1, eg.APP_NAME)
-        bmp = wx.ArtProvider.GetBitmap(
-            wx.ART_INFORMATION,
-            wx.ART_MESSAGE_BOX,
-            (32, 32)
-        )
+        bmp = wx.ArtProvider.GetBitmap(wx.ART_INFORMATION, wx.ART_MESSAGE_BOX,
+                                       (32, 32))
         staticBitmap = wx.StaticBitmap(self, -1, bmp)
-        staticText = self.StaticText(
-            Text.newVersionMesg % (eg.Version.string, version)
-        )
+        staticText = self.StaticText(Text.newVersionMesg %
+                                     (eg.Version.string, version))
         downloadButton = wx.Button(self, -1, eg.text.General.ok)
         downloadButton.Bind(wx.EVT_BUTTON, self.OnOk)
         cancelButton = wx.Button(self, -1, eg.text.General.cancel)
@@ -72,27 +69,17 @@ class MessageDialog(eg.Dialog):
         sizer2 = eg.HBoxSizer(
             (staticBitmap, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 10),
             ((5, 5), 0),
-            (
-                staticText,
-                0,
-                wx.TOP | wx.RIGHT | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL,
-                10
-            ),
-        )
+            (staticText, 0, wx.TOP | wx.RIGHT | wx.BOTTOM |
+             wx.ALIGN_CENTER_VERTICAL, 10), )
         self.SetSizerAndFit(
             eg.VBoxSizer(
                 (sizer2),
                 ((5, 5), 1),
-                (
-                    eg.HBoxSizer(
-                        (downloadButton),
-                        ((5, 5), 0),
-                        (cancelButton),
-                    ), 0, wx.ALIGN_CENTER_HORIZONTAL
-                ),
-                ((2, 10), 0),
-            )
-        )
+                (eg.HBoxSizer(
+                    (downloadButton),
+                    ((5, 5), 0),
+                    (cancelButton), ), 0, wx.ALIGN_CENTER_HORIZONTAL),
+                ((2, 10), 0), ))
         self.ShowModal()
 
     def OnCancel(self, event):
@@ -110,9 +97,9 @@ def CenterOnParent(self):
     x, y = parent.GetPosition()
     parentWidth, parentHeight = parent.GetSize()
     width, height = self.GetSize()
-    self.SetPosition(
-        ((parentWidth - width) / 2 + x, (parentHeight - height) / 2 + y)
-    )
+    self.SetPosition(((parentWidth - width) / 2 + x,
+                      (parentHeight - height) / 2 + y))
+
 
 def ShowWaitDialog():
     dialog = wx.Dialog(None, style=wx.THICK_FRAME | wx.DIALOG_NO_PARENT)
@@ -124,6 +111,7 @@ def ShowWaitDialog():
     dialog.Show()
     wx.GetApp().Yield()
     return dialog
+
 
 def _checkUpdate(manually=False):
     if eg.Version.string == "WIP":
@@ -154,11 +142,9 @@ def _checkUpdate(manually=False):
         ver = rel["name"].lstrip("v")
         url = rel["html_url"]
 
-        if (
-            rc == 200 and
-            parse_version(ver) > parse_version(eg.Version.string) and
-            (manually or ver != eg.config.lastUpdateCheckVersion)
-        ):
+        if (rc == 200 and
+                parse_version(ver) > parse_version(eg.Version.string) and
+            (manually or ver != eg.config.lastUpdateCheckVersion)):
             eg.config.lastUpdateCheckVersion = ver
             wx.CallAfter(MessageDialog, ver, url)
         else:
@@ -167,8 +153,7 @@ def _checkUpdate(manually=False):
                     None,
                     Text.ManOkMesg,
                     eg.APP_NAME,
-                    style=wx.OK | wx.ICON_INFORMATION
-                )
+                    style=wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
     except:
@@ -179,7 +164,6 @@ def _checkUpdate(manually=False):
                 None,
                 Text.ManErrorMesg,
                 eg.APP_NAME,
-                style=wx.OK | wx.ICON_ERROR
-            )
+                style=wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()

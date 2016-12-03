@@ -25,8 +25,8 @@ from eg.WinApi.Dynamic import (
     SetEvent,
     WAIT_OBJECT_0,
     WAIT_TIMEOUT,
-    WaitForSingleObject,
-)
+    WaitForSingleObject, )
+
 
 class ResettableTimer(Thread):
     def __init__(self, callback):

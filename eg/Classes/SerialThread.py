@@ -93,8 +93,7 @@ from eg.WinApi.Dynamic import (
     SetEvent,
     WaitCommEvent,
     WaitForSingleObject,
-    WriteFile,
-)
+    WriteFile, )
 
 # parity string to dcb value dict
 PARITY_S2V_DICT = {
@@ -117,10 +116,12 @@ STOPBITS_S2V_DICT = {'1': ONESTOPBIT, '1.5': ONE5STOPBITS, '2': TWOSTOPBITS}
 # stop bits dcb value to string dict
 STOPBITS_V2S_DICT = {ONESTOPBIT: '1', ONE5STOPBITS: '1.5', TWOSTOPBITS: '2'}
 
+
 class SerialError(eg.Exception):
     """
     Base class for SerialThread related exceptions.
     """
+
     def __init__(self, msg=None):
         if msg is None:
             errno = GetLastError()
@@ -168,9 +169,7 @@ class SerialThread(Thread):
         self.keepAlive = True
         self.stopEvent = CreateEvent(None, 1, 0, None)
         self.callbackThread = Thread(
-            target=self.CallbackThreadProc,
-            name="SerialReceiveThreadProc"
-        )
+            target=self.CallbackThreadProc, name="SerialReceiveThreadProc")
 
     def __enter__(self):
         self.SuspendReadEvents()
@@ -207,9 +206,9 @@ class SerialThread(Thread):
         if currentThread() != self:
             self.join(1.0)
         if self.hFile:
-            #Restore original timeout values:
+            # Restore original timeout values:
             SetCommTimeouts(self.hFile, self.oldCommTimeouts)
-            #Close COM-Port:
+            # Close COM-Port:
             if not self._CloseHandle(self.hFile):
                 self.hFile = None
                 raise SerialError()
@@ -254,11 +253,8 @@ class SerialThread(Thread):
         See :meth:`Open` for a complete description of the mode string.
         """
         dcb = self.dcb
-        return (
-            str(dcb.ByteSize) +
-            PARITY_V2S_DICT[dcb.Parity] +
-            STOPBITS_V2S_DICT[dcb.StopBits]
-        )
+        return (str(dcb.ByteSize) + PARITY_V2S_DICT[dcb.Parity] +
+                STOPBITS_V2S_DICT[dcb.StopBits])
 
     def HandleReceive(self, data):
         # read all data currently available
@@ -298,9 +294,9 @@ class SerialThread(Thread):
 
                 Example values: '8N1' (default), '8E1', '7N1.5'
         """
-        #the "//./COMx" format is required for devices >= 9
-        #not all versions of windows seem to support this properly
-        #so that the first few ports are used with the DOS device name
+        # the "//./COMx" format is required for devices >= 9
+        # not all versions of windows seem to support this properly
+        # so that the first few ports are used with the DOS device name
         if port < 9:
             deviceStr = 'COM%d' % (port + 1)
         else:
@@ -313,10 +309,9 @@ class SerialThread(Thread):
                 None,  # default security attributes
                 OPEN_EXISTING,
                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-                0
-            )
+                0)
         except Exception:
-            self.hFile = None    # cause __del__ is called anyway
+            self.hFile = None  # cause __del__ is called anyway
             raise eg.Exceptions.SerialOpenFailed()
         if self.hFile == INVALID_HANDLE_VALUE:
             self.hFile = None
@@ -373,18 +368,17 @@ class SerialThread(Thread):
 
         waitingOnRead = False
         while self.keepAlive:
-            #print "ReceiveThreadProc"
+            # print "ReceiveThreadProc"
             # if no read is outstanding, then issue another one
             if not waitingOnRead:
-                #print "ResetEvent"
+                # print "ResetEvent"
                 ResetEvent(osReader.hEvent)
                 returnValue = self._ReadFile(
                     hFile,
                     lpBuf,
                     1,  # we want to get notified as soon as a byte is available
                     byref(dwRead),
-                    byref(osReader)
-                )
+                    byref(osReader))
                 if not returnValue:
                     err = GetLastError()
                     if err != 0 and err != ERROR_IO_PENDING:
@@ -396,29 +390,25 @@ class SerialThread(Thread):
                         self.HandleReceive(lpBuf.raw)
                         continue
 
-            ret = MsgWaitForMultipleObjects(
-                2, pHandles, 0, 100000, QS_ALLINPUT
-            )
+            ret = MsgWaitForMultipleObjects(2, pHandles, 0, 100000,
+                                            QS_ALLINPUT)
             if ret == WAIT_OBJECT_0:
-                returnValue = GetOverlappedResult(
-                    hFile,
-                    byref(osReader),
-                    byref(dwRead),
-                    0
-                )
-                #print "GetOverlappedResult", returnValue, dwRead.value
+                returnValue = GetOverlappedResult(hFile,
+                                                  byref(osReader),
+                                                  byref(dwRead), 0)
+                # print "GetOverlappedResult", returnValue, dwRead.value
                 waitingOnRead = False
                 if returnValue and dwRead.value:
                     self.HandleReceive(lpBuf.raw)
             elif ret == WAIT_OBJECT_0 + 1:
-                #print "WAIT_OBJECT_1"
+                # print "WAIT_OBJECT_1"
                 # stop event signaled
                 self.readCondition.acquire()
                 self.readCondition.notifyAll()
                 self.readCondition.release()
                 break
             elif ret == WAIT_TIMEOUT:
-                #print "WAIT_TIMEOUT"
+                # print "WAIT_TIMEOUT"
                 pass
             else:
                 raise SerialError("Unknown message in ReceiveThreadProc")
@@ -493,10 +483,8 @@ class SerialThread(Thread):
         waitingOnStatusHandle = False
         dwCommEvent = DWORD()
         dwOvRes = DWORD()
-        commMask = (
-            EV_BREAK | EV_CTS | EV_DSR | EV_ERR | EV_RING |
-            EV_RLSD | EV_RXCHAR | EV_RXFLAG | EV_TXEMPTY
-        )
+        commMask = (EV_BREAK | EV_CTS | EV_DSR | EV_ERR | EV_RING | EV_RLSD |
+                    EV_RXCHAR | EV_RXFLAG | EV_TXEMPTY)
 
         if not SetCommMask(self.hFile, commMask):
             raise SerialError("error setting communications mask")
@@ -524,9 +512,8 @@ class SerialThread(Thread):
                 # Wait a little while for an event to occur.
                 res = WaitForSingleObject(osStatus.hEvent, 1000)
                 if res == WAIT_OBJECT_0:
-                    if GetOverlappedResult(
-                        hComm, byref(osStatus), byref(dwOvRes), 0
-                    ):
+                    if GetOverlappedResult(hComm,
+                                           byref(osStatus), byref(dwOvRes), 0):
                         # Status event is stored in the event flag
                         # specified in the original WaitCommEvent call.
                         # Deal with the status event as appropriate.
@@ -570,24 +557,16 @@ class SerialThread(Thread):
         Writes a string to the port.
         """
         dwWritten = DWORD(0)
-        returnValue = self._WriteFile(
-            self.hFile,
-            data,
-            len(data),
-            byref(dwWritten),
-            byref(self.osWriter)
-        )
+        returnValue = self._WriteFile(self.hFile, data,
+                                      len(data),
+                                      byref(dwWritten), byref(self.osWriter))
         if returnValue != 0:
             return
         err = GetLastError()
         if err != 0 and err != ERROR_IO_PENDING:
             raise SerialError()
-        if not GetOverlappedResult(
-            self.hFile,
-            byref(self.osWriter),
-            byref(dwWritten),
-            1
-        ):
+        if not GetOverlappedResult(self.hFile,
+                                   byref(self.osWriter), byref(dwWritten), 1):
             raise SerialError()
         if dwWritten.value != len(data):
             raise self.SerialError("Write timeout")
@@ -603,15 +582,10 @@ class SerialThread(Thread):
         numBytes = self.comstat.cbInQue
         if numBytes == 0:
             return ''
-        #ResetEvent(self.osReader.hEvent)
+        # ResetEvent(self.osReader.hEvent)
         lpBuffer = create_string_buffer(numBytes)
         numberOfBytesRead = DWORD()
-        if not self._ReadFile(
-            self.hFile,
-            lpBuffer,
-            numBytes,
-            byref(numberOfBytesRead),
-            byref(self.osReader)
-        ):
+        if not self._ReadFile(self.hFile, lpBuffer, numBytes,
+                              byref(numberOfBytesRead), byref(self.osReader)):
             WaitForSingleObject(self.osReader.hEvent, INFINITE)
         return lpBuffer.raw[:numberOfBytesRead.value]

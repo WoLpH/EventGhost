@@ -15,7 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
-
 """
 Parses the command line arguments of the program.
 """
@@ -45,7 +44,8 @@ class args:
     debugLevel = 0
     hideOnStartup = False
     install = False
-    isMain = hasattr(__main__, "isMain")  #splitext(basename(scriptPath))[0].lower() == "eventghost"
+    # splitext(basename(scriptPath))[0].lower() == "eventghost"
+    isMain = hasattr(__main__, "isMain")
     pluginFile = None
     startupEvent = None
     startupFile = None
@@ -96,10 +96,8 @@ if args.isMain:
             import time
             while True:
                 appMutex = ctypes.windll.kernel32.CreateMutexA(
-                    None,
-                    0,
-                    "Global\\EventGhost:7EB106DC-468D-4345-9CFE-B0021039114B"
-                )
+                    None, 0,
+                    "Global\\EventGhost:7EB106DC-468D-4345-9CFE-B0021039114B")
                 err = ctypes.GetLastError()
                 if appMutex:
                     ctypes.windll.kernel32.CloseHandle(appMutex)
@@ -114,18 +112,12 @@ if args.isMain:
             elif ext in (".egtree", ".xml"):
                 args.startupFile = path
 
-    if (
-        not args.allowMultiLoad and
-        not args.translate and
-        args.isMain  #and
-        #not args.pluginFile
-    ):
+    if (not args.allowMultiLoad and not args.translate and args.isMain  # and
+            #not args.pluginFile
+        ):
         # check if another instance of the program is running
         appMutex = ctypes.windll.kernel32.CreateMutexA(
-            None,
-            0,
-            "Global\\EventGhost:7EB106DC-468D-4345-9CFE-B0021039114B"
-        )
+            None, 0, "Global\\EventGhost:7EB106DC-468D-4345-9CFE-B0021039114B")
         if ctypes.GetLastError() != 0:
             # another instance of EventGhost is running
             from win32com.client import Dispatch

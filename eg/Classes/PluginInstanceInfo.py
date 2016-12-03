@@ -25,6 +25,7 @@ import eg
 from eg.Utils import SetDefault
 from PluginModuleInfo import PluginModuleInfo
 
+
 class PluginInstanceInfo(PluginModuleInfo):
     pluginCls = None
     module = None
@@ -69,6 +70,7 @@ class PluginInstanceInfo(PluginModuleInfo):
         # create an unique exception for every plugin instance
         class _Exception(eg.PluginBase.Exception):
             obj = plugin
+
         plugin.Exception = _Exception
         plugin.Exceptions = eg.ExceptionsProvider(plugin)
 
@@ -90,18 +92,15 @@ class PluginInstanceInfo(PluginModuleInfo):
             plugin.name = self.name
         plugin.description = self.description
         self.eventPrefix = evalName
-        self.actionGroup = eg.ActionGroup(
-            plugin,
-            plugin.name,
-            plugin.description
-        )
+        self.actionGroup = eg.ActionGroup(plugin, plugin.name,
+                                          plugin.description)
         eg.actionGroup.items.append(self.actionGroup)
         plugin.AddAction = self.actionGroup.AddAction
         plugin.AddGroup = self.actionGroup.AddGroup
         try:
             plugin.__init__()
             self.initFailed = False
-        except eg.Exceptions.PluginNotFound, exc:
+        except eg.Exceptions.PluginNotFound as exc:
             pass
         except eg.Exception as exc:
             eg.PrintError(exc.text.decode(eg.systemEncoding))
@@ -145,10 +144,7 @@ class PluginInstanceInfo(PluginModuleInfo):
             else:
                 module = __import__(moduleName, None, None, [''])
         except:
-            eg.PrintTraceback(
-                eg.text.Error.pluginLoadError % self.path,
-                1
-            )
+            eg.PrintTraceback(eg.text.Error.pluginLoadError % self.path, 1)
             raise eg.Exceptions.PluginLoadError()
         pluginCls = module.__pluginCls__
         self.module = module
@@ -192,18 +188,17 @@ class PluginInstanceInfo(PluginModuleInfo):
             self.instance.__start__(*self.args)
             self.isStarted = True
             self.treeItem.Refresh()
-        except eg.Exception, exc:
+        except eg.Exception as exc:
             self.lastException = exc
             msg = eg.text.Error.pluginStartError % self.name
             msg += "\n" + unicode(exc)
             eg.PrintError(msg, source=self.treeItem)
             self.treeItem.Refresh()
-        except Exception, exc:
+        except Exception as exc:
             self.lastException = exc
             eg.PrintError(
                 eg.text.Error.pluginStartError % self.name,
-                source=self.treeItem
-            )
+                source=self.treeItem)
             eg.PrintTraceback()
             self.treeItem.Refresh()
 
@@ -221,17 +216,16 @@ class PluginInstanceInfo(PluginModuleInfo):
         self.isStarted = False
         try:
             self.instance.__stop__()
-        except eg.Exception, exc:
+        except eg.Exception as exc:
             self.lastException = exc
             msg = eg.text.Error.pluginStartError % self.name
             msg += "\n" + unicode(exc)
             self.treeItem.PrintError(msg)
             self.treeItem.Refresh()
-        except Exception, exc:
+        except Exception as exc:
             self.lastException = exc
-            self.treeItem.PrintError(
-                eg.text.Error.pluginStartError % self.name
-            )
+            self.treeItem.PrintError(eg.text.Error.pluginStartError %
+                                     self.name)
             eg.PrintTraceback()
             self.treeItem.Refresh()
 

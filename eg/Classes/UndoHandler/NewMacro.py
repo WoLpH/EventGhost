@@ -20,6 +20,7 @@
 import eg
 from NewItem import NewItem
 
+
 class NewMacro(NewItem):
     """
     Create a new MacroItem if the user has choosen to do so from the menu
@@ -32,18 +33,15 @@ class NewMacro(NewItem):
         document = self.document
 
         def ProcessInActionThread():
-            if isinstance(
-                selection,
-                (document.MacroItem, document.AutostartItem)
-            ):
+            if isinstance(selection,
+                          (document.MacroItem, document.AutostartItem)):
                 parent = selection.parent
                 pos = parent.childs.index(selection) + 1
                 if pos >= len(parent.childs):
                     pos = -1
-            elif isinstance(
-                selection,
-                (document.ActionItem, document.EventItem, document.PluginItem)
-            ):
+            elif isinstance(selection,
+                            (document.ActionItem, document.EventItem,
+                             document.PluginItem)):
                 parent = selection.parent.parent
                 pos = parent.childs.index(selection.parent) + 1
                 if pos >= len(parent.childs):
@@ -52,10 +50,7 @@ class NewMacro(NewItem):
                 parent = selection
                 pos = -1
             return document.MacroItem.Create(
-                parent,
-                pos,
-                name=eg.text.General.unnamedMacro
-            )
+                parent, pos, name=eg.text.General.unnamedMacro)
 
         macroItem = eg.actionThread.Func(ProcessInActionThread)()
         macroItem.Select()

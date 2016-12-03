@@ -22,33 +22,25 @@ import wx
 import eg
 from eg.Icons import GetInternalBitmap
 
+
 class FontSelectButton(wx.BitmapButton):
     """
     A button to select a font.
     """
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        pos=wx.DefaultPosition,
-        size=(40, wx.Button.GetDefaultSize()[1]),
-        style=wx.BU_AUTODRAW,
-        validator=wx.DefaultValidator,
-        name="FontSelectButton",
-        value=None
-    ):
+
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 pos=wx.DefaultPosition,
+                 size=(40, wx.Button.GetDefaultSize()[1]),
+                 style=wx.BU_AUTODRAW,
+                 validator=wx.DefaultValidator,
+                 name="FontSelectButton",
+                 value=None):
         self.value = value
-        wx.BitmapButton.__init__(
-            self,
-            parent,
-            id,
-            GetInternalBitmap("font"),
-            pos,
-            size,
-            style,
-            validator,
-            name
-        )
+        wx.BitmapButton.__init__(self, parent, id,
+                                 GetInternalBitmap("font"), pos, size, style,
+                                 validator, name)
         self.Bind(wx.EVT_BUTTON, self.OnButton)
 
     def GetValue(self):
@@ -62,8 +54,7 @@ class FontSelectButton(wx.BitmapButton):
             fontData.SetInitialFont(font)
         else:
             fontData.SetInitialFont(
-                wx.SystemSettings_GetFont(wx.SYS_ANSI_VAR_FONT)
-            )
+                wx.SystemSettings_GetFont(wx.SYS_ANSI_VAR_FONT))
         dialog = wx.FontDialog(self.GetParent(), fontData)
         if dialog.ShowModal() == wx.ID_OK:
             fontData = dialog.GetFontData()
@@ -71,7 +62,7 @@ class FontSelectButton(wx.BitmapButton):
             self.value = font.GetNativeFontInfo().ToString()
             event.Skip()
         dialog.Destroy()
-        evt = eg.ValueChangedEvent(self.GetId(), value = self.value)
+        evt = eg.ValueChangedEvent(self.GetId(), value=self.value)
         wx.PostEvent(self, evt)
 
     def SetValue(self, value):

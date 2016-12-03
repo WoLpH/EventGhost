@@ -21,11 +21,11 @@ import wx
 # Local imports
 import eg
 
+
 class EventRemapDialog(eg.Dialog):
     def __init__(self, parent, mapping=None):
         eg.Dialog.__init__(
-            self, parent, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        )
+            self, parent, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         listCtrl = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
         listCtrl.InsertColumn(0, "New event name")
         listCtrl.InsertColumn(1, "Events")
@@ -41,19 +41,12 @@ class EventRemapDialog(eg.Dialog):
 
         editSizer = wx.GridSizer(1, 2)
         editSizer.Add(
-            self.StaticText("New event name:"),
-            wx.ALIGN_CENTER_VERTICAL
-        )
+            self.StaticText("New event name:"), wx.ALIGN_CENTER_VERTICAL)
         editSizer.Add(newEventCtrl, 0)
-        editSizer.Add(
-            self.StaticText("Events:"),
-            wx.ALIGN_CENTER_VERTICAL
-        )
+        editSizer.Add(self.StaticText("Events:"), wx.ALIGN_CENTER_VERTICAL)
         editSizer.Add(eventsCtrl, 0)
         editSizer.Add(
-            self.StaticText("Repeat events:"),
-            wx.ALIGN_CENTER_VERTICAL
-        )
+            self.StaticText("Repeat events:"), wx.ALIGN_CENTER_VERTICAL)
         editSizer.Add(repeatEventsCtrl, 0)
 
         sizer.Add(editSizer)

@@ -25,9 +25,11 @@ from eg.Icons import GetInternalBitmap
 from eg.WinApi import GetClassName, GetWindowText
 from eg.WinApi.Utils import GetHwndIcon, GetWindowProcessName
 
+
 class WindowList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
     def __init__(self, parent, hwnds):
-        wx.ListCtrl.__init__(self, parent, style=wx.LC_REPORT | wx.LC_SINGLE_SEL)
+        wx.ListCtrl.__init__(
+            self, parent, style=wx.LC_REPORT | wx.LC_SINGLE_SEL)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         imageList = wx.ImageList(16, 16)
         imageList.Add(GetInternalBitmap("cwindow"))
@@ -41,11 +43,9 @@ class WindowList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
             icon = GetHwndIcon(hwnd)
             if icon:
                 imageIdx = imageList.AddIcon(icon)
-            idx = self.InsertImageStringItem(
-                sys.maxint,
-                GetWindowProcessName(hwnd),
-                imageIdx
-            )
+            idx = self.InsertImageStringItem(sys.maxsize,
+                                             GetWindowProcessName(hwnd),
+                                             imageIdx)
             self.SetStringItem(idx, 1, GetWindowText(hwnd))
             self.SetStringItem(idx, 2, GetClassName(hwnd))
             self.SetStringItem(idx, 3, str(hwnd))

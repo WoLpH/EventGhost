@@ -19,10 +19,12 @@
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, ManchesterCoding1
 
+
 class Nrc17(ManchesterCoding1):
     """
     IR decoder for the Nokia NRC17 protocol.
     """
+
     def __init__(self, controller):
         ManchesterCoding1.__init__(self, controller, 500)
 

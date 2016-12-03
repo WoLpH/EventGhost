@@ -22,24 +22,23 @@ from win32api import EnumDisplayMonitors as Edm
 # Local imports
 import eg
 
-class MonitorsCtrl(wx.Panel):
-    def __init__(
-        self,
-        parent = None,
-        id = -1,
-        label = "",
-        pos = (-1, -1),
-        size = (-1, -1),
-        style = wx.BORDER_SIMPLE,
-        name = "Monitors",
-        background = wx.SystemSettings.GetColour(wx.SYS_COLOUR_MENU)
 
-    ):
+class MonitorsCtrl(wx.Panel):
+    def __init__(self,
+                 parent=None,
+                 id=-1,
+                 label="",
+                 pos=(-1, -1),
+                 size=(-1, -1),
+                 style=wx.BORDER_SIMPLE,
+                 name="Monitors",
+                 background=wx.SystemSettings.GetColour(wx.SYS_COLOUR_MENU)):
         wx.Panel.__init__(self, parent, id, pos, size, style, name)
         b1 = 2
         b2 = 3
         b3 = self.GetWindowBorderSize()[1]
-        lbl = wx.StaticText(self, -1, eg.text.General.monitorsLabel, pos = ((b2, b1)))
+        lbl = wx.StaticText(
+            self, -1, eg.text.General.monitorsLabel, pos=((b2, b1)))
         lbl.Enable(False)
         monsCtrl = MonsListCtrl(self, ((b2, 2 * b1 + lbl.GetSize()[1])))
         self.SetBackgroundColour(wx.Colour(*background))
@@ -54,11 +53,12 @@ class MonitorsCtrl(wx.Panel):
 
 
 class MonsListCtrl(wx.ListCtrl):
-    def __init__(self, parent, pos, size = wx.DefaultSize):
+    def __init__(self, parent, pos, size=wx.DefaultSize):
         ID = wx.NewId()
         style = wx.LC_REPORT | wx.LC_VRULES | wx.LC_HRULES | wx.LC_SINGLE_SEL
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
-        mons = [(i[0], i[1], i[2] - i[0], i[3] - i[1]) for i in [j[2] for j in Edm()]]
+        mons = [(i[0], i[1], i[2] - i[0], i[3] - i[1])
+                for i in [j[2] for j in Edm()]]
         for j, header in enumerate(eg.text.General.monitorsHeader):
             self.InsertColumn(j, header, wx.LIST_FORMAT_RIGHT)
             self.SetColumnWidth(j, wx.LIST_AUTOSIZE_USEHEADER)
@@ -69,8 +69,8 @@ class MonsListCtrl(wx.ListCtrl):
             self.SetStringItem(i, 3, str(mon[2]))
             self.SetStringItem(i, 4, str(mon[3]))
         rect = self.GetItemRect(0, wx.LIST_RECT_BOUNDS)
-        self.hh = rect[1]  #header height
-        self.ih = rect[3]  #item height
+        self.hh = rect[1]  # header height
+        self.ih = rect[3]  # item height
         size = self.GetRealSize()
         self.SetMinSize(size)
         self.SetSize(size)

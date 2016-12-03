@@ -22,6 +22,7 @@ import wx
 import eg
 from eg.Classes.UndoHandler import UndoHandlerBase
 
+
 class Cut(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Cut.replace("&", "")
 

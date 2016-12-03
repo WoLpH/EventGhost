@@ -21,16 +21,16 @@ import wx
 # Local imports
 import eg
 
+
 class TreeItemBrowseDialog(eg.TaskletDialog):
     def Configure(
-        self,
-        title,
-        text,
-        searchItem,
-        resultClasses,
-        filterClasses=(eg.FolderItem, eg.MacroItem),
-        parent=None,
-    ):
+            self,
+            title,
+            text,
+            searchItem,
+            resultClasses,
+            filterClasses=(eg.FolderItem, eg.MacroItem),
+            parent=None, ):
         self.resultData = searchItem
         self.resultClasses = resultClasses
         self.foundId = None
@@ -50,8 +50,7 @@ class TreeItemBrowseDialog(eg.TaskletDialog):
         mainSizer = eg.VBoxSizer(
             (staticText, 0, wx.EXPAND | wx.ALL, 5),
             (tree, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 5),
-            (self.buttonRow.sizer, 0, wx.EXPAND),
-        )
+            (self.buttonRow.sizer, 0, wx.EXPAND), )
 
         self.SetSizerAndFit(mainSizer)
         self.SetSize((450, 400))

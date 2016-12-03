@@ -19,6 +19,7 @@
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, ManchesterCoding1
 
+
 class Motorola(ManchesterCoding1):
     def __init__(self, controller):
         ManchesterCoding1.__init__(self, controller, 500)
@@ -29,7 +30,7 @@ class Motorola(ManchesterCoding1):
             raise DecodeError("wrong header pulse")
         if not (2000 < data[1] < 3000):
             raise DecodeError("wrong header pause")
-        #print data
+        # print data
         self.SetData(data, 2)
         mask = 1
         buf = 0
@@ -42,8 +43,8 @@ class Motorola(ManchesterCoding1):
                 break
             mask <<= 1
 
-        #if data[self.pos] < 10000:
+        # if data[self.pos] < 10000:
         #    raise DecodeError("missing end pause")
-#        if buf == 0x7D:
-#            return ""
+        #        if buf == 0x7D:
+        #            return ""
         return "Motorola%d.%04X" % (i, buf >> 1)

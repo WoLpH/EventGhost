@@ -21,8 +21,10 @@ import wx
 # Local imports
 import eg
 
+
 class Text:
     mesg = "Please select the folder you want to export"
+
 
 text = Text
 
@@ -34,12 +36,12 @@ class ExportDialog(eg.TaskletDialog):
         eg.TaskletDialog.__init__(self, None, -1, title="Export", style=style)
         staticText = wx.StaticText(self, -1, text.mesg)
 
-        filterClasses = (eg.FolderItem, )  #eg.MacroItem)
+        filterClasses = (eg.FolderItem, )  # eg.MacroItem)
 
         def filterFunc(obj):
             return isinstance(obj, filterClasses)
 
-        tree = eg.TreeItemBrowseCtrl(self, filterFunc)  #, multiSelect=True)
+        tree = eg.TreeItemBrowseCtrl(self, filterFunc)  # , multiSelect=True)
         #tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectionChanged)
         tree.UnselectAll()
 
@@ -48,12 +50,11 @@ class ExportDialog(eg.TaskletDialog):
         mainSizer = eg.VBoxSizer(
             (staticText, 0, wx.EXPAND | wx.ALL, 5),
             (tree, 1, wx.EXPAND),
-            (buttonRow.sizer, 0, wx.EXPAND),
-        )
+            (buttonRow.sizer, 0, wx.EXPAND), )
         self.SetSizerAndFit(mainSizer)
         self.SetAutoLayout(True)
-        #mainSizer.Fit(self)
-        #self.SetMinSize(self.GetSize())
+        # mainSizer.Fit(self)
+        # self.SetMinSize(self.GetSize())
         self.SetSize((450, 400))
         while self.Affirmed():
             items = tree.GetSelections()

@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class ActionSelectButton(wx.Window):
     def __init__(self, parent, label, title, mesg, treeLink=None):
         if treeLink is None:
@@ -54,18 +55,15 @@ class ActionSelectButton(wx.Window):
         result = eg.TreeItemBrowseDialog.GetModalResult(
             self.title,
             self.mesg,
-            self.action,
-            (eg.ActionItem,),
-            filterClasses = (eg.FolderItem, eg.MacroItem, eg.ActionItem),
-            parent=self
-        )
+            self.action, (eg.ActionItem, ),
+            filterClasses=(eg.FolderItem, eg.MacroItem, eg.ActionItem),
+            parent=self)
         if result:
             action = result[0]
             self.textBox.SetLabel(result[0].GetLabel())
             self.action = action
             self.ProcessEvent(
-                wx.CommandEvent(wx.EVT_TEXT.evtType[0], self.GetId())
-            )
+                wx.CommandEvent(wx.EVT_TEXT.evtType[0], self.GetId()))
 
     def OnSetFocus(self, dummyEvent):
         self.button.SetFocus()

@@ -21,21 +21,21 @@ import wx
 # Local imports
 import eg
 
+
 class SerialPortChoice(wx.Choice):
     """
     A wx.Choice control that shows all available serial ports on the system.
     """
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        style=0,
-        validator=wx.DefaultValidator,
-        name=wx.ChoiceNameStr,
-        value=None
-    ):
+
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=0,
+                 validator=wx.DefaultValidator,
+                 name=wx.ChoiceNameStr,
+                 value=None):
         """
         :Parameters:
             `value` : int
@@ -46,9 +46,8 @@ class SerialPortChoice(wx.Choice):
         ports = eg.SerialThread.GetAllPorts()
         self.ports = ports
         choices = [("COM%d" % (portnum + 1)) for portnum in ports]
-        wx.Choice.__init__(
-            self, parent, id, pos, size, choices, style, validator, name
-        )
+        wx.Choice.__init__(self, parent, id, pos, size, choices, style,
+                           validator, name)
         try:
             portPos = ports.index(value)
         except ValueError:

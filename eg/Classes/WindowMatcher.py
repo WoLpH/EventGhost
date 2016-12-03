@@ -23,9 +23,9 @@ from types import StringTypes
 # Local imports
 import eg
 from eg.WinApi.Utils import GetWindowProcessName
-from eg.WinApi import (
-    GetTopLevelWindowList, GetWindowChildsList, GetWindowText, GetClassName
-)
+from eg.WinApi import (GetTopLevelWindowList, GetWindowChildsList,
+                       GetWindowText, GetClassName)
+
 
 class WindowMatcher:
     """
@@ -39,18 +39,18 @@ class WindowMatcher:
     expressions and do the actual enumeration of all desktop windows, if the
     the instance is called.
     """
+
     def __init__(
-        self,
-        program,
-        winName=None,
-        winClass=None,
-        childName=None,
-        childClass=None,
-        matchNum=0,
-        includeInvisible=False,
-        timeout=0,
-        dummyArg = None,
-    ):
+            self,
+            program,
+            winName=None,
+            winClass=None,
+            childName=None,
+            childClass=None,
+            matchNum=0,
+            includeInvisible=False,
+            timeout=0,
+            dummyArg=None, ):
         self.timeout = timeout
         self.matchNum = matchNum or 0
         self.includeInvisible = bool(includeInvisible)
@@ -87,6 +87,7 @@ class WindowMatcher:
         raise NotImplementedError
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass
@@ -98,10 +99,8 @@ class WindowMatcher:
         includeInvisible = self.includeInvisible
         topWindowsHwnds = [
             hwnd for hwnd in GetTopLevelWindowList(includeInvisible)
-            if (
-                winClassMatch(GetClassName(hwnd)) and
-                winNameMatch(GetWindowText(hwnd))
-            )
+            if (winClassMatch(GetClassName(hwnd)) and winNameMatch(
+                GetWindowText(hwnd)))
         ]
         if self.program:
             topWindowsHwnds = [
@@ -113,13 +112,11 @@ class WindowMatcher:
         childClassMatch = self.childClassMatch
         childNameMatch = self.childNameMatch
         childHwnds = [
-            childHwnd for parentHwnd in topWindowsHwnds
-            for childHwnd in GetWindowChildsList(
-                parentHwnd, includeInvisible
-            ) if (
-                childClassMatch(GetClassName(childHwnd)) and
-                childNameMatch(GetWindowText(childHwnd))
-            )
+            childHwnd
+            for parentHwnd in topWindowsHwnds
+            for childHwnd in GetWindowChildsList(parentHwnd, includeInvisible)
+            if (childClassMatch(GetClassName(childHwnd)) and childNameMatch(
+                GetWindowText(childHwnd)))
         ]
         return childHwnds
 
@@ -133,7 +130,7 @@ class WindowMatcher:
 
     def FindWait(self):
         endtime = clock() + self.timeout
-        while 1:
+        while True:
             hwnds = self.Enumerate()
             if hwnds:
                 return hwnds

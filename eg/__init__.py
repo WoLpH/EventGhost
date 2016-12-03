@@ -31,6 +31,7 @@ import win32api  # NOQA
 import Cli
 from Utils import *  # NOQA
 
+
 class DynamicModule(object):
     def __init__(self):
         mod = sys.modules[__name__]
@@ -56,10 +57,12 @@ class DynamicModule(object):
 
         This is meanly used to find unintended assignments while debugging.
         """
+
         def __setattr__(self, name, value):
             if name not in self.__dict__:
                 raise AttributeError("Assignment to new attribute %s" % name)
             object.__setattr__(self, name, value)
+
         self.__class__.__setattr__ = __setattr__
 
     def Main(self):

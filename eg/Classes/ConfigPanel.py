@@ -22,17 +22,14 @@ import wx
 # Local imports
 import eg
 
+
 class ConfigPanel(wx.PyPanel, eg.ControlProviderMixin):
     """
     A panel with some magic.
     """
-    def __init__(
-        self,
-        executable=None,
-        resizable=True,
-        showLine=True
-    ):
-        #if resizable is None:
+
+    def __init__(self, executable=None, resizable=True, showLine=True):
+        # if resizable is None:
         #    resizable = bool(eg.debugLevel)
         dialog = eg.ConfigDialog.currentDialog
         dialog.panel = self
@@ -131,9 +128,10 @@ class ConfigPanel(wx.PyPanel, eg.ControlProviderMixin):
         spaceSizer.Add((4, 4))
         self.SetSizerAndFit(spaceSizer)
 
-        #self.dialog.FinishSetup()
+        # self.dialog.FinishSetup()
         def OnEvent(dummyEvent):
             self.SetIsDirty()
+
         self.Bind(wx.EVT_CHECKBOX, OnEvent)
         self.Bind(wx.EVT_BUTTON, OnEvent)
         self.Bind(wx.EVT_CHOICE, OnEvent)

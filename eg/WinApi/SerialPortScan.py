@@ -30,8 +30,7 @@ from Dynamic import (
     sizeof,
     Structure,
     TCHAR,
-    WinError,
-)
+    WinError, )
 from Dynamic.SetupApi import (
     DIGCF_PRESENT,
     GUID,
@@ -43,15 +42,11 @@ from Dynamic.SetupApi import (
     SetupDiGetDeviceRegistryProperty,
     SP_DEVICE_INTERFACE_DATA,
     SP_DEVICE_INTERFACE_DETAIL_DATA,
-    SP_DEVINFO_DATA,
-)
+    SP_DEVINFO_DATA, )
 
 GUID_CLASS_COMPORT = GUID(
-    0x86e0d1e0L,
-    0x8089,
-    0x11d0,
-    (c_ubyte * 8)(0x9c, 0xe4, 0x08, 0x00, 0x3e, 0x30, 0x1f, 0x73)
-)
+    0x86e0d1e0, 0x8089, 0x11d0,
+    (c_ubyte * 8)(0x9c, 0xe4, 0x08, 0x00, 0x3e, 0x30, 0x1f, 0x73))
 
 #DIGCF_PRESENT = 2
 DIGCF_DEVICEINTERFACE = 16
@@ -60,6 +55,7 @@ ERROR_INSUFFICIENT_BUFFER = 122
 SPDRP_HARDWAREID = 1
 SPDRP_FRIENDLYNAME = 12
 ERROR_NO_MORE_ITEMS = 259
+
 
 def GetComPorts(availableOnly=True):
     """
@@ -82,12 +78,7 @@ def GetComPorts(availableOnly=True):
         did.cbSize = sizeof(did)
 
         if not SetupDiEnumDeviceInterfaces(
-            hdi,
-            None,
-            byref(GUID_CLASS_COMPORT),
-            dwIndex,
-            byref(did)
-        ):
+                hdi, None, byref(GUID_CLASS_COMPORT), dwIndex, byref(did)):
             err = GetLastError()
             if err != ERROR_NO_MORE_ITEMS:
                 raise WinError(err)
@@ -95,13 +86,7 @@ def GetComPorts(availableOnly=True):
 
         # get the size
         if not SetupDiGetDeviceInterfaceDetail(
-            hdi,
-            byref(did),
-            None,
-            0,
-            byref(dwRequiredSize),
-            None
-        ):
+                hdi, byref(did), None, 0, byref(dwRequiredSize), None):
             # Ignore ERROR_INSUFFICIENT_BUFFER
             err = GetLastError()
             if err != ERROR_INSUFFICIENT_BUFFER:
@@ -113,29 +98,22 @@ def GetComPorts(availableOnly=True):
                 ('cbSize', DWORD),
                 ('DevicePath', TCHAR * (dwRequiredSize.value - sizeof(DWORD))),
             ]
+
         idd = _SP_DEVICE_INTERFACE_DETAIL_DATA()
         idd.cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA)
         devinfo = SP_DEVINFO_DATA()
         devinfo.cbSize = sizeof(devinfo)
         if not SetupDiGetDeviceInterfaceDetail(
-            hdi,
-            byref(did),
-            cast(byref(idd), PSP_DEVICE_INTERFACE_DETAIL_DATA),
-            dwRequiredSize,
-            None,
-            byref(devinfo)
-        ):
+                hdi,
+                byref(did),
+                cast(byref(idd), PSP_DEVICE_INTERFACE_DETAIL_DATA),
+                dwRequiredSize, None, byref(devinfo)):
             raise WinError()
         # hardware ID
         if not SetupDiGetDeviceRegistryProperty(
-            hdi,
-            byref(devinfo),
-            SPDRP_HARDWAREID,
-            None,
-            cast(stringBuffer, PBYTE),
-            sizeof(stringBuffer) - 1,
-            None
-        ):
+                hdi,
+                byref(devinfo), SPDRP_HARDWAREID, None,
+                cast(stringBuffer, PBYTE), sizeof(stringBuffer) - 1, None):
             # Ignore ERROR_INSUFFICIENT_BUFFER
             err = GetLastError()
             if err != ERROR_INSUFFICIENT_BUFFER:
@@ -143,14 +121,9 @@ def GetComPorts(availableOnly=True):
         szHardwareID = stringBuffer.value
         # friendly name
         if not SetupDiGetDeviceRegistryProperty(
-            hdi,
-            byref(devinfo),
-            SPDRP_FRIENDLYNAME,
-            None,
-            cast(stringBuffer, PBYTE),
-            sizeof(stringBuffer) - 1,
-            None
-        ):
+                hdi,
+                byref(devinfo), SPDRP_FRIENDLYNAME, None,
+                cast(stringBuffer, PBYTE), sizeof(stringBuffer) - 1, None):
             # Ignore ERROR_INSUFFICIENT_BUFFER
             err = GetLastError()
             if err != ERROR_INSUFFICIENT_BUFFER:
@@ -162,6 +135,7 @@ def GetComPorts(availableOnly=True):
 
     SetupDiDestroyDeviceInfoList(hdi)
     return result
+
 
 if __name__ == '__main__':
     for port, desc, hwid in GetComPorts():

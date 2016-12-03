@@ -19,6 +19,7 @@
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
+
 class Rca(IrProtocolBase):
     def Decode(self, data):
         raise DecodeError("not implemented")

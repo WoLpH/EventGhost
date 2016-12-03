@@ -22,6 +22,7 @@ import wx
 import eg
 from eg.Utils import SplitFirstParagraph
 
+
 class ConfigDialog(eg.TaskletDialog):
     panel = None
     currentDialog = None
@@ -34,8 +35,7 @@ class ConfigDialog(eg.TaskletDialog):
         treeItem = self.treeItem
         name = treeItem.GetTypeName()
         firstParagraph, self.description = SplitFirstParagraph(
-            treeItem.GetDescription()
-        )
+            treeItem.GetDescription())
         size = (450, 300)
         if isinstance(treeItem, eg.PluginItem):
             title = eg.text.General.settingsPluginCaption
@@ -50,16 +50,12 @@ class ConfigDialog(eg.TaskletDialog):
         if resizable:
             dialogStyle |= wx.RESIZE_BORDER | wx.MAXIMIZE_BOX
         eg.TaskletDialog.__init__(
-            self, eg.document.frame, -1, title, style=dialogStyle
-        )
+            self, eg.document.frame, -1, title, style=dialogStyle)
 
         self.notebook = wx.Notebook(self)
 
         self.buttonRow = eg.ButtonRow(
-            self,
-            (wx.ID_OK, wx.ID_CANCEL, wx.ID_APPLY),
-            resizable
-        )
+            self, (wx.ID_OK, wx.ID_CANCEL, wx.ID_APPLY), resizable)
         testButton = None
         if addTestButton:
             testButton = wx.Button(self, -1, eg.text.General.test)
@@ -73,30 +69,23 @@ class ConfigDialog(eg.TaskletDialog):
 
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.headerBox = eg.HeaderBox(
-            self,
-            name,
-            firstParagraph,
-            treeItem.icon,
-            treeItem.url if hasattr(treeItem, "url") else None
-        )
+        self.headerBox = eg.HeaderBox(self, name, firstParagraph,
+                                      treeItem.icon, treeItem.url
+                                      if hasattr(treeItem, "url") else None)
         mainSizer.SetMinSize(size)
-        mainSizer.AddMany(
-            (
-                (self.headerBox, 0, wx.EXPAND, 0),
-                (wx.StaticLine(self), 0, wx.EXPAND | wx.ALIGN_CENTER, 0),
-                (self.notebook, 1, wx.EXPAND | wx.ALL | wx.ALIGN_CENTER, 5),
-            )
-        )
+        mainSizer.AddMany((
+            (self.headerBox, 0, wx.EXPAND, 0),
+            (wx.StaticLine(self), 0, wx.EXPAND | wx.ALIGN_CENTER, 0),
+            (self.notebook, 1, wx.EXPAND | wx.ALL | wx.ALIGN_CENTER, 5), ))
         self.mainSizer = mainSizer
 
         def ShowHelp(dummyEvent):
             self.treeItem.ShowHelp(self)
+
         wx.EVT_MENU(self, wx.ID_HELP, ShowHelp)
 
         self.SetAcceleratorTable(
-            wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_F1, wx.ID_HELP), ])
-        )
+            wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_F1, wx.ID_HELP), ]))
 
     @eg.LogItWithReturn
     def Configure(self, treeItem, *args):
@@ -131,12 +120,14 @@ class ConfigDialog(eg.TaskletDialog):
         buttonRow.okButton.MoveAfterInTabOrder(self.notebook)
         if buttonRow.testButton:
             buttonRow.testButton.MoveAfterInTabOrder(self.notebook)
+
 #        if not self.showLine:
 #            line.Hide()
         if self.resizable:
             self.mainSizer.Add(self.buttonRow.sizer, 0, wx.EXPAND, 0)
         else:
-            self.mainSizer.Add(self.buttonRow.sizer, 0, wx.EXPAND | wx.RIGHT, 10)
+            self.mainSizer.Add(self.buttonRow.sizer, 0, wx.EXPAND | wx.RIGHT,
+                               10)
         self.SetSizerAndFit(self.mainSizer)
         self.Fit()  # without the addition Fit(), some dialogs get a bad size
         self.SetMinSize(self.GetSize())

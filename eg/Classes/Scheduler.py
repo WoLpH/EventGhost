@@ -23,6 +23,7 @@ from time import time
 # Local imports
 import eg
 
+
 class Scheduler(threading.Thread):
     """
     Sometimes you want to execute some code at a specified time or after a
@@ -32,16 +33,14 @@ class Scheduler(threading.Thread):
     EventGhost creates a single instance of this class that is accessible as
     :obj:`eg.scheduler`.
     """
+
     def __init__(self):
         self.keepRunning = True
         self.event = threading.Event()
         self.lock = threading.Lock()
         self.heap = [(time() + 100000000, None, None, None)]
         threading.Thread.__init__(
-            self,
-            target=self.MainLoop,
-            name="SchedulerThread"
-        )
+            self, target=self.MainLoop, name="SchedulerThread")
 
     def AddShortTask(self, waitTime, func, *args, **kwargs):
         """
@@ -76,7 +75,8 @@ class Scheduler(threading.Thread):
           An object to identify the task.
 
         """
-        return self.AddShortTaskAbsolute(time() + waitTime, func, *args, **kwargs)
+        return self.AddShortTaskAbsolute(time() + waitTime, func, *args,
+                                         **kwargs)
 
     def AddShortTaskAbsolute(self, startTime, func, *args, **kwargs):
         """
@@ -112,7 +112,8 @@ class Scheduler(threading.Thread):
     def AddTaskAbsolute(self, startTime, func, *args, **kwargs):
         args = list(args)
         args.append(func)
-        return self.AddShortTaskAbsolute(startTime, self.LongTask, *args, **kwargs)
+        return self.AddShortTaskAbsolute(startTime, self.LongTask, *args,
+                                         **kwargs)
 
     def CancelTask(self, task):
         """
@@ -131,11 +132,7 @@ class Scheduler(threading.Thread):
             self.lock.release()
 
     def LongTask(self, *args, **kwargs):
-        thrd = threading.Thread(
-            target = args[-1],
-            args = args[:-1],
-            kwargs = kwargs
-        )
+        thrd = threading.Thread(target=args[-1], args=args[:-1], kwargs=kwargs)
         thrd.start()
 
     def MainLoop(self):
@@ -160,4 +157,5 @@ class Scheduler(threading.Thread):
     def Stop(self):
         def DoIt():
             self.keepRunning = False
+
         self.AddShortTask(-1, DoIt)

@@ -24,9 +24,9 @@ import eg
 from eg.Classes.TreeItem import (
     HINT_MOVE_AFTER,
     HINT_MOVE_BEFORE,
-    HINT_MOVE_INSIDE,
-)
+    HINT_MOVE_INSIDE, )
 from eg.Classes.UndoHandler import UndoHandlerBase
+
 
 class Paste(UndoHandlerBase):
     name = eg.text.MainFrame.Menu.Paste.replace("&", "")
@@ -45,10 +45,8 @@ class Paste(UndoHandlerBase):
             dataObj = wx.TextDataObject()
             if not wx.TheClipboard.GetData(dataObj):
                 return
-            result = eg.actionThread.Func(self.PasteXml)(
-                selection,
-                dataObj.GetText()
-            )
+            result = eg.actionThread.Func(self.PasteXml)(selection,
+                                                         dataObj.GetText())
             if result:
                 self.document.AppendUndoHandler(self)
         finally:

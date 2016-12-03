@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class ActionBase(object):
     """
     Base class of every action of a EventGhost plugin written in Python
@@ -71,8 +72,7 @@ class ActionBase(object):
     Exceptions = None
 
     __docsort__ = (
-        "__call__, Configure, GetLabel, Compile, PrintError, Exception"
-    )
+        "__call__, Configure, GetLabel, Compile, PrintError, Exception")
 
     # Exceptions
     class Exception(eg.Exception):
@@ -89,8 +89,7 @@ class ActionBase(object):
             self.Compile(*args)()
         else:
             raise NotImplementedError(
-                "Action has no __call__ method implemented."
-            )
+                "Action has no __call__ method implemented.")
 
     def Compile(self, *args):
         """
@@ -112,8 +111,10 @@ class ActionBase(object):
         changes and then this compiled code object gets called instead of
         doing compile&run in the :meth:`!__call__` method.
         """
+
         def CallWrapper():
             return self(*args)
+
         return CallWrapper
 
     def Configure(self, *args):
@@ -131,8 +132,7 @@ class ActionBase(object):
         panel.dialog.buttonRow.applyButton.Enable(False)
         label = panel.StaticText(
             eg.text.General.noOptionsAction,
-            style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE
-        )
+            style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE)
         panel.sizer.Add((0, 0), 1, wx.EXPAND)
         panel.sizer.Add(label, 0, wx.ALIGN_CENTRE)
         panel.sizer.Add((0, 0), 1, wx.EXPAND)

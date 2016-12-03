@@ -25,8 +25,8 @@ from eg.WinApi import (
     BestWindowFromPoint,
     GetCursorPos,
     GetWindowThreadProcessId,
-    HighlightWindow,
-)
+    HighlightWindow, )
+
 
 class WindowDragFinder(wx.PyWindow):
     def __init__(self, parent, startFunc, endFunc):
@@ -36,8 +36,7 @@ class WindowDragFinder(wx.PyWindow):
         self.text = eg.plugins.Window.FindWindow.text
         wx.PyWindow.__init__(self, parent, -1, style=wx.SIMPLE_BORDER)
         self.SetBackgroundColour(
-            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
-        )
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
         self.lastTarget = None
 
         # load images
@@ -61,11 +60,7 @@ class WindowDragFinder(wx.PyWindow):
 
         # some description for the drag target
         dragBoxText = wx.StaticText(
-            self,
-            -1,
-            self.text.drag2,
-            style=wx.ALIGN_CENTRE
-        )
+            self, -1, self.text.drag2, style=wx.ALIGN_CENTRE)
         x1, y1 = dragBoxText.GetBestSize()
         dragBoxText.SetLabel(self.text.drag1)
         x2, y2 = dragBoxText.GetBestSize()
@@ -78,7 +73,8 @@ class WindowDragFinder(wx.PyWindow):
         # put our drag target together
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(dragBoxImage, 0, wx.ALIGN_CENTER_VERTICAL)
-        sizer.Add(dragBoxText, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
+        sizer.Add(dragBoxText, 0, wx.ALIGN_CENTER_VERTICAL |
+                  wx.ALIGN_CENTER_HORIZONTAL)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
         sizer.Fit(self)
@@ -119,7 +115,7 @@ class WindowDragFinder(wx.PyWindow):
             return
         self.startFunc()
 
-        #nothing targeted in the beginning
+        # nothing targeted in the beginning
         self.lastTarget = None
 
         wx.SetCursor(self.cursor)

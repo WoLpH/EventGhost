@@ -20,6 +20,7 @@ import wx
 from base64 import b64decode, b64encode
 from cStringIO import StringIO
 
+
 class ImagePicker(wx.Window):
     def __init__(self, parent, label, title="", mesg="", imageString=None):
         self.title = title
@@ -28,8 +29,7 @@ class ImagePicker(wx.Window):
         wx.Window.__init__(self, parent, -1)
         self.button = wx.Button(self, -1, label)
         self.imageBox = wx.StaticBitmap(
-            self, -1, size=(10, 10), style=wx.SUNKEN_BORDER
-        )
+            self, -1, size=(10, 10), style=wx.SUNKEN_BORDER)
         self.SetValue(imageString)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.button, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
@@ -48,11 +48,8 @@ class ImagePicker(wx.Window):
             self.GetParent(),
             message=self.mesg,
             style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
-            wildcard=(
-                "BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|"
-                "PNG files (*.png)|*.png"
-            )
-        )
+            wildcard=("BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|"
+                      "PNG files (*.png)|*.png"))
         if dialog.ShowModal() == wx.ID_OK:
             filePath = dialog.GetPath()
             infile = open(filePath, "rb")

@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class TreeLink(object):
     currentXmlId = 0
     id2target = {}
@@ -36,6 +37,7 @@ class TreeLink(object):
         self.xmlId = -1
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass
@@ -148,6 +150,6 @@ class TreeLink(object):
                     target.dependants = [link]
                 else:
                     target.dependants.append(link)
-                #eg.Notify("NodeChanged", link.owner) # August 2012
+                # eg.Notify("NodeChanged", link.owner) # August 2012
                 wx.CallAfter(eg.Notify, "NodeChanged", link.owner)
         cls.linkList = notFoundLinks

@@ -21,6 +21,7 @@ import eg
 from MacroItem import MacroItem
 from TreeItem import HINT_MOVE_INSIDE, HINT_MOVE_AFTER
 
+
 class AutostartItem(MacroItem):
     xmlTag = "Autostart"
     icon = eg.Icons.AUTOSTART_ICON

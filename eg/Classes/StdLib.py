@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
 
+
 class DynamicModuleLoader(object):
     def __getattr__(self, name):
         module = __import__(name, None, None, [name], 0)
         self.__dict__[name] = module
         return module
+
 
 StdLib = DynamicModuleLoader()

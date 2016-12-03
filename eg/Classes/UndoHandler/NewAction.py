@@ -20,6 +20,7 @@
 import eg
 from NewItem import NewItem
 
+
 class NewAction(NewItem):
     """
     Create a new ActionItem if the user has choosen to do so from the menu
@@ -48,8 +49,7 @@ class NewAction(NewItem):
         item = eg.actionThread.Func(document.ActionItem.Create)(
             parent,
             pos,
-            text = "%s.%s()" % (action.plugin.info.evalName, action.__name__)
-        )
+            text="%s.%s()" % (action.plugin.info.evalName, action.__name__))
         item.Select()
 
         if item.NeedsStartupConfiguration():

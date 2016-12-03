@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class ControlProviderMixin:
     def BoxedGroup(self, *args, **kwargs):
         return eg.BoxedGroup(self, *args, **kwargs)
@@ -39,18 +40,15 @@ class ControlProviderMixin:
     def ColourSelectButton(self, value=(255, 255, 255), *args, **kwargs):
         return eg.ColourSelectButton(self, value, *args, **kwargs)
 
-    def ComboBox(
-        self,
-        value,
-        choices,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        *args,
-        **kwargs
-    ):
-        return wx.ComboBox(
-            self, -1, value, pos, size, choices, *args, **kwargs
-        )
+    def ComboBox(self,
+                 value,
+                 choices,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 *args,
+                 **kwargs):
+        return wx.ComboBox(self, -1, value, pos, size, choices, *args,
+                           **kwargs)
 
     def DirBrowseButton(self, value, *args, **kwargs):
         dirpathCtrl = eg.DirBrowseButton(
@@ -58,8 +56,7 @@ class ControlProviderMixin:
             size=(320, -1),
             startDirectory=value,
             labelText="",
-            buttonText=eg.text.General.browse
-        )
+            buttonText=eg.text.General.browse)
         dirpathCtrl.SetValue(value)
         return dirpathCtrl
 
@@ -73,8 +70,7 @@ class ControlProviderMixin:
             initialValue=value,
             labelText="",
             buttonText=eg.text.General.browse,
-            **kwargs
-        )
+            **kwargs)
         return filepathCtrl
 
     def FontSelectButton(self, value=None, *args, **kwargs):
@@ -124,15 +120,13 @@ class ControlProviderMixin:
         """
         return wx.StaticText(self, -1, label, *args, **kwargs)
 
-    def TextCtrl(
-        self,
-        value="",
-        pos=wx.DefaultPosition,
-        size=(150, -1),
-        style=0,
-        validator=wx.DefaultValidator,
-        name=wx.TextCtrlNameStr
-    ):
+    def TextCtrl(self,
+                 value="",
+                 pos=wx.DefaultPosition,
+                 size=(150, -1),
+                 style=0,
+                 validator=wx.DefaultValidator,
+                 name=wx.TextCtrlNameStr):
         """
         Returns a wx.TextCtrl control.
         """

@@ -19,9 +19,11 @@
 # Local imports
 import eg
 
+
 class TimeCtrl_Duration(eg.TimeCtrl):
     """
     Ignore key "C", "c" and "!" (set time to "Now")
     """
+
     def _TimeCtrl__OnSetToNow(self, evt):
         return False

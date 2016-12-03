@@ -22,6 +22,7 @@ import wx
 import eg
 from eg.Icons import GetInternalBitmap
 
+
 class StatusBar(wx.StatusBar):
     def __init__(self, parent):
         wx.StatusBar.__init__(self, parent, -1)
@@ -53,6 +54,7 @@ class StatusBar(wx.StatusBar):
         self.Reposition()
 
     if eg.debugLevel:
+
         @eg.LogIt
         def __del__(self):
             pass

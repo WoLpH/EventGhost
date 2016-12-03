@@ -18,20 +18,19 @@
 
 import wx
 
+
 class RadioBox(wx.Panel):
-    def __init__(
-        self,
-        parent = None,
-        id = -1,
-        label = "",
-        pos = (-1, -1),
-        size = (-1, -1),
-        choices = (),
-        majorDimension = 0,
-        style = wx.RA_SPECIFY_COLS,
-        validator = wx.DefaultValidator,
-        name = "radioBox"
-    ):
+    def __init__(self,
+                 parent=None,
+                 id=-1,
+                 label="",
+                 pos=(-1, -1),
+                 size=(-1, -1),
+                 choices=(),
+                 majorDimension=0,
+                 style=wx.RA_SPECIFY_COLS,
+                 validator=wx.DefaultValidator,
+                 name="radioBox"):
         self.value = 0
         wx.Panel.__init__(self, parent, id, pos, size, name=name)
         sizer = self.sizer = wx.GridSizer(len(choices), 1, 6, 6)

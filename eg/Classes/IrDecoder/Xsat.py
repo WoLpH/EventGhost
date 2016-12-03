@@ -19,10 +19,12 @@
 # Local imports
 from eg.Classes.IrDecoder import DecodeError, IrProtocolBase
 
+
 class Xsat(IrProtocolBase):
     """
     IR decoder for the X-Sat protocol.
     """
+
     def Decode(self, data):
         # Check the header pulse
         if not (7000 < data[0] < 9000):

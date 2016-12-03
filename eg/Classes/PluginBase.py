@@ -15,7 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with EventGhost. If not, see <http://www.gnu.org/licenses/>.
-
 """
 Definition of the abstract plugin class.
 """
@@ -27,6 +26,7 @@ from threading import Lock
 import eg
 
 gTriggerEventLock = Lock()
+
 
 class PluginBase(object):
     """
@@ -62,8 +62,7 @@ class PluginBase(object):
     # used for automatic documentation creation
     __docsort__ = (
         "__start__, __stop__, __close__, Configure, GetLabel, AddAction, "
-        "AddGroup, TriggerEvent, TriggerEnduringEvent, EndLastEvent"
-    )
+        "AddGroup, TriggerEvent, TriggerEnduringEvent, EndLastEvent")
 
     def __init__(self):
         """
@@ -110,15 +109,13 @@ class PluginBase(object):
         """
         pass
 
-    def AddAction(
-        self,
-        actionCls,
-        clsName=None,
-        name=None,
-        description=None,
-        value=None,
-        hidden=False
-    ):
+    def AddAction(self,
+                  actionCls,
+                  clsName=None,
+                  name=None,
+                  description=None,
+                  value=None,
+                  hidden=False):
         """
         Adds an :class:`eg.ActionBase` subclass to this plugin.
 
@@ -187,8 +184,7 @@ class PluginBase(object):
         panel.dialog.buttonRow.applyButton.Enable(False)
         label = panel.StaticText(
             eg.text.General.noOptionsPlugin,
-            style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE
-        )
+            style=wx.ALIGN_CENTRE | wx.ST_NO_AUTORESIZE)
         panel.sizer.Add((0, 0), 1, wx.EXPAND)
         panel.sizer.Add(label, 0, wx.ALIGN_CENTRE)
         panel.sizer.Add((0, 0), 1, wx.EXPAND)
@@ -259,12 +255,8 @@ class PluginBase(object):
         with gTriggerEventLock:
             info = self.info
             info.lastEvent.SetShouldEnd()
-            event = eg.TriggerEnduringEvent(
-                suffix,
-                payload,
-                info.eventPrefix,
-                self
-            )
+            event = eg.TriggerEnduringEvent(suffix, payload, info.eventPrefix,
+                                            self)
             info.lastEvent = event
             return event
 

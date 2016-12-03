@@ -24,13 +24,15 @@ from time import clock
 import eg
 
 # some shortcuts to speed things up
-#pylint: disable-msg=C0103
+# pylint: disable-msg=C0103
 actionThread = eg.actionThread
 LogEvent = eg.log.LogEvent
 RunProgram = eg.RunProgram
 GetItemPath = eg.EventItem.GetPath
 config = eg.config
-#pylint: enable-msg=C0103
+
+# pylint: enable-msg=C0103
+
 
 class EventGhostEvent(object):
     """
@@ -119,10 +121,8 @@ class EventGhostEvent(object):
 
         eventHandlerList = []
         for key, val in eg.eventTable.iteritems():
-            if (
-                eventString == key or
-                (("*" in key or "?" in key) and fnmatchcase(eventString, key))
-            ):
+            if (eventString == key or (("*" in key or "?" in key) and
+                                       fnmatchcase(eventString, key))):
                 eventHandlerList += val
 
         activeHandlers = set()

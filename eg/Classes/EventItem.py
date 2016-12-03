@@ -20,13 +20,12 @@
 import eg
 from TreeItem import HINT_MOVE_AFTER, HINT_MOVE_BEFORE_OR_AFTER, TreeItem
 
+
 class Text(eg.TranslatableStrings):
     eventItem = "Event Item"
     eventName = "Event Name:"
-    notice = (
-        "Note: You can also drag and drop events from the logger to a "
-        "macro."
-    )
+    notice = ("Note: You can also drag and drop events from the logger to a "
+              "macro.")
 
 
 class EventItem(TreeItem):

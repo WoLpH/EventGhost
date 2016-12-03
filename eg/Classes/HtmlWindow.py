@@ -20,30 +20,28 @@ import webbrowser
 import wx
 from threading import Thread
 from wx.html import HtmlWindow as wxHtmlWindow
-from wx.html import (
-    EVT_HTML_LINK_CLICKED, HTML_OPEN, HTML_URL_IMAGE, HW_DEFAULT_STYLE
-)
+from wx.html import (EVT_HTML_LINK_CLICKED, HTML_OPEN, HTML_URL_IMAGE,
+                     HW_DEFAULT_STYLE)
 
 # Local imports
 from eg.Utils import DecodeMarkdown, DecodeReST
 
+
 class HtmlWindow(wxHtmlWindow):
     basePath = None
 
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        style=HW_DEFAULT_STYLE,
-        name="htmlWindow"
-    ):
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=HW_DEFAULT_STYLE,
+                 name="htmlWindow"):
         wxHtmlWindow.__init__(self, parent, id, pos, size, style, name)
         self.SetForegroundColour(parent.GetForegroundColour())
         self.SetBackgroundColour(parent.GetBackgroundColour())
 
-        #if wx.html.HW_NO_SELECTION & style:
+        # if wx.html.HW_NO_SELECTION & style:
         #    self.Bind(wx.EVT_MOTION, self.OnIdle)
         #    self.handCursor = wx.StockCursor(wx.CURSOR_HAND)
         #    self.x1, self.y1 = self.GetScrollPixelsPerUnit()
@@ -53,8 +51,7 @@ class HtmlWindow(wxHtmlWindow):
     def OnHtmlLinkClicked(self, event):
         Thread(
             target=webbrowser.open,
-            args=(event.GetLinkInfo().GetHref(), 0)
-        ).start()
+            args=(event.GetLinkInfo().GetHref(), 0)).start()
 
 #    def OnIdle(self, event):
 #        x2, y2 = self.GetViewStart()
@@ -75,11 +72,8 @@ class HtmlWindow(wxHtmlWindow):
 #            self.isSet = False
 
     def OnOpeningURL(self, htmlUrlType, url):
-        if (
-            htmlUrlType == HTML_URL_IMAGE and
-            (self.basePath is not None) and
-            not url.startswith(self.basePath)
-        ):
+        if (htmlUrlType == HTML_URL_IMAGE and (self.basePath is not None) and
+                not url.startswith(self.basePath)):
             return self.basePath + "/" + url
         else:
             return HTML_OPEN
@@ -93,10 +87,6 @@ class HtmlWindow(wxHtmlWindow):
         elif html.startswith("<rst>"):
             html = DecodeReST(html[5:])
         wxHtmlWindow.SetPage(
-            self,
-            '<html><body bgcolor="%s" text="%s">%s</body></html>' % (
-                self.GetBackgroundColour().GetAsString(wx.C2S_HTML_SYNTAX),
-                self.GetForegroundColour().GetAsString(wx.C2S_HTML_SYNTAX),
-                html
-            )
-        )
+            self, '<html><body bgcolor="%s" text="%s">%s</body></html>' %
+            (self.GetBackgroundColour().GetAsString(wx.C2S_HTML_SYNTAX),
+             self.GetForegroundColour().GetAsString(wx.C2S_HTML_SYNTAX), html))

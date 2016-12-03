@@ -21,24 +21,25 @@ import math
 # Local imports
 import eg
 
+
 class SmartSpinIntCtrl(eg.SmartSpinNumCtrl):
     """
     A wx.Control that shows a integer value and spin buttons to let the user
     easily input an integer value.
     """
+
     def __init__(
-        self,
-        parent,
-        id=-1,
-        value=0,
-        min=0,
-        max=None,
-        size=(-1, -1),
-        style=0,
-        numWidth = 60,
-        textWidth = 120,
-        name = "eg.SmartSpinIntCtrl",
-    ):
+            self,
+            parent,
+            id=-1,
+            value=0,
+            min=0,
+            max=None,
+            size=(-1, -1),
+            style=0,
+            numWidth=60,
+            textWidth=120,
+            name="eg.SmartSpinIntCtrl", ):
         allowNegative = bool(min < 0)
         if max is None:
             integerWidth = 5
@@ -54,9 +55,8 @@ class SmartSpinIntCtrl(eg.SmartSpinNumCtrl):
             max=max,
             size=size,
             allowNegative=allowNegative,
-            groupDigits = False,
+            groupDigits=False,
             fractionWidth=0,
             integerWidth=integerWidth,
-            numWidth = numWidth,
-            textWidth = textWidth
-        )
+            numWidth=numWidth,
+            textWidth=textWidth)

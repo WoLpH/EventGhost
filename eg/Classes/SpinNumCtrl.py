@@ -28,6 +28,7 @@ l.Init2(language=wx.LANGUAGE_DEFAULT, flags=wx.LOCALE_LOAD_DEFAULT)
 THOUSANDS_SEP = l.GetInfo(wx.LOCALE_THOUSANDS_SEP)
 DECIMAL_POINT = l.GetInfo(wx.LOCALE_DECIMAL_POINT)
 
+
 class SpinNumCtrl(wx.Window):
     """
     A wx.Control that shows a fixed width floating point value and spin
@@ -43,18 +44,16 @@ class SpinNumCtrl(wx.Window):
         "decimalChar": DECIMAL_POINT,
     }
 
-    def __init__(
-        self,
-        parent,
-        id=-1,
-        value=0.0,
-        pos=wx.DefaultPosition,
-        size=wx.DefaultSize,
-        style=wx.TE_RIGHT,
-        validator=wx.DefaultValidator,
-        name="eg.SpinNumCtrl",
-        **kwargs
-    ):
+    def __init__(self,
+                 parent,
+                 id=-1,
+                 value=0.0,
+                 pos=wx.DefaultPosition,
+                 size=wx.DefaultSize,
+                 style=wx.TE_RIGHT,
+                 validator=wx.DefaultValidator,
+                 name="eg.SpinNumCtrl",
+                 **kwargs):
         if "increment" in kwargs:
             self.increment = kwargs["increment"]
             del kwargs["increment"]
@@ -70,9 +69,7 @@ class SpinNumCtrl(wx.Window):
             kwargs["allowNegative"] = True
         if "max" not in kwargs:
             kwargs["max"] = (
-                (10 ** kwargs["integerWidth"]) -
-                (10 ** -kwargs["fractionWidth"])
-            )
+                (10**kwargs["integerWidth"]) - (10**-kwargs["fractionWidth"]))
         wx.Window.__init__(self, parent, id, pos, size, 0)
         self.SetThemeEnabled(True)
         numCtrl = masked.NumCtrl(
@@ -95,16 +92,11 @@ class SpinNumCtrl(wx.Window):
         numCtrl.SetCtrlParameters(
             validBackgroundColour=GetColour(wx.SYS_COLOUR_WINDOW),
             emptyBackgroundColour=GetColour(wx.SYS_COLOUR_WINDOW),
-            foregroundColour=GetColour(wx.SYS_COLOUR_WINDOWTEXT),
-        )
+            foregroundColour=GetColour(wx.SYS_COLOUR_WINDOWTEXT), )
         numCtrl.SetLimited(True)
         height = numCtrl.GetSize()[1]
         spinbutton = wx.SpinButton(
-            self,
-            -1,
-            style=wx.SP_VERTICAL,
-            size=(height * 2 / 3, height)
-        )
+            self, -1, style=wx.SP_VERTICAL, size=(height * 2 / 3, height))
         spinbutton.MoveBeforeInTabOrder(numCtrl)
         self.spinbutton = spinbutton
         numCtrl.Bind(wx.EVT_CHAR, self.OnChar)
@@ -157,7 +149,7 @@ class SpinNumCtrl(wx.Window):
         if minValue is not None and value < minValue:
             value = minValue
         res = self.numCtrl.SetValue(value)
-        wx.PostEvent(self, eg.ValueChangedEvent(self.GetId(), value = value))
+        wx.PostEvent(self, eg.ValueChangedEvent(self.GetId(), value=value))
         return res
 
     def __OnSpin(self, pos):
@@ -165,7 +157,7 @@ class SpinNumCtrl(wx.Window):
         This is the function that gets called in response to up/down arrow or
         bound spin button events.
         """
-        #self.__IncrementValue(key, self.__posCurrent)   # changes the value
+        # self.__IncrementValue(key, self.__posCurrent)   # changes the value
 
         # Ensure adjusted control regains focus and has adjusted portion
         # selected:

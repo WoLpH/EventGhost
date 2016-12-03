@@ -39,6 +39,7 @@ INFO_ICON = eg.Icons.INFO_ICON
 ERROR_ICON = eg.Icons.ERROR_ICON
 NOTICE_ICON = eg.Icons.NOTICE_ICON
 
+
 class DummyLogCtrl(object):
     def WriteLine(self, line, icon, wRef, when, indent):
         #oldStdOut.write("%s\n" % line)
@@ -91,14 +92,12 @@ class Log(object):
             self.PrintDebugNotice("Machine type:", platform.machine())
             self.PrintDebugNotice("Processor:", platform.processor())
             self.PrintDebugNotice("Architecture:", platform.architecture())
-            self.PrintDebugNotice(
-                "Python:",
-                platform.python_branch(),
-                platform.python_version(),
-                platform.python_implementation(),
-                platform.python_build(),
-                "[{0}]".format(platform.python_compiler())
-            )
+            self.PrintDebugNotice("Python:",
+                                  platform.python_branch(),
+                                  platform.python_version(),
+                                  platform.python_implementation(),
+                                  platform.python_build(),
+                                  "[{0}]".format(platform.python_compiler()))
             self.PrintDebugNotice("----------------------------------------")
 
         # redirect all wxPython error messages to our log
@@ -107,6 +106,7 @@ class Log(object):
                 if (level >= 6):
                     return
                 sys.stderr.write("wxError%d: %s\n" % (level, msg))
+
         wx.Log.SetActiveTarget(MyLog())
 
     def AddEventListener(self, listener):
@@ -134,7 +134,7 @@ class Log(object):
         payload = event.payload
         eventstring = event.string
         if payload is not None:
-            if type(payload) == UnicodeType:
+            if isinstance(payload, UnicodeType):
                 mesg = eventstring + ' u"' + payload + '"'
             else:
                 mesg = eventstring + ' ' + repr(payload)
@@ -197,11 +197,8 @@ class Log(object):
         if tbTraceback:
             decode = codecs.getdecoder('mbcs')
             for fname, lno, funcName, text in extract_tb(tbTraceback)[skip:]:
-                slist.append(
-                    u'  File "%s", line %d, in %s\n' % (
-                        decode(fname)[0], lno, funcName
-                    )
-                )
+                slist.append(u'  File "%s", line %d, in %s\n' %
+                             (decode(fname)[0], lno, funcName))
                 if text:
                     slist.append("    %s\n" % text)
         for line in format_exception_only(tbType, tbValue):

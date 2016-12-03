@@ -21,6 +21,7 @@ import wx
 # Local imports
 import eg
 
+
 class Config(eg.PersistentData):
     position = None
     size = (550, 400)
@@ -44,21 +45,13 @@ class AddActionDialog(eg.TaskletDialog):
             parent,
             -1,
             Text.title,
-            style=(
-                wx.DEFAULT_DIALOG_STYLE |
-                wx.RESIZE_BORDER |
-                wx.THICK_FRAME
-            )
-        )
+            style=(wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER |
+                   wx.THICK_FRAME))
         splitterWindow = wx.SplitterWindow(
             self,
             -1,
-            style=(
-                wx.SP_LIVE_UPDATE |
-                wx.CLIP_CHILDREN |
-                wx.NO_FULL_REPAINT_ON_RESIZE
-            )
-        )
+            style=(wx.SP_LIVE_UPDATE | wx.CLIP_CHILDREN |
+                   wx.NO_FULL_REPAINT_ON_RESIZE))
 
         style = wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT
         tree = wx.TreeCtrl(splitterWindow, -1, style=style)
@@ -79,9 +72,8 @@ class AddActionDialog(eg.TaskletDialog):
         rightSizer.Add(nameText, 0, wx.EXPAND | wx.LEFT | wx.BOTTOM, 5)
 
         staticBoxSizer = wx.StaticBoxSizer(
-            wx.StaticBox(rightPanel, label=Text.descriptionLabel),
-            wx.VERTICAL
-        )
+            wx.StaticBox(
+                rightPanel, label=Text.descriptionLabel), wx.VERTICAL)
         self.docText = eg.HtmlWindow(rightPanel)
         self.docText.SetBorders(2)
 

@@ -20,22 +20,16 @@ import os
 import winreg
 from collections import OrderedDict
 
+
 class Environment:
     IGNORE_LIST = (
         "PROCESSOR_ARCHITECTURE",
-        "USERNAME",
-    )
+        "USERNAME", )
 
     KEY_LIST = (
-        (
-            winreg.HKEY_LOCAL_MACHINE,
-            "System\CurrentControlSet\Control\Session Manager\Environment"
-        ),
-        (
-            winreg.HKEY_CURRENT_USER,
-            "Environment"
-        ),
-    )
+        (winreg.HKEY_LOCAL_MACHINE,
+         "System\CurrentControlSet\Control\Session Manager\Environment"),
+        (winreg.HKEY_CURRENT_USER, "Environment"), )
 
     PROTECTED_VARS = {}
 
@@ -101,6 +95,7 @@ class Environment:
         return OrderedDict(sorted(data.items(), key=lambda i: i[0]))
 
 
-for var in set(os.environ).difference(Environment.GetLatest()).union(Environment.IGNORE_LIST):
+for var in set(os.environ).difference(Environment.GetLatest()).union(
+        Environment.IGNORE_LIST):
     if var.upper() != "PATH":
         Environment.PROTECTED_VARS[var] = os.environ[var]

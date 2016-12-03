@@ -43,10 +43,10 @@ from Dynamic import (
     TOKEN_GROUPS,
     TOKEN_QUERY,
     TokenGroups,
-    WinError,
-)
+    WinError, )
 
 SECURITY_NT_AUTHORITY = 5
+
 
 def IsAdmin():
     """
@@ -55,16 +55,13 @@ def IsAdmin():
     """
     # First we must open a handle to the access token for this thread.
     hThread = HANDLE()
-    if not OpenThreadToken(
-        GetCurrentThread(), TOKEN_QUERY, 0, byref(hThread)
-    ):
+    if not OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, 0, byref(hThread)):
         err = GetLastError()
         if err == ERROR_NO_TOKEN:
             # If the thread does not have an access token, we'll examine the
             # access token associated with the process.
-            if not OpenProcessToken(
-                GetCurrentProcess(), TOKEN_QUERY, byref(hThread)
-            ):
+            if not OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY,
+                                    byref(hThread)):
                 raise WinError()
         else:
             raise WinError(err)
@@ -73,9 +70,8 @@ def IsAdmin():
     # because we've given it a NULL buffer. On exit cbTokenGroups will tell
     # the size of the group information.
     cbTokenGroups = DWORD()
-    if GetTokenInformation(
-        hThread, TokenGroups, None, 0, byref(cbTokenGroups)
-    ):
+    if GetTokenInformation(hThread, TokenGroups, None, 0,
+                           byref(cbTokenGroups)):
         raise WinError()
 
     # Here we verify that GetTokenInformation failed for lack of a large
@@ -90,9 +86,8 @@ def IsAdmin():
     # Now we ask for the group information again.
     # This may fail if an administrator has added this account to an additional
     # group between our first call to GetTokenInformation and this one.
-    if not GetTokenInformation(
-        hThread, TokenGroups, ptg, cbTokenGroups, byref(cbTokenGroups)
-    ):
+    if not GetTokenInformation(hThread, TokenGroups, ptg, cbTokenGroups,
+                               byref(cbTokenGroups)):
         raise WinError()
 
     # Now we must create a System Identifier for the Admin group.
@@ -100,13 +95,8 @@ def IsAdmin():
     systemSidAuthority.Value[5] = SECURITY_NT_AUTHORITY
     psidAdmin = PSID()
     if not AllocateAndInitializeSid(
-            byref(systemSidAuthority),
-            2,
-            SECURITY_BUILTIN_DOMAIN_RID,
-            DOMAIN_ALIAS_RID_ADMINS,
-            0, 0, 0, 0, 0, 0,
-            byref(psidAdmin)
-    ):
+            byref(systemSidAuthority), 2, SECURITY_BUILTIN_DOMAIN_RID,
+            DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, byref(psidAdmin)):
         raise WinError()
 
     # Finally we'll iterate through the list of groups for this access
@@ -121,6 +111,7 @@ def IsAdmin():
     # Before we exit we must explicitly deallocate the SID we created.
     FreeSid(psidAdmin)
     return isAdmin
+
 
 if __name__ == "__main__":
     print "Current user is administrator:", IsAdmin()
